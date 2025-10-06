@@ -3,8 +3,12 @@
 #include <vector>
 #include <ctime>
 #include <cmath>
+#include <cctype>
 
-// ************************ CONSTANTS, VARIABLES AND DATASTRUCTS ************************
+/*************************************************************************************
+************************ CONSTANTS, VARIABLES AND DATASTRUCTS ************************
+*************************************************************************************/
+
 enum MenuSelection {
     add = 1, // 1.
     disp, // 2.
@@ -21,6 +25,7 @@ struct DataPoint {
 constexpr int MIN_MENU_OPTION = 1;
 constexpr int MAX_MENU_OPTION = 5;
 constexpr int MAX_DATA_POINTS = 5;
+constexpr int CHAR_ARRAY_SIZE = 50;
 
 
 /******************************************************
@@ -28,18 +33,40 @@ constexpr int MAX_DATA_POINTS = 5;
 ******************************************************/
 
 struct tm getTime() {
-    std::time_t timestamp = time(&timestamp);
+    std::time_t timestamp = time(nullptr);
     struct tm currentTime = *localtime(&timestamp);
 
     return currentTime;
 }
 
-// ************************ FUNCTIONS ************************
+bool isTempValue(const std::string& userInp) {
+    try {
+        std::stof(userInp);
+        return true;
+    } catch (...) {
+        return false;
+    }
+}
+
+bool isDate(const std::string& userInp) {
+    if (userInp.length() != 10) return false;
+    if (userInp.at(4) != '/' || userInp.at(7) != '/') return false;
+    for (int i = 0; i < 10; i++) {
+        if (i != 4 && i != 7 && !std::isdigit(userInp[i])) return false;
+    }
+    return true;
+}
+
+/*************************************************************
+************************* FUNCTIONS **************************
+/************************************************************/
+
 void addValues(std::vector<DataPoint>& data) {
     std::string userInp {};
-    std::cout << "Add new value. If finished, type \"done\": \n\n";
+    std::cout << "Add new value. If finished, type \"done\": \n";
 
     while(true) {
+        std::cout << "> ";
         std::getline(std::cin, userInp);
         if (userInp == "done") break;
         DataPoint newDataPoint;
@@ -60,43 +87,34 @@ void addValues(std::vector<DataPoint>& data) {
     }
 
     // Print current list.
-    int loop = 1;
+    int count = 1;
     std::cout << std::endl;
-    for (DataPoint measurement : data) {
-        char time[50];
-        strftime(time, 50, "%a%e %b %H:%M:%S", &measurement.datetime);
-        std::cout << loop++ << ": " << measurement.tempValue << " - " << time << std::endl;
+    for (const DataPoint& d : data) {
+        char time[CHAR_ARRAY_SIZE];
+        strftime(time, sizeof(time), "%a%e %b %H:%M:%S", &d.datetime);
+        std::cout << count++ << ": " << d.tempValue << " - " << time << std::endl;
     }
     std::cout << "\n\n";
 }
 
-void displayValues(const std::vector<DataPoint>& data) {
-    int numDataPoints {};
+void calcStats(const std::vector<DataPoint>& data) {
+    int numDataPoints = data.size();
     double sum {};
     double average {};
     double sumVariance {};
     float variance {};
     float stdDeviation {};
-    int loop = 1;
+    int count = 1;
     float minVal = data[0].tempValue;
     float maxVal = data[0].tempValue;
 
     // Print registered data points with timestamps, count number of datapoints registered and average.
     std::cout << std::endl;
-    for (DataPoint d : data) {
-        char time[50];
-        strftime(time, 50, "%a%e %b %H:%M:%S", &d.datetime);
-        std::cout << loop++ << ": " << d.tempValue << " - " << time << "\n";
-
-        numDataPoints++;
+    for (const DataPoint& d : data) {
+        char time[CHAR_ARRAY_SIZE];
+        strftime(time, sizeof(time), "%a%e %b %H:%M:%S", &d.datetime);
+        std::cout << count++ << ": " << d.tempValue << " - " << time << "\n";
         sum += d.tempValue;
-    }
-
-    average = sum / numDataPoints;
-
-    // Calculate statistics
-    for (DataPoint d : data) {
-        sumVariance += (d.tempValue - average) * (d.tempValue - average);
         if (d.tempValue < minVal) {
             minVal = d.tempValue;
         }
@@ -104,6 +122,13 @@ void displayValues(const std::vector<DataPoint>& data) {
             maxVal = d.tempValue;
         } 
     }
+
+    average = sum / numDataPoints;
+
+    for (const DataPoint& d : data) {
+        sumVariance += (d.tempValue - average) * (d.tempValue - average);
+    }
+
     sumVariance = sumVariance / numDataPoints;
     stdDeviation = std::sqrt(sumVariance);
 
@@ -115,7 +140,52 @@ void displayValues(const std::vector<DataPoint>& data) {
     std::cout << stdDeviation << " is the standard deviation.\n" << std::endl;
 }
 
-// ************************ ESSENTIALS ************************
+void findDataPoint(const std::vector<DataPoint>& data) {
+    std::string userInp {};
+    std::cout << "Find specific value (eg. 25.5) or date (eg. 2025/06/31). If finished, type \"done\": \n";
+
+    while(true) {
+        bool matchFound = false;
+        std::cout << "> ";
+        std::getline(std::cin, userInp);
+        if (userInp == "done") break;
+        if (!isDate(userInp) && !isTempValue(userInp)) {
+            std::cout << "Invalid input.\n";
+            continue;
+        }
+        for (const DataPoint& d: data) {
+            if (isDate(userInp)) {
+                char time[CHAR_ARRAY_SIZE];
+                strftime(time, sizeof(time), "%Y/%m/%d", &d.datetime);
+                if (std::string(time) == userInp) {
+                    std::cout << "MATCH! " << time << " " << d.tempValue << std::endl;
+                    matchFound = true;
+                }
+            } else if (isTempValue(userInp)) {
+                float userSearch {};
+                userSearch = std::stof(userInp);
+                if (d.tempValue == userSearch) {
+                    char time[CHAR_ARRAY_SIZE];
+                    strftime(time, sizeof(time), "%a%e %b %H:%M:%S", &d.datetime);
+                    std::cout << "MATCH! " << time << " " << d.tempValue << std::endl;
+                    matchFound = true;
+                }
+            }
+        } 
+        if (!matchFound) {
+            std::cout << "No match.\n";
+        }
+    }
+}
+
+void sortData(const std::vector<DataPoint>& data) {
+    // SORT FUNCTION IS WORK IN PROGRESS
+}
+
+/***********************************************************
+************************ ESSENTIALS ************************
+***********************************************************/
+
 int menu() {
     int menuChoice {};
     std::string input;
@@ -146,15 +216,18 @@ int menu() {
 bool action(int chosenAction, std::vector<DataPoint>& data) {
     switch (chosenAction) {
         case add: addValues(data); break;
-        case disp: displayValues(data); break;
-        case find: break; // TEMP
-        case dispSorted: break; // TEMP
+        case disp: calcStats(data); break;
+        case find: findDataPoint(data); break;
+        case dispSorted: sortData(data); break; // TEMP
         case quit: return true;
     }
     return false;
 }
 
-// ************************ MAIN ************************
+/*****************************************************
+************************ MAIN ************************
+/****************************************************/
+
 int main() {
     std::vector<DataPoint> temperatureData;
     bool shouldQuit = false;
