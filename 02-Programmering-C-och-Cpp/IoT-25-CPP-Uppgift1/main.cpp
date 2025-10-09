@@ -4,6 +4,7 @@
 #include <ctime>
 #include <cmath>
 #include <cctype>
+#include <algorithm>
 
 /*************************************************************************************
 ************************ CONSTANTS, VARIABLES AND DATASTRUCTS ************************
@@ -32,14 +33,14 @@ constexpr int CHAR_ARRAY_SIZE = 50;
 ************************ TOOLS ************************
 ******************************************************/
 
-struct tm getTime() {
+struct tm getTime() { // Gets current time from <ctime> module. Returns tm struct.
     std::time_t timestamp = time(nullptr);
     struct tm currentTime = *localtime(&timestamp);
 
     return currentTime;
 }
 
-bool isTempValue(const std::string& userInp) {
+bool isTempValue(const std::string& userInp) { // Checks if string is a valid temperature value. Returns true/false.
     try {
         std::stof(userInp);
         return true;
@@ -48,7 +49,7 @@ bool isTempValue(const std::string& userInp) {
     }
 }
 
-bool isDate(const std::string& userInp) {
+bool isDate(const std::string& userInp) { // Checks if string is a valid date. Returns true/false.
     if (userInp.length() != 10) return false;
     if (userInp.at(4) != '/' || userInp.at(7) != '/') return false;
     for (int i = 0; i < 10; i++) {
@@ -61,7 +62,7 @@ bool isDate(const std::string& userInp) {
 ************************* FUNCTIONS **************************
 /************************************************************/
 
-void addValues(std::vector<DataPoint>& data) {
+void addValues(std::vector<DataPoint>& data) { // Add values to the
     std::string userInp {};
     std::cout << "Add new value. If finished, type \"done\": \n";
 
@@ -178,8 +179,36 @@ void findDataPoint(const std::vector<DataPoint>& data) {
     }
 }
 
-void sortData(const std::vector<DataPoint>& data) {
+void sortData(std::vector<DataPoint>& data) {
     // SORT FUNCTION IS WORK IN PROGRESS
+    std::cout << "Sort data by [v]alue or by [d]ate. If finished, type \"done\": \n";
+    std::string userInp {};
+
+    while (true) {
+        std::cout << "> ";
+        std::getline(std::cin, userInp);
+        if (userInp == "v") {
+            std::sort(data.begin(), data.end(), [](const DataPoint& a, const DataPoint& b) {return a.tempValue < b.tempValue;});
+            break;
+        } else if (userInp == "d") {
+            // SORT BY DATE
+            std::sort(data.begin(), data.end(), [](const DataPoint& a, const DataPoint& b) {
+                tm tmConvertA = a.datetime;
+                tm tmConvertB = b.datetime;
+
+                time_t time_a = std::mktime(&tmConvertA);
+                time_t time_b = std::mktime(&tmConvertB);
+
+                return time_a < time_b;
+            });
+
+            break;
+        } else if (userInp == "done") {
+            break;
+        } else {
+            std::cout << "Invalid input.\n";
+        }
+    }
 }
 
 /***********************************************************
@@ -187,7 +216,7 @@ void sortData(const std::vector<DataPoint>& data) {
 ***********************************************************/
 
 int menu() {
-    int menuChoice {};
+    int menuChoice = 0;
     std::string input;
 
     std::cout << "MENU\n"
@@ -218,7 +247,7 @@ bool action(int chosenAction, std::vector<DataPoint>& data) {
         case add: addValues(data); break;
         case disp: calcStats(data); break;
         case find: findDataPoint(data); break;
-        case dispSorted: sortData(data); break; // TEMP
+        case dispSorted: sortData(data); break;
         case quit: return true;
     }
     return false;
