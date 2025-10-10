@@ -1,40 +1,8 @@
 #include <iostream>
-#include <string>
 #include <vector>
-#include <ctime>
 #include <cmath>
-#include <cctype>
 #include <algorithm>
-
-/*************************************************************************************
-************************ CONSTANTS, VARIABLES AND DATASTRUCTS ************************
-*************************************************************************************/
-
-enum MenuSelection { // Menu options to be used in switch statement.
-    add = 1, // 1.
-    disp, // 2.
-    graph, // 3.
-    dispSorted, // 4.
-    find, // 5.
-    simulate, // 6.
-    quit // 7.
-};
-
-struct DataPoint { // Collection of data values to be stored in vector.
-    float tempValue;
-    struct tm datetime;
-};
-
-constexpr int MIN_MENU_OPTION = 1;
-constexpr int MAX_MENU_OPTION = 7;
-constexpr int MAX_DATA_POINTS = 5;
-constexpr int CHAR_ARRAY_SIZE = 50;
-
-/**********************************************************************
-************************ FUNCTION DECLARATIONS ************************
-/*********************************************************************/
-
-void printData(const std::vector<DataPoint>& data);
+#include "functions.hpp"
 
 /******************************************************
 ************************ TOOLS ************************
@@ -175,19 +143,20 @@ void findDataPoint(const std::vector<DataPoint>& data) { // Finds specific data 
     }
 }
 
-void sortData(std::vector<DataPoint>& data) { // Sorts vector by value or by date.
+void sortData(const std::vector<DataPoint>& data) { // Sorts vector by value or by date.
     std::cout << "Sort data by [v]alue or by [d]ate. If finished, type \"done\": \n";
     std::string userInp {};
+
+    std::vector<DataPoint> sortedData = data;
 
     while (true) { // Loops until valid input is given.
         std::cout << "> ";
         std::getline(std::cin, userInp);
-        if (userInp == "v") {
-            std::sort(data.begin(), data.end(), [](const DataPoint& a, const DataPoint& b) {return a.tempValue < b.tempValue;});
+        if (userInp == "v") { // Sort by value
+            std::sort(sortedData.begin(), sortedData.end(), [](const DataPoint& a, const DataPoint& b) {return a.tempValue < b.tempValue;});
             break;
-        } else if (userInp == "d") {
-            // SORT BY DATE
-            std::sort(data.begin(), data.end(), [](const DataPoint& a, const DataPoint& b) {
+        } else if (userInp == "d") { // Sort by date
+            std::sort(sortedData.begin(), sortedData.end(), [](const DataPoint& a, const DataPoint& b) {
                 tm tmConvertA = a.datetime;
                 tm tmConvertB = b.datetime;
 
@@ -196,7 +165,6 @@ void sortData(std::vector<DataPoint>& data) { // Sorts vector by value or by dat
 
                 return time_a < time_b;
             });
-            //We don't mess with this line
             break;
         } else if (userInp == "done") {
             break;
@@ -204,6 +172,8 @@ void sortData(std::vector<DataPoint>& data) { // Sorts vector by value or by dat
             std::cout << "Invalid input.\n";
         }
     }
+
+    printData(sortedData);
 }
 
 void printData(const std::vector<DataPoint>& data) {
@@ -220,68 +190,4 @@ void printData(const std::vector<DataPoint>& data) {
         std::cout << "#" << count++ << ": " << d.tempValue << " - " << time << std::endl;
     }
     std::cout << "\n";
-}
-
-
-
-/***********************************************************
-************************ ESSENTIALS ************************
-***********************************************************/
-
-int menu() { // Display menu and validate input.
-    int menuChoice = 0;
-    std::string input;
-
-    std::cout << "\nMENU\n"
-              << "1. Add new values\n"
-              << "2. Display statistics\n"
-              << "3. Display graph\n"
-              << "4. Display values sorted\n"
-              << "5. Find value\n"
-              << "6. Simulate values\n"
-              << "7. Quit";
-
-    while (true) {
-        std::cout << "\n> ";
-        std::getline(std::cin, input);
-
-        try {
-            menuChoice = std::stoi(input);
-            if (menuChoice >= MIN_MENU_OPTION && menuChoice <= MAX_MENU_OPTION) {
-                return menuChoice;
-            }
-            std::cout << "Please enter a number between 1-7.\n";
-        } catch (...) {
-            std::cout << "Please enter a valid number.\n";
-        }
-    }
-}
-
-bool action(int chosenAction, std::vector<DataPoint>& data) {
-    switch (chosenAction) {
-        case add: addValues(data); break;
-        case disp: calcStats(data); break;
-        case graph: break; // WORK IN PROGRESS
-        case dispSorted: sortData(data); break;
-        case find: findDataPoint(data); break;
-        case simulate: break; // WORK IN PROGRESS
-        case quit: return true;
-    }
-    return false;
-}
-
-/*****************************************************
-************************ MAIN ************************
-/****************************************************/
-
-int main() {
-    std::vector<DataPoint> temperatureData;
-    bool shouldQuit = false;
-
-    while (!shouldQuit) {
-        int choice = menu();
-        shouldQuit = action(choice, temperatureData);
-    }
-    std::cout << "Bye!\n";
-    return 0;
 }
