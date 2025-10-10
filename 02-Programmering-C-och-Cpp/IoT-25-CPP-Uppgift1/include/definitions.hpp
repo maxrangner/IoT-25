@@ -13,16 +13,23 @@ enum MenuSelection { // Menu options to be used in switch statement.
     dispSorted, // 4.
     find, // 5.
     simulate, // 6.
-    quit // 7.
+    quit, // 7.
+    endOfMenu // Not used, just to mark end of enum.
+};
+
+enum validatorType {
+    wholeNum = 1,
+    decimalNum,
+    text
 };
 
 struct DataPoint { // Collection of data values to be stored in vector.
-    float tempValue;
+    float temperatureValue;
     struct tm datetime;
 };
 
 constexpr int MIN_MENU_OPTION = 1;
-constexpr int MAX_MENU_OPTION = 7;
+constexpr int MAX_MENU_OPTION = endOfMenu;
 constexpr int MAX_DATA_POINTS = 5;
 constexpr int CHAR_ARRAY_SIZE = 50;
 

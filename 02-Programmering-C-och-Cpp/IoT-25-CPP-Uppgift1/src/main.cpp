@@ -6,10 +6,6 @@
 #include "definitions.hpp"
 #include "functions.hpp"
 
-/***********************************************************
-************************ ESSENTIALS ************************
-***********************************************************/
-
 int menu() { // Display menu and validate input.
     int menuChoice = 0;
     std::string input;
@@ -21,20 +17,15 @@ int menu() { // Display menu and validate input.
               << "4. Display values sorted\n"
               << "5. Find value\n"
               << "6. Simulate values\n"
-              << "7. Quit";
+              << "7. Quit\n";
 
     while (true) {
-        std::cout << "\n> ";
+        std::cout << "> ";
         std::getline(std::cin, input);
 
-        try {
+        if (isValidInput(input, wholeNum, 1, 7)) {
             menuChoice = std::stoi(input);
-            if (menuChoice >= MIN_MENU_OPTION && menuChoice <= MAX_MENU_OPTION) {
-                return menuChoice;
-            }
-            std::cout << "Please enter a number between 1-7.\n";
-        } catch (...) {
-            std::cout << "Please enter a valid number.\n";
+            return menuChoice;
         }
     }
 }
@@ -51,10 +42,6 @@ bool action(int chosenAction, std::vector<DataPoint>& data) {
     }
     return false;
 }
-
-/*****************************************************
-************************ MAIN ************************
-/****************************************************/
 
 int main() {
     std::vector<DataPoint> temperatureData;

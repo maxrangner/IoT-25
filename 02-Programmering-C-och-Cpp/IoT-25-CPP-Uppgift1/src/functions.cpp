@@ -2,6 +2,7 @@
 #include <vector>
 #include <cmath>
 #include <algorithm>
+#include <iomanip>
 #include "functions.hpp"
 
 /******************************************************
@@ -15,7 +16,7 @@ struct tm getTime() { // Gets current time from <ctime> module. Returns tm struc
     return currentTime;
 }
 
-bool isTempValue(const std::string& userInp) { // Checks if string is a valid temperature value. Returns true/false.
+bool isTemperatureValue(const std::string& userInp) { // Checks if string is a valid temperature value. Returns true/false.
     try {
         std::stof(userInp);
         return true;
@@ -33,6 +34,59 @@ bool isDate(const std::string& userInp) { // Checks if string is a valid date. R
     return true;
 }
 
+bool isValidInput(const std::string& input, int typeSelector, float min, float max) { // Validates input based on typeSelector enum.
+    switch (typeSelector) {
+        case wholeNum: {
+            try {
+                int inputVal = std::stoi(input);
+                if (inputVal >= min && inputVal <= max) {
+                    return true;
+                }
+                std::cout << "Please enter a number between " << min << " and " << max << "\n";
+            } catch (...) {
+                std::cout << "Please enter a valid number.\n";
+            }
+            break;
+        }
+        case decimalNum: {
+            try {
+                float inputVal = std::stof(input);
+                if (inputVal >= min && inputVal <= max) {
+                    return true;
+                }
+                std::cout << "Please enter a number between " << min << " and " << max << "\n";
+            } catch (...) {
+                std::cout << "Please enter a valid number.\n";
+            }
+            break;
+        }
+    };
+    return false;
+}
+
+bool isValidInput(const std::string& input, int typeSelector, const std::vector<std::string>& allowedStrings) {
+    int numAllowed = 0;
+    for (const auto& s : allowedStrings) {
+        numAllowed++;
+        if (input == s) return true;
+    }
+    if (numAllowed > 0) {
+        std::cout << "Please enter ";
+        for (int i = 0; i < numAllowed; i++) {
+            std::cout << "\"" << allowedStrings[i] << "\"";
+            if (i < (numAllowed -2)) {
+                std::cout << ", ";
+            } else if (i < (numAllowed -1)) {
+                std::cout << " or ";
+            } else {
+                std::cout << ".\n";
+            }
+        }
+    }
+    
+    return false;
+}
+
 /*************************************************************
 ************************* FUNCTIONS **************************
 /************************************************************/
@@ -47,21 +101,15 @@ void addValues(std::vector<DataPoint>& data) { // Adds values to the temperature
         if (userInp == "done") break;
         DataPoint newDataPoint;
 
-        try { // Tries to cast input string as float. Propts user if fails.
-            newDataPoint.tempValue = std::stof(userInp);
-        } catch (...) {
-            std::cout << "Please enter a valid number.\n";
-            continue;
+        if (isValidInput(userInp, decimalNum, -100, 100)) {
+            newDataPoint.temperatureValue = std::stof(userInp);
+            newDataPoint.datetime = getTime();
+            if (data.size() >= MAX_DATA_POINTS) { // Checks if vector is too big, and limits it to MAX_DATA_POINTS.
+                data.erase(data.begin());
+            }
+            data.push_back(newDataPoint);
         }
-        
-        newDataPoint.datetime = getTime(); // Adds timestamp to new temperature value.
-
-        if (data.size() >= MAX_DATA_POINTS) { // Checks if vector is too big, and limits it to MAX_DATA_POINTS.
-            data.erase(data.begin());
-        }
-        data.push_back(newDataPoint);
     }
-
     printData(data);
 }
 
@@ -73,25 +121,25 @@ void calcStats(const std::vector<DataPoint>& data) { // Calculates and displays 
     float variance {};
     float stdDeviation {};
     int count = 1;
-    float minVal = data[0].tempValue;
-    float maxVal = data[0].tempValue;
+    float minVal = data[0].temperatureValue;
+    float maxVal = data[0].temperatureValue;
 
     printData(data);
 
     for (const DataPoint& d : data) { // Calculates sum and min/max values.
-        sum += d.tempValue;
-        if (d.tempValue < minVal) {
-            minVal = d.tempValue;
+        sum += d.temperatureValue;
+        if (d.temperatureValue < minVal) {
+            minVal = d.temperatureValue;
         }
-        if (d.tempValue > maxVal) {
-            maxVal = d.tempValue;
+        if (d.temperatureValue > maxVal) {
+            maxVal = d.temperatureValue;
         } 
     }
 
     average = sum / numDataPoints;
 
     for (const DataPoint& d : data) {
-        sumVariance += (d.tempValue - average) * (d.tempValue - average);
+        sumVariance += (d.temperatureValue - average) * (d.temperatureValue - average);
     }
 
     sumVariance = sumVariance / numDataPoints;
@@ -114,7 +162,7 @@ void findDataPoint(const std::vector<DataPoint>& data) { // Finds specific data 
         std::cout << "> ";
         std::getline(std::cin, userInp);
         if (userInp == "done") break;
-        if (!isDate(userInp) && !isTempValue(userInp)) { // Checks for valid input.
+        if (!isDate(userInp) && !isTemperatureValue(userInp)) { // Checks for valid input.
             std::cout << "Invalid input.\n";
             continue;
         }
@@ -123,16 +171,16 @@ void findDataPoint(const std::vector<DataPoint>& data) { // Finds specific data 
                 char time[CHAR_ARRAY_SIZE];
                 strftime(time, sizeof(time), "%Y/%m/%d", &d.datetime);
                 if (std::string(time) == userInp) {
-                    std::cout << "MATCH! " << time << " " << d.tempValue << std::endl;
+                    std::cout << "MATCH! " << time << " " << d.temperatureValue << std::endl;
                     matchFound = true;
                 }
-            } else if (isTempValue(userInp)) {
+            } else if (isTemperatureValue(userInp)) {
                 float userSearch {};
                 userSearch = std::stof(userInp);
-                if (d.tempValue == userSearch) {
+                if (d.temperatureValue == userSearch) {
                     char time[CHAR_ARRAY_SIZE];
                     strftime(time, sizeof(time), "%a%e %b %H:%M:%S", &d.datetime);
-                    std::cout << "MATCH! " << time << " " << d.tempValue << std::endl;
+                    std::cout << "MATCH! " << time << " " << d.temperatureValue << std::endl;
                     matchFound = true;
                 }
             }
@@ -144,7 +192,7 @@ void findDataPoint(const std::vector<DataPoint>& data) { // Finds specific data 
 }
 
 void sortData(const std::vector<DataPoint>& data) { // Sorts vector by value or by date.
-    std::cout << "Sort data by [v]alue or by [d]ate. If finished, type \"done\": \n";
+    std::cout << "\nSort data by [v]alue or by [d]ate. If finished, type \"done\": \n";
     std::string userInp {};
 
     std::vector<DataPoint> sortedData = data;
@@ -152,24 +200,25 @@ void sortData(const std::vector<DataPoint>& data) { // Sorts vector by value or 
     while (true) { // Loops until valid input is given.
         std::cout << "> ";
         std::getline(std::cin, userInp);
-        if (userInp == "v") { // Sort by value
-            std::sort(sortedData.begin(), sortedData.end(), [](const DataPoint& a, const DataPoint& b) {return a.tempValue < b.tempValue;});
-            break;
-        } else if (userInp == "d") { // Sort by date
-            std::sort(sortedData.begin(), sortedData.end(), [](const DataPoint& a, const DataPoint& b) {
-                tm tmConvertA = a.datetime;
-                tm tmConvertB = b.datetime;
+        
+        if (isValidInput(userInp, text, {"v", "d", "done"})) {
+            if (userInp == "v") { // Sort by value
+                std::sort(sortedData.begin(), sortedData.end(), [](const DataPoint& a, const DataPoint& b) {return a.temperatureValue < b.temperatureValue;});
+                break;
+            } else if (userInp == "d") { // Sort by date
+                std::sort(sortedData.begin(), sortedData.end(), [](const DataPoint& a, const DataPoint& b) {
+                    tm tmConvertA = a.datetime;
+                    tm tmConvertB = b.datetime;
 
-                time_t time_a = std::mktime(&tmConvertA);
-                time_t time_b = std::mktime(&tmConvertB);
+                    time_t time_a = std::mktime(&tmConvertA);
+                    time_t time_b = std::mktime(&tmConvertB);
 
-                return time_a < time_b;
-            });
-            break;
-        } else if (userInp == "done") {
-            break;
-        } else {
-            std::cout << "Invalid input.\n";
+                    return time_a < time_b;
+                });
+                break;
+            } else if (userInp == "done") {
+                break;
+            }
         }
     }
 
@@ -187,7 +236,7 @@ void printData(const std::vector<DataPoint>& data) {
     for (const DataPoint& d : data) { // Print current elements in vector.
         char time[CHAR_ARRAY_SIZE];
         strftime(time, sizeof(time), "%a%e %b %H:%M:%S", &d.datetime);
-        std::cout << "#" << count++ << ": " << d.tempValue << " - " << time << std::endl;
+        std::cout << "#" << count++ << ": " << std::fixed << std::setprecision(2) << d.temperatureValue << " - " << time << std::endl;
     }
     std::cout << "\n";
 }
