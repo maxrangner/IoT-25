@@ -37,7 +37,7 @@ bool action(int chosenAction, std::vector<DataPoint>& data) {
         case graph: break; // WORK IN PROGRESS
         case dispSorted: sortData(data); break;
         case find: findDataPoint(data); break;
-        case simulate: break; // WORK IN PROGRESS
+        case simulate: testPrintRandomFunc(); break; // WORK IN PROGRESS
         case quit: return true;
     }
     return false;

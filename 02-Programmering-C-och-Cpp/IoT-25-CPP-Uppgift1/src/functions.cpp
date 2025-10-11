@@ -3,6 +3,7 @@
 #include <cmath>
 #include <algorithm>
 #include <iomanip>
+#include <random>
 #include "functions.hpp"
 
 /******************************************************
@@ -10,7 +11,7 @@
 ******************************************************/
 
 struct tm getTime() { // Gets current time from <ctime> module. Returns tm struct.
-    std::time_t timestamp = time(nullptr);
+    std::time_t timestamp = std::time(nullptr);
     struct tm currentTime = *localtime(&timestamp);
 
     return currentTime;
@@ -31,6 +32,7 @@ bool isDate(const std::string& userInp) { // Checks if string is a valid date. R
     for (int i = 0; i < 10; i++) {
         if (i != 4 && i != 7 && !std::isdigit(userInp[i])) return false;
     }
+
     return true;
 }
 
@@ -57,6 +59,7 @@ bool isValidInput(const std::string& input, int typeSelector, float min, float m
             break;
         }
     };
+
     return false;
 }
 
@@ -74,7 +77,36 @@ bool isValidInput(const std::string& input, int typeSelector, const std::vector<
         else msg += ".\n";
     }
     std::cout << msg;
+
     return false;
+}
+
+float getRandomTemp(float min, float max) {
+    static std::random_device randDevice;
+    static std::mt19937 gen(randDevice());
+    std::uniform_real_distribution<float> distrib(min, max);
+    float returnVal = distrib(gen);
+
+    return std::round(returnVal * 100.0f) / 100.0f;
+}
+
+time_t getRandomTime(int timeSpan) {
+    time_t currentTime = std::time(nullptr);
+    time_t minTime = currentTime - timeSpan; 
+    static std::random_device randDevice;
+    static std::mt19937 gen(randDevice());
+    std::uniform_int_distribution<time_t> distrib(minTime, currentTime);
+
+    return distrib(gen);
+}
+
+void testPrintRandomFunc() {
+    time_t newRandTime = getRandomTime(MONTH_IN_SEC);
+    struct tm timeStruct = *localtime(&newRandTime);
+    char timeOutput[CHAR_ARRAY_SIZE];
+    strftime(timeOutput, sizeof(timeOutput), "%a%e %b %H:%M:%S", &timeStruct);
+    std::cout << timeOutput << std::endl;
+    std::cout << getRandomTemp(18,25) << std::endl;
 }
 
 /*************************************************************

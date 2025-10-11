@@ -13,5 +13,9 @@ void addValues(std::vector<DataPoint>& data);
 void calcStats(const std::vector<DataPoint>& data);
 void findDataPoint(const std::vector<DataPoint>& data);
 void sortData(const std::vector<DataPoint>& data);
+float getRandomTemp(float min = -20.0, float max = 50.0);
+time_t getRandomTime(int timeSpan);
+
+void testPrintRandomFunc();
 
 #endif

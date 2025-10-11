@@ -1,6 +1,7 @@
 #ifndef DEFINITIONS_HPP
 #define DEFINITIONS_HPP
 #include <ctime>
+#include <random>
 
 /*************************************************************************************
 ************************ CONSTANTS, VARIABLES AND DATASTRUCTS ************************
@@ -32,5 +33,6 @@ constexpr int MIN_MENU_OPTION = 1;
 constexpr int MAX_MENU_OPTION = endOfMenu;
 constexpr int MAX_DATA_POINTS = 5;
 constexpr int CHAR_ARRAY_SIZE = 50;
+constexpr int MONTH_IN_SEC = 2592000; // One month (30 days) in seconds
 
 #endif
