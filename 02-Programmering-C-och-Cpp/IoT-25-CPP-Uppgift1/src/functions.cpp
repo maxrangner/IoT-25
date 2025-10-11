@@ -39,9 +39,7 @@ bool isValidInput(const std::string& input, int typeSelector, float min, float m
         case wholeNum: {
             try {
                 int inputVal = std::stoi(input);
-                if (inputVal >= min && inputVal <= max) {
-                    return true;
-                }
+                if (inputVal >= min && inputVal <= max) return true;
                 std::cout << "Please enter a number between " << min << " and " << max << "\n";
             } catch (...) {
                 std::cout << "Please enter a valid number.\n";
@@ -51,9 +49,7 @@ bool isValidInput(const std::string& input, int typeSelector, float min, float m
         case decimalNum: {
             try {
                 float inputVal = std::stof(input);
-                if (inputVal >= min && inputVal <= max) {
-                    return true;
-                }
+                if (inputVal >= min && inputVal <= max) return true;
                 std::cout << "Please enter a number between " << min << " and " << max << "\n";
             } catch (...) {
                 std::cout << "Please enter a valid number.\n";
@@ -70,20 +66,14 @@ bool isValidInput(const std::string& input, int typeSelector, const std::vector<
         numAllowed++;
         if (input == s) return true;
     }
-    if (numAllowed > 0) {
-        std::cout << "Please enter ";
-        for (int i = 0; i < numAllowed; i++) {
-            std::cout << "\"" << allowedStrings[i] << "\"";
-            if (i < (numAllowed -2)) {
-                std::cout << ", ";
-            } else if (i < (numAllowed -1)) {
-                std::cout << " or ";
-            } else {
-                std::cout << ".\n";
-            }
-        }
+    std::string msg = "Please enter "; 
+    for (int i = 0; i < numAllowed; i++) {
+        msg += "\"" + allowedStrings[i] + "\"";
+        if (i < (numAllowed -2)) msg += ", ";
+        else if (i < (numAllowed -1)) msg += " or ";
+        else msg += ".\n";
     }
-    
+    std::cout << msg;
     return false;
 }
 
