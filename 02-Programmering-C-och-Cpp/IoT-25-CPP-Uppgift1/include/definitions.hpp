@@ -19,14 +19,24 @@ enum MenuSelection { // Menu options to be used in switch statement.
 };
 
 enum validatorType {
-    wholeNum = 1,
-    decimalNum,
-    text
+    wholeNum = 1, // 1.
+    decimalNum, // 2.
+    text // 3.
 };
 
 struct DataPoint { // Collection of data values to be stored in vector.
     float temperatureValue;
     struct tm datetime;
+};
+
+struct statistics {
+    int numDataPoints = 0;
+    double sum = 0.0;
+    double average = 0.0;
+    double variance = 0.0;
+    float stdDeviation = 0.0f;
+    float minVal = 0.0f;
+    float maxVal = 0.0f;
 };
 
 constexpr int MIN_MENU_OPTION = 1;

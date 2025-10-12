@@ -6,11 +6,11 @@
 #include "definitions.hpp"
 #include "functions.hpp"
 
-int menu() { // Display menu and validate input.
+int menu() { // Display menu. Returns valid menu choice.
     int menuChoice = 0;
     std::string input;
 
-    std::cout << "\nMENU\n"
+    std::cout << "\n*********** MENU ***********\n"
               << "1. Add new values\n"
               << "2. Display statistics\n"
               << "3. Display graph\n"
@@ -30,14 +30,14 @@ int menu() { // Display menu and validate input.
     }
 }
 
-bool action(int chosenAction, std::vector<DataPoint>& data) {
+bool action(int chosenAction, std::vector<DataPoint>& data) { // Executes action based on menu choice. Returns true to quit.
     switch (chosenAction) {
         case add: addValues(data); break;
         case disp: calcStats(data); break;
         case graph: break; // WORK IN PROGRESS
         case dispSorted: sortData(data); break;
         case find: findDataPoint(data); break;
-        case simulate: testPrintRandomFunc(); break; // WORK IN PROGRESS
+        case simulate: generateData(data); break;
         case quit: return true;
     }
     return false;

@@ -26,7 +26,7 @@ bool isTemperatureValue(const std::string& userInp) { // Checks if string is a v
     }
 }
 
-bool isDate(const std::string& userInp) { // Checks if string is a valid date. Returns true/false.
+bool isDate(const std::string& userInp) { // Checks if string is a valid date (xxxx/xx/xx). Returns true/false.
     if (userInp.length() != 10) return false;
     if (userInp.at(4) != '/' || userInp.at(7) != '/') return false;
     for (int i = 0; i < 10; i++) {
@@ -90,23 +90,28 @@ float getRandomTemp(float min, float max) {
     return std::round(returnVal * 100.0f) / 100.0f;
 }
 
-time_t getRandomTime(int timeSpan) {
-    time_t currentTime = std::time(nullptr);
-    time_t minTime = currentTime - timeSpan; 
+struct tm getRandomTime(int timeSpan) {
     static std::random_device randDevice;
     static std::mt19937 gen(randDevice());
-    std::uniform_int_distribution<time_t> distrib(minTime, currentTime);
 
-    return distrib(gen);
+    time_t currentTime = std::time(nullptr);
+    time_t minTime = currentTime - timeSpan; 
+    std::uniform_int_distribution<time_t> distrib(minTime, currentTime);
+    time_t randomTimeT = distrib(gen);
+    struct tm output = *localtime(&randomTimeT);
+
+    return output;
 }
 
-void testPrintRandomFunc() {
-    time_t newRandTime = getRandomTime(MONTH_IN_SEC);
-    struct tm timeStruct = *localtime(&newRandTime);
-    char timeOutput[CHAR_ARRAY_SIZE];
-    strftime(timeOutput, sizeof(timeOutput), "%a%e %b %H:%M:%S", &timeStruct);
-    std::cout << timeOutput << std::endl;
-    std::cout << getRandomTemp(18,25) << std::endl;
+void generateData(std::vector<DataPoint>& data) {
+    DataPoint newDataPoint;
+    data.clear();
+    for (int i = 0; i < MAX_DATA_POINTS; i++) {
+        newDataPoint.temperatureValue = getRandomTemp(15,25);
+        newDataPoint.datetime = getRandomTime(MONTH_IN_SEC);
+        data.push_back(newDataPoint);
+    }
+    printData(data);
 }
 
 /*************************************************************
@@ -136,46 +141,36 @@ void addValues(std::vector<DataPoint>& data) { // Adds values to the temperature
 }
 
 void calcStats(const std::vector<DataPoint>& data) { // Calculates and displays statistics based on data in vector.
-    int numDataPoints = data.size();
-    double sum {};
-    double average {};
-    double sumVariance {};
-    float variance {};
-    float stdDeviation {};
-    int count = 1;
-    float minVal = data[0].temperatureValue;
-    float maxVal = data[0].temperatureValue;
-
-    printData(data);
+    if (data.empty()) { std::cout << "No data saved.\n"; return; }
+    statistics newStats;
+    newStats.numDataPoints = data.size();
+    newStats.minVal = data[0].temperatureValue;
+    newStats.maxVal = data[0].temperatureValue;
 
     for (const DataPoint& d : data) { // Calculates sum and min/max values.
-        sum += d.temperatureValue;
-        if (d.temperatureValue < minVal) {
-            minVal = d.temperatureValue;
+        newStats.sum += d.temperatureValue;
+        if (d.temperatureValue < newStats.minVal) {
+            newStats.minVal = d.temperatureValue;
         }
-        if (d.temperatureValue > maxVal) {
-            maxVal = d.temperatureValue;
+        if (d.temperatureValue > newStats.maxVal) {
+            newStats.maxVal = d.temperatureValue;
         } 
     }
 
-    average = sum / numDataPoints;
+    newStats.average = newStats.sum / newStats.numDataPoints;
 
     for (const DataPoint& d : data) {
-        sumVariance += (d.temperatureValue - average) * (d.temperatureValue - average);
+        newStats.variance += (d.temperatureValue - newStats.average) * (d.temperatureValue - newStats.average);
     }
 
-    sumVariance = sumVariance / numDataPoints;
-    stdDeviation = std::sqrt(sumVariance);
+    newStats.variance = newStats.variance / newStats.numDataPoints;
+    newStats.stdDeviation = std::sqrt(newStats.variance);
 
-    std::cout << "\n" << numDataPoints << " datapoints registered." << std::endl;
-    std::cout << sum << " is the total sum of registered values." << std::endl;
-    std::cout << average << " is the average value." << std::endl;
-    std::cout << minVal << " is the lowest measured value, and " << maxVal << " is the highest." << std::endl;
-    std::cout << sumVariance << " is the variance." << std::endl;
-    std::cout << stdDeviation << " is the standard deviation.\n" << std::endl;
+    printData(data, newStats);
 }
 
 void findDataPoint(const std::vector<DataPoint>& data) { // Finds specific data value or value of specific date.
+    if (data.empty()) { std::cout << "No data saved.\n"; return; }
     std::string userInp {};
     std::cout << "Find specific value (eg. 25.5) or date (eg. 2025/06/31). If finished, type \"done\": \n";
 
@@ -214,6 +209,7 @@ void findDataPoint(const std::vector<DataPoint>& data) { // Finds specific data 
 }
 
 void sortData(const std::vector<DataPoint>& data) { // Sorts vector by value or by date.
+    if (data.empty()) { std::cout << "No data saved.\n"; return; }
     std::cout << "\nSort data by [v]alue or by [d]ate. If finished, type \"done\": \n";
     std::string userInp {};
 
@@ -248,6 +244,7 @@ void sortData(const std::vector<DataPoint>& data) { // Sorts vector by value or 
 }
 
 void printData(const std::vector<DataPoint>& data) {
+    if (data.empty()) { std::cout << "No data saved.\n"; return; }
     int count = 1;
 
     std::cout << "\n*********************************************" << std::endl;
@@ -261,4 +258,16 @@ void printData(const std::vector<DataPoint>& data) {
         std::cout << "#" << count++ << ": " << std::fixed << std::setprecision(2) << d.temperatureValue << " - " << time << std::endl;
     }
     std::cout << "\n";
+}
+
+void printData(const std::vector<DataPoint>& data, statistics& stats) {
+    int spacing = 30;
+
+    printData(data);
+    std::cout << std::left << std::setw(spacing) << "Sum: " << stats.sum << std::endl
+              << std::left << std::setw(spacing) << "Average:" << stats.average << std::endl
+              << std::left << std::setw(spacing) << "Min:" << stats.minVal << std::endl
+              << std::left << std::setw(spacing) << "Max:" << stats.maxVal << std::endl
+              << std::left << std::setw(spacing) << "Variance:" << stats.variance << std::endl
+              << std::left << std::setw(spacing) << "Standard deviation:" << stats.stdDeviation << std::endl;
 }
