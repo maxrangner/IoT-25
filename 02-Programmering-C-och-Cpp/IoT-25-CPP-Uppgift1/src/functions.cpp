@@ -103,17 +103,6 @@ struct tm getRandomTime(int timeSpan) {
     return output;
 }
 
-void generateData(std::vector<DataPoint>& data) {
-    DataPoint newDataPoint;
-    data.clear();
-    for (int i = 0; i < MAX_DATA_POINTS; i++) {
-        newDataPoint.temperatureValue = getRandomTemp(15,25);
-        newDataPoint.datetime = getRandomTime(MONTH_IN_SEC);
-        data.push_back(newDataPoint);
-    }
-    printData(data);
-}
-
 /*************************************************************
 ************************* FUNCTIONS **************************
 /************************************************************/
@@ -241,6 +230,17 @@ void sortData(const std::vector<DataPoint>& data) { // Sorts vector by value or 
     }
 
     printData(sortedData);
+}
+
+void generateData(std::vector<DataPoint>& data) {
+    DataPoint newDataPoint;
+    data.clear();
+    for (int i = 0; i < MAX_DATA_POINTS; i++) {
+        newDataPoint.temperatureValue = getRandomTemp(15,25);
+        newDataPoint.datetime = getRandomTime(MONTH_IN_SEC);
+        data.push_back(newDataPoint);
+    }
+    printData(data);
 }
 
 void printData(const std::vector<DataPoint>& data) {
