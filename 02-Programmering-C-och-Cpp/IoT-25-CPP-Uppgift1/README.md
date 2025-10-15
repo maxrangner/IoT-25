@@ -32,12 +32,12 @@ Develop a C/C++ program that process a list of measurements. Your code has to ha
 ## Technical Details
 - `main()` utilizes a while loop to keep the program running. `menu()` takes user input to select operation, and `action()` triggers coresponding function. `action()` returns `true` when user wants to quit.
 - Struct object `DataPoint` to store temperature value and timestamp. Can be expanded with additional data variables in the future.
-- Temperature values are stored as `float`. When printed they are limited to two deicmals, calculations are made as `doubles` to increse precition.
+- Temperature values are stored as `float`. When printed they are limited to two decimals, calculations are made as `doubles` to increse precition.
 - The `DataPoints` are stored in a vector with a limit of five entries, with the oldest entry automatically discarded if needed. The size of the vector is hardcoded with the constant `constexpr int MAX_DATA_POINTS`, and can easily be expanded or connected to an options function in the future.
 
 - Multiple "tool" functions:
-    - `getTime()`: Uses the \<ctime> module and returns a tm struct where you can easily extract elements like day or month.
-    - `isValidInput`: Validator that takes min and max value, or accepted strings. Constructed as two overload functions, with one handling digitis and one strings.
+    - `getTime()`: Uses the \<ctime> module and returns a tm struct. This is so you can easily extract elements like day or month from built in methods.
+    - `isValidInput`: Validator that takes min and max value, or accepted strings. Constructed as two overload functions, with one handling digitis (takes two floats as parameters) and one strings (takes a vector of strings as parameter).
     - `getRandomTemp` and `getRandomTime`: Returns randomized values utilizing the \<random> module. Temp can be fed optional min and max values. Time requires an int representing the timespan in seconds and returns a valid timestamp between now and x seconds back.
 
 - Main functions:
@@ -50,11 +50,31 @@ Develop a C/C++ program that process a list of measurements. Your code has to ha
 
 ## Example output
 ```
-test
+*********** MENU ***********
+1. Add new values
+2. Display statistics
+3. Display graph
+4. Display values sorted
+5. Find value
+6. Simulate values
+7. Quit
+> 1
+Add new value. If finished, type "done":
+> 25.5
+> 21.78
+> done
+
+*********************************************
+*********** CURRENT VECTOR DATA *************
+*********************************************
+
+#1: 25.50 - Tue14 Oct 10:49:42
+#2: 21.78 - Tue14 Oct 10:49:52
 ```
 
 ## History
-- 2025/10/13: Finished README.
+- 2025/10/15: Updated README.
+- 2025/10/13: Updated README.
 - 2025/10/11: Finsihed two "VG" functions.
 - 2025/10/09: Finished all "G" functions.
 - 2025/10/03: Project created.

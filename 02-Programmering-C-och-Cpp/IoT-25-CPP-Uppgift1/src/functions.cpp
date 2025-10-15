@@ -6,6 +6,36 @@
 #include <random>
 #include "functions.hpp"
 
+/*************************************************************
+*********************** DATA FUNCTIONS ***********************
+/************************************************************/
+
+void addValues(std::vector<DataPoint>& data, float newVal) {
+    DataPoint newDataPoint;
+    newDataPoint.temperatureValue = newVal;
+    newDataPoint.datetime = getTime();
+    if (data.size() >= MAX_DATA_POINTS) {
+        data.erase(data.begin());
+    }
+    data.push_back(newDataPoint);
+}
+
+void generateDataPoints(std::vector<DataPoint>& data, bool fill) {
+    DataPoint newDataPoint;
+    data.clear();
+    if (fill) {
+        for (int i = 0; i < MAX_DATA_POINTS; i++) {
+            newDataPoint.temperatureValue = getRandomTemp(15,25);
+            newDataPoint.datetime = getRandomTime(MONTH_IN_SEC);
+            data.push_back(newDataPoint);
+        }
+    } else {
+        newDataPoint.temperatureValue = getRandomTemp(15,25);
+        newDataPoint.datetime = getRandomTime(MONTH_IN_SEC);
+        data.push_back(newDataPoint);
+    }
+}
+
 /******************************************************
 ************************ TOOLS ************************
 ******************************************************/
@@ -103,31 +133,11 @@ struct tm getRandomTime(int timeSpan) {
     return output;
 }
 
-/*************************************************************
-************************* FUNCTIONS **************************
-/************************************************************/
 
-void addValues(std::vector<DataPoint>& data) { // Adds values to the temperatureData vector.
-    std::string userInp {};
-    std::cout << "Add new value. If finished, type \"done\": \n";
 
-    while(true) { // Loops until fed with valid input.
-        std::cout << "> ";
-        std::getline(std::cin, userInp);
-        if (userInp == "done") break;
-        DataPoint newDataPoint;
 
-        if (isValidInput(userInp, decimalNum, -100, 100)) {
-            newDataPoint.temperatureValue = std::stof(userInp);
-            newDataPoint.datetime = getTime();
-            if (data.size() >= MAX_DATA_POINTS) { // Checks if vector is too big, and limits it to MAX_DATA_POINTS.
-                data.erase(data.begin());
-            }
-            data.push_back(newDataPoint);
-        }
-    }
-    printData(data);
-}
+
+
 
 void calcStats(const std::vector<DataPoint>& data) { // Calculates and displays statistics based on data in vector.
     if (data.empty()) { std::cout << "No data saved.\n"; return; }
@@ -158,7 +168,7 @@ void calcStats(const std::vector<DataPoint>& data) { // Calculates and displays 
     printData(data, newStats);
 }
 
-void findDataPoint(const std::vector<DataPoint>& data) { // Finds specific data value or value of specific date.
+void findData(const std::vector<DataPoint>& data) { // Finds specific data value or value of specific date.
     if (data.empty()) { std::cout << "No data saved.\n"; return; }
     std::string userInp {};
     std::cout << "Find specific value (eg. 25.5) or date (eg. 2025/06/31). If finished, type \"done\": \n";
@@ -232,16 +242,7 @@ void sortData(const std::vector<DataPoint>& data) { // Sorts vector by value or 
     printData(sortedData);
 }
 
-void generateData(std::vector<DataPoint>& data) {
-    DataPoint newDataPoint;
-    data.clear();
-    for (int i = 0; i < MAX_DATA_POINTS; i++) {
-        newDataPoint.temperatureValue = getRandomTemp(15,25);
-        newDataPoint.datetime = getRandomTime(MONTH_IN_SEC);
-        data.push_back(newDataPoint);
-    }
-    printData(data);
-}
+
 
 void printData(const std::vector<DataPoint>& data) {
     if (data.empty()) { std::cout << "No data saved.\n"; return; }
@@ -270,4 +271,46 @@ void printData(const std::vector<DataPoint>& data, statistics& stats) {
               << std::left << std::setw(spacing) << "Max:" << stats.maxVal << std::endl
               << std::left << std::setw(spacing) << "Variance:" << stats.variance << std::endl
               << std::left << std::setw(spacing) << "Standard deviation:" << stats.stdDeviation << std::endl;
+}
+
+/*************************************************************
+************************ UI FUNCTIONS ************************
+/************************************************************/
+
+void uiAddValues(std::vector<DataPoint>& data) {
+    std::string userInp {};
+    std::cout << "Add new value. If finished, type \"done\": \n";
+
+    while(true) {
+        std::cout << "> ";
+        std::getline(std::cin, userInp);
+        if (userInp == "done") break;
+        DataPoint newDataPoint;
+
+        if (isValidInput(userInp, decimalNum, -100, 100)) {
+            float convertedInput = std::stof(userInp);
+            addValues(data, convertedInput);
+        }
+    }
+    printData(data);
+}
+
+void uiGenerateDataPoints(std::vector<DataPoint>& data) {
+    std::string userInp {};
+    std::cout << "Generate random data points. [S]ingle new value or [f]ill database: \n";
+
+    while(true) {
+        std::cout << "> ";
+        std::getline(std::cin, userInp);
+        if (userInp == "done") break;
+
+        if (isValidInput(userInp, text, {"S", "s", "F", "f"})) {
+            if (userInp == "s" && userInp == "S") {
+                generateDataPoints(data, true);
+            } else if (userInp == "s" && userInp == "S") {
+                generateDataPoints(data);
+            }
+        }
+    }
+    printData(data);
 }

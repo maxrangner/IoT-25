@@ -3,8 +3,8 @@
 #include <vector>
 #include <ctime>
 #include <cctype>
-#include "definitions.hpp"
-#include "functions.hpp"
+#include "include/definitions.hpp"
+#include "include/functions.hpp"
 
 int menu() { // Display menu. Returns valid menu choice.
     int menuChoice = 0;
@@ -32,12 +32,12 @@ int menu() { // Display menu. Returns valid menu choice.
 
 bool action(int chosenAction, std::vector<DataPoint>& data) { // Executes action based on menu choice. Returns true to quit.
     switch (chosenAction) {
-        case add: addValues(data); break;
-        case disp: calcStats(data); break;
+        case add: uiAddValues(data); break;
+        case disp: break;
         case graph: break; // WORK IN PROGRESS
-        case dispSorted: sortData(data); break;
-        case find: findDataPoint(data); break;
-        case simulate: generateData(data); break;
+        case dispSorted: break;
+        case find: break;
+        case simulate: generateDataPoints(data); break;
         case quit: return true;
     }
     return false;
