@@ -5,10 +5,10 @@ std::string result;
 std::string fizzBuzz(int num);
 
 int main() {
-    std::cout << "To what whole number do you want to check?2 ";
+    std::cout << "To what whole number do you want to check? ";
     std::cin >> inpInt;
 
-    for (int i = 1; i >= inpInt; i++) {
+    for (int i = 1; i <= inpInt; i++) {
         std::cout << fizzBuzz(i) << "\n";
     }
 

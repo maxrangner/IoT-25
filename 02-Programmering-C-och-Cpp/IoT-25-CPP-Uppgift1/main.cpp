@@ -3,17 +3,17 @@
 #include <vector>
 #include <ctime>
 #include <cctype>
-#include "include/definitions.hpp"
-#include "include/functions.hpp"
+#include "include/definitions.h"
+#include "include/functions.h"
 
-int menu() { // Display menu. Returns valid menu choice.
+int menu() {
     int menuChoice = 0;
     std::string input;
 
     std::cout << "\n*********** MENU ***********\n"
               << "1. Add new values\n"
               << "2. Display statistics\n"
-              << "3. Display graph\n"
+              << "3. Display graph * WIP *\n"
               << "4. Display values sorted\n"
               << "5. Find value\n"
               << "6. Simulate values\n"
@@ -30,14 +30,14 @@ int menu() { // Display menu. Returns valid menu choice.
     }
 }
 
-bool action(int chosenAction, std::vector<DataPoint>& data) { // Executes action based on menu choice. Returns true to quit.
+bool action(int chosenAction, std::vector<DataPoint>& data) {
     switch (chosenAction) {
-        case add: uiAddValues(data); break;
-        case disp: break;
-        case graph: break; // WORK IN PROGRESS
-        case dispSorted: break;
-        case find: break;
-        case simulate: generateDataPoints(data); break;
+        case addValues: uiAddValues(data); break;
+        case dispStats: uiDisplayStats(data); break;
+        case dispGraph: uiDisplayGraph(data); break; // WIP
+        case dispSorted: uiDisplaySorted(data); break;
+        case findValue: uiFindData(data); break;
+        case simulateValues: uiGenerateDataPoints(data); break;
         case quit: return true;
     }
     return false;
