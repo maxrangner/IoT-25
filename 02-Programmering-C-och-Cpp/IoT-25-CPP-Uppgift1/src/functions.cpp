@@ -15,23 +15,20 @@ void addValue(std::vector<DataPoint>& data, float newVal) {
     DataPoint newDataPoint;
     newDataPoint.temperatureValue = newVal;
     newDataPoint.datetime = getTime();
-    constrainVectorSize(data);
-    data.push_back(newDataPoint);
+    constrainVectorSize(data); // This function deletes the oldest entry of the vector if it has already reached MAX_DATA_POINTS.
+    data.push_back(newDataPoint); // This adds the new data point to the newest position of the vector.
 }
 
 void generateDataPoints(std::vector<DataPoint>& data) {
     DataPoint newDataPoint;
     constrainVectorSize(data);
-    newDataPoint.temperatureValue = getRandomTemp(15,25);
-    newDataPoint.datetime = getRandomTime(MONTH_IN_SEC);
+    newDataPoint.temperatureValue = getRandomTemp(15,25); // Gets a random float, in the span of 15-25.
+    newDataPoint.datetime = getRandomTime(MONTH_IN_SEC); // Get a random struct tm, in the span one month back to current time.
     data.push_back(newDataPoint);
 }
 
-void generateDataPoints(std::vector<DataPoint>& data, int numDatapoints) {
+void generateDataPoints(std::vector<DataPoint>& data, int numDatapoints) { // Overload function. If provided an int it feeds as many random DataPoints to the vector.
     DataPoint newDataPoint;
-    if (numDatapoints > 1) {
-        data.clear();
-    }
     for (int i = 0; i < numDatapoints; i++) {
         constrainVectorSize(data);
         newDataPoint.temperatureValue = getRandomTemp(15,25);
@@ -44,14 +41,13 @@ void generateDataPoints(std::vector<DataPoint>& data, int numDatapoints) {
 ************************ CORE *************************
 ******************************************************/
 
-statistics calcStats(const std::vector<DataPoint>& data) {
-    statistics outputStats;
+Statistics calcStats(const std::vector<DataPoint>& data) {
+    Statistics outputStats; // A Statistics struct to be returned and later printed by an overload version of printData().
     if (data.empty()) return outputStats;
-    else outputStats.empty = false;
 
     outputStats.numDataPoints = data.size();
-    outputStats.minVal = data[0].temperatureValue;
-    outputStats.maxVal = data[0].temperatureValue;
+    outputStats.minVal = data[0].temperatureValue; // Sets an initial min value to compare against in the upcoming loop.
+    outputStats.maxVal = data[0].temperatureValue; // Sets an initial max value to compare against in the upcoming loop.
 
     for (const DataPoint& d : data) {
         outputStats.sum += d.temperatureValue;
@@ -63,6 +59,7 @@ statistics calcStats(const std::vector<DataPoint>& data) {
         } 
     }
 
+    // Various calculations. Some using previous ones to build upon.
     outputStats.average = outputStats.sum / outputStats.numDataPoints;
 
     for (const DataPoint& d : data) {
@@ -78,17 +75,17 @@ statistics calcStats(const std::vector<DataPoint>& data) {
 std::vector<DataPoint> findData(const std::vector<DataPoint>& data, std::string userInp) {
     std::vector<DataPoint> results;
 
-    for (const DataPoint& d: data) {
-        if (isDate(userInp)) {
-            char time[CHAR_ARRAY_SIZE];
-            strftime(time, sizeof(time), "%Y/%m/%d", &d.datetime);
-            if (std::string(time) == userInp) {
-                results.push_back(d);
+    for (const DataPoint& d: data) { // Goes through the different DataPoints in data. Every loop the current DataPoint is given the variable 'd'.
+        if (isDate(userInp)) { // If the input is cleared as a date:
+            char time[CHAR_ARRAY_SIZE]; // Creates a character array to be used by strftime.
+            strftime(time, sizeof(time), "%Y/%m/%d", &d.datetime); // Extracts the timestamp from the current DataPoint.
+            if (std::string(time) == userInp) { // Checks if user input matches the current timestamp.
+                results.push_back(d); // If match: add to results vector.
             }
         } else if (isTemperatureValue(userInp)) {
             float userSearch {};
-            userSearch = std::stof(userInp);
-            if (d.temperatureValue == userSearch) {
+            userSearch = std::stof(userInp); // Casts the user input string as a float.
+            if (d.temperatureValue == userSearch) { // Checks if it matches the current temperature value.
                 results.push_back(d);
             }
         }
@@ -103,14 +100,14 @@ std::vector<DataPoint> sortData(const std::vector<DataPoint>& data, std::string 
         std::sort(sortedData.begin(), sortedData.end(), [](const DataPoint& a, const DataPoint& b) {return a.temperatureValue < b.temperatureValue;});
         return sortedData;
     } else if (userInp == "d" || userInp == "D") {
-        std::sort(sortedData.begin(), sortedData.end(), [](const DataPoint& a, const DataPoint& b) {
+        std::sort(sortedData.begin(), sortedData.end(), [](const DataPoint& a, const DataPoint& b) { // This is the sort function unsing a lambda funcion to convert the struct tm timestamp to it's original long long.
             tm tmConvertA = a.datetime;
             tm tmConvertB = b.datetime;
 
             time_t time_a = std::mktime(&tmConvertA);
             time_t time_b = std::mktime(&tmConvertB);
 
-            return time_a < time_b;
+            return time_a < time_b; // The two converted long longs can eaisly be compared to see which is greater.
         });
         return sortedData;
     }
@@ -121,28 +118,28 @@ std::vector<DataPoint> sortData(const std::vector<DataPoint>& data, std::string 
 ******************************************************/
 
 void constrainVectorSize(std::vector<DataPoint>& data) {
-    if (data.size() >= MAX_DATA_POINTS) {
+    if (data.size() >= MAX_DATA_POINTS) { // If the vector is full: erase the oldest entry.
         data.erase(data.begin());
     }
 }
 
 struct tm getTime() {
-    std::time_t timestamp = std::time(nullptr);
-    struct tm currentTime = *localtime(&timestamp);
+    std::time_t timestamp = std::time(nullptr); // Get's the time in a time_t format, which is typically a long long.
+    struct tm currentTime = *localtime(&timestamp); // Converts the time_t object to a struct tm which is easy to extract year, month, etc.
 
     return currentTime;
 }
 
 float getRandomTemp(float min, float max) {
-    static std::random_device randDevice;
-    static std::mt19937 gen(randDevice());
-    std::uniform_real_distribution<float> distrib(min, max);
-    float returnVal = distrib(gen);
+    static std::random_device randDevice; // The seed source to be used.
+    static std::mt19937 gen(randDevice()); // Pseudo-random generator
+    std::uniform_real_distribution<float> distrib(min, max); // Defines the range of random float values.
+    float returnVal = distrib(gen); // Uses the generator to extract a float.
 
-    return std::round(returnVal * 100.0f) / 100.0f;
+    return std::round(returnVal * 100.0f) / 100.0f; // This rounds the float to two decimals.
 }
 
-struct tm getRandomTime(int timeSpan) {
+struct tm getRandomTime(int timeSpan) { // Uses the same random techniques as getRandomTemp and the compare lambda in sortData. 
     static std::random_device randDevice;
     static std::mt19937 gen(randDevice());
 
@@ -168,7 +165,7 @@ bool isTemperatureValue(const std::string& userInp) {
     }
 }
 
-bool isDate(const std::string& userInp) {
+bool isDate(const std::string& userInp) { // This checks if the input string follows the format xxxx/xx/xx by counting index and checking if '/' is in the right place.
     if (userInp.length() != 10) return false;
     if (userInp.at(4) != '/' || userInp.at(7) != '/') return false;
     for (int i = 0; i < 10; i++) {
@@ -178,7 +175,7 @@ bool isDate(const std::string& userInp) {
     return true;
 }
 
-bool isValidInput(const std::string& input, int typeSelector, float min, float max) {
+bool isValidInput(const std::string& input, int typeSelector, float min, float max) { // Uses try/catch to try and cast the user input to either int or float.
     switch (typeSelector) {
         case wholeNum: {
             try {
@@ -205,7 +202,7 @@ bool isValidInput(const std::string& input, int typeSelector, float min, float m
     return false;
 }
 
-bool isValidInput(const std::string& input, int typeSelector, const std::vector<std::string>& allowedStrings) {
+bool isValidInput(const std::string& input, int typeSelector, const std::vector<std::string>& allowedStrings) { // Overloaded version that takes a vector of strings, to check if either is present in the user input.
     int numAllowed = 0;
     for (const auto& s : allowedStrings) {
         numAllowed++;
@@ -225,7 +222,11 @@ bool isValidInput(const std::string& input, int typeSelector, const std::vector<
 
 /*************************************************************
 ************************ UI FUNCTIONS ************************
-/************************************************************/
+*************************************************************/
+
+/*
+These UI functions simply takes a user input and utilizes the different data, core and validator functions to provide the correct action.
+*/
 
 void uiAddValues(std::vector<DataPoint>& data) {
     std::string userInp {};
@@ -244,10 +245,15 @@ void uiAddValues(std::vector<DataPoint>& data) {
     printData(data);
 }
 
+void uiDisplayData(const std::vector<DataPoint>& data) {
+    if (data.empty()) { std::cout << "No data saved.\n"; return; }
+    printData(data);
+}
+
 void uiDisplayStats(const std::vector<DataPoint>& data) {
     if (data.empty()) { std::cout << "No data saved.\n"; return; }
 
-    statistics newStats = calcStats(data);
+    Statistics newStats = calcStats(data);
     printData(data, newStats);
 }
 
@@ -325,11 +331,11 @@ void printData(const std::vector<DataPoint>& data) {
     if (data.empty()) { std::cout << "No data saved.\n"; return; }
     int count = 1;
 
-    std::cout << "\n*********************************************" << std::endl;
-    std::cout << "*********** CURRENT VECTOR DATA *************" << std::endl;
-    std::cout << "*********************************************" << std::endl;
+    std::cout << "\n*********************************************\n"
+              << "************** TEMPERATURE DATA *************\n"
+              << "*********************************************\n"
+              << std::endl;
 
-    std::cout << std::endl;
     for (const DataPoint& d : data) {
         char time[CHAR_ARRAY_SIZE];
         strftime(time, sizeof(time), "%a%e %b %H:%M:%S", &d.datetime);
@@ -338,10 +344,16 @@ void printData(const std::vector<DataPoint>& data) {
     std::cout << "\n";
 }
 
-void printData(const std::vector<DataPoint>& data, statistics& stats) {
+void printData(const std::vector<DataPoint>& data, Statistics& stats) {
     int spacing = 30;
 
     printData(data);
+
+    std::cout << "\n*********************************************\n"
+              << "***************** STATISTICS ****************\n"
+              << "*********************************************\n"
+              << std::endl;
+
     std::cout << std::left << std::setw(spacing) << "Sum: " << stats.sum << std::endl
               << std::left << std::setw(spacing) << "Average:" << stats.average << std::endl
               << std::left << std::setw(spacing) << "Min:" << stats.minVal << std::endl

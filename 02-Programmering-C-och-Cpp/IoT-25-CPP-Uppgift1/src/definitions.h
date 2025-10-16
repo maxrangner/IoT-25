@@ -8,13 +8,15 @@
 *************************************************************************************/
 
 enum MenuSelection { // Menu options to be used in switch statement.
-    addValues = 1, // 1.
-    dispStats, // 2.
-    dispGraph, // 3.
-    dispSorted, // 4.
-    findValue, // 5.
-    simulateValues, // 6.
-    quit, // 7.
+    startofMenu, // 0.
+    addValues, // 1.
+    dispData, // 2.
+    dispStats, // 3.
+    dispGraph, // 4.
+    dispSorted, // 5.
+    findValue, // 6.
+    simulateValues, // 7.
+    quit, // 8.
     endOfMenu // Not used, just to mark end of enum.
 };
 
@@ -29,7 +31,7 @@ struct DataPoint { // Collection of data values to be stored in vector.
     struct tm datetime;
 };
 
-struct statistics {
+struct Statistics {
     bool empty = true;
     int numDataPoints = 0;
     double sum = 0.0;
