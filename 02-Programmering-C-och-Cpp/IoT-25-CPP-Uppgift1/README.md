@@ -86,6 +86,11 @@ Add new value. If finished, type "done":
 #2: 21.78 - Tue14 Oct 10:49:52
 ```
 
+## Example build
+```
+g++ main.cpp src/*.cpp -I src -o build.exe
+```
+
 ## History
 - 2025/10/16: Added comments to code.
 - 2025/10/16: Update README.
