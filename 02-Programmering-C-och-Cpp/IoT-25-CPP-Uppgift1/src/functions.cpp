@@ -100,6 +100,7 @@ std::vector<DataPoint> sortData(const std::vector<DataPoint>& data, std::string 
         std::sort(sortedData.begin(), sortedData.end(), [](const DataPoint& a, const DataPoint& b) {return a.temperatureValue < b.temperatureValue;});
         return sortedData;
     } else if (userInp == "d" || userInp == "D") {
+        
         std::sort(sortedData.begin(), sortedData.end(), [](const DataPoint& a, const DataPoint& b) { // This is the sort function unsing a lambda funcion to convert the struct tm timestamp to it's original long long.
             tm tmConvertA = a.datetime;
             tm tmConvertB = b.datetime;
@@ -248,6 +249,7 @@ void uiAddValues(std::vector<DataPoint>& data) {
 
 void uiDisplayData(const std::vector<DataPoint>& data) {
     if (data.empty()) { std::cout << "No data saved.\n"; return; }
+
     printData(data);
 }
 
@@ -274,7 +276,7 @@ void uiDisplaySorted(const std::vector<DataPoint>& data) {
         std::getline(std::cin, userInp);
         
         if (isValidInput(userInp, text, {"v", "V", "d", "D", "done"})) {
-            if (userInp == "done") break;
+            if (userInp == "done") return;
             std::vector<DataPoint> sortedData;
             sortedData = sortData(data, userInp);
             printData(sortedData);
@@ -297,13 +299,8 @@ void uiFindData(const std::vector<DataPoint>& data) {
         if (isDate(userInp) || isTemperatureValue(userInp)) {
             searchResult = findData(data, userInp);
             if (searchResult.empty()) std::cout << "No match.\n";
-            else {
-                printData(searchResult);
-            }
-        } else {
-            std::cout << "Invalid input.\n";
-            continue;
-        }
+            else printData(searchResult);
+        } else std::cout << "Invalid input.\n"; continue;
     }    
 }
 
@@ -342,7 +339,7 @@ void printData(const std::vector<DataPoint>& data) {
         strftime(time, sizeof(time), "%a%e %b %H:%M:%S", &d.datetime);
         std::cout << "#" << count++ << ": " << std::fixed << std::setprecision(2) << d.temperatureValue << " - " << time << std::endl;
     }
-    std::cout << "\n";
+    std::cout << std::endl;
 }
 
 void printData(const std::vector<DataPoint>& data, Statistics& stats) {

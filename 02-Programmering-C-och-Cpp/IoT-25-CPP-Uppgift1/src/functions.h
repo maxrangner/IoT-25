@@ -22,7 +22,7 @@ struct tm getRandomTime(int timeSpan);
 // VALIDATORS
 bool isTemperatureValue(const std::string& userInp);
 bool isDate(const std::string& userInp);
-bool isValidInput(const std::string& input, int typeSelector, float min = -FLT_MAX, float max = FLT_MAX); // Gives a span of the maximum allowed value of a float to the maximum as default, utlilizing the <cfloat> module.
+bool isValidInput(const std::string& input, int typeSelector, float min = -FLT_MAX, float max = FLT_MAX); // Gives a span of the minumum allowed value of a float to the maximum as default, utlilizing the <cfloat> module.
 bool isValidInput(const std::string& input, int typeSelector, const std::vector<std::string>& allowedStrings);
 
 // UI FUNCTIONS
