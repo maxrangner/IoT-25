@@ -111,6 +111,7 @@ std::vector<DataPoint> sortData(const std::vector<DataPoint>& data, std::string 
         });
         return sortedData;
     }
+    return sortedData;
 }
 
 /******************************************************
