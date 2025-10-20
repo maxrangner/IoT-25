@@ -17,14 +17,18 @@ class MySensor {
     private:
         int deviceId;
         std::string type;
+        std::string name;
         float measuredVal;
     public:
         // Constructors
-        MySensor() : deviceId(0), type("Unknown"), measuredVal(0.0f) {}
+        MySensor() : deviceId(0), type("Unknown"), name("Unnamed"), measuredVal(0.0f) {}
         MySensor(int id) : deviceId(id) {}
-        MySensor(int id, std::string t, float temp) : deviceId(id), type(t), measuredVal(temp) {}
+        MySensor(int id, std::string t, std::string n, float temp) : deviceId(id), type(t), name(n), measuredVal(temp) {}
         
-        void setVal(float newVal) {measuredVal = newVal; }
+        void setType(std::string t) { type = t; }
+        void setName(std::string n) { name = n; }
+        void setVal(float newVal) { measuredVal = newVal; }
+        
         int getId() { return deviceId; }
         std::string getType() { return type; }
         float getVal() { return measuredVal; }
@@ -33,18 +37,20 @@ class MySensor {
 class SystemManager {
     private:
         int numSensors;
-        
         std::vector<DataPoint> database;
     public:
         std::vector<MySensor> sensorsList;
 
+        // Constructors
         SystemManager() : numSensors(0) {}
+
+        // Functions
         int getNumSensors() { return numSensors; }
         int nextSensorId() { return numSensors++; }
-        void addSensor(MySensor newSensor) { sensorsList.push_back(newSensor);}
+        void addSensor(MySensor& newSensor) { sensorsList.push_back(newSensor);}
         void takeReadings() {
             DataPoint newDataPoint;
-            for (MySensor s : sensorsList) {
+            for (MySensor& s : sensorsList) {
                 if (s.getType() == "temperature-sensor") newDataPoint.temperature = s.getVal();
                 if (s.getType() == "humidity-sensor") newDataPoint.humidity = s.getVal();
                 newDataPoint.timestamp = 2025;
@@ -66,27 +72,26 @@ void printData(std::vector<DataPoint> data) {
 
 int main() {
     SystemManager manager;
-    MySensor s1(manager.nextSensorId(), "temperature-sensor", 25.6);
-    MySensor s2(manager.nextSensorId(), "humidity-sensor", 43.1);
+    MySensor s1(manager.nextSensorId(), "temperature-sensor", "Temp sensor #1", 25.6);
+    MySensor s2(manager.nextSensorId(), "humidity-sensor", "Humidity sensor", 43.1);
 
     manager.addSensor(s1);
     manager.addSensor(s2);
 
-    for (MySensor s : manager.sensorsList) {
-        s.setVal(10);
-    }
     manager.takeReadings();
     printData(manager.getReadings());
 
     std::cout << "Next reading: \n";
-
-    MySensor s2(manager.nextSensorId(), "humidity-sensor", 43.1);
-
-    for (MySensor s : manager.sensorsList) {
-        s.setVal(20);
+    int newVal = 0;
+    for (MySensor& s : manager.sensorsList) {
+        newVal += 10;
+        s.setVal(newVal);
     }
-    manager.takeReadings();
 
+    // MySensor s3(manager.nextSensorId(), "temperature-sensor", 17.1);
+    // manager.addSensor(s3);
+
+    manager.takeReadings();
     printData(manager.getReadings());
 }
 
@@ -95,5 +100,4 @@ ISSUES:
 - System can't handle multiple of the same sensor.
 
 BUGS:
-- s.setVal() does not update value.
 */
