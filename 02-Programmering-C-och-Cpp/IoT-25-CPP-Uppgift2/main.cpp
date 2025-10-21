@@ -17,7 +17,7 @@ enum sensorTypes{
 
 struct DataPoint {
     int deviceId {};
-    std::string type;
+    int type;
     float value {};
     bool isActive = true;
     bool isTriggered = false;
@@ -34,19 +34,23 @@ class MySensor {
         // Constructors
         MySensor() : deviceId(0), type(0), value(0.0f), isActive(true), isTriggered(false) {}
         MySensor(int id, int t) : deviceId(id), type(t) {}
-        MySensor(int id,
-                 int t,
-                 float v,
-                 bool a,
-                 bool tr
-                ) : deviceId(id), type(t), value(v), isActive(a), isTriggered(tr) {}
+        MySensor(int id, int t, float v, bool a, bool tr)
+                 : deviceId(id), type(t), value(v), isActive(a), isTriggered(tr) {}
         
-        // Retreivers
+        // Retreive data
         int getId() { return deviceId; }
         int getType() { return type; }
-        float getVal() { return value; }
+        DataPoint getStatus() {
+            DataPoint newDP;
+            newDP.deviceId = deviceId;
+            newDP.type = type;
+            newDP.value = value;
+            newDP.isActive = isActive;
+            newDP.isTriggered = isTriggered;
+            return newDP;
+        }
 
-        // Setters
+        // Set data
         void setVal(float newVal) { value = newVal; }
 
         void printInfo() {
@@ -64,8 +68,13 @@ class SystemManager {
         int numSensors;
         int lastUpdateTime {};
         std::vector<MySensor> sensorsList;
-        std::map<int,std::vector<DataPoint>> database;
+        // std::map<time_t,std::vector<DataPoint>> database;
+        std::time_t getTime() {
+            std::time_t timestamp = std::time(nullptr);
+            return timestamp;
+        }
     public:
+        std::map<time_t,std::vector<DataPoint>> database;
         // Constructors
         SystemManager() : numSensors(0) {}
 
@@ -77,14 +86,16 @@ class SystemManager {
             sensorsList.emplace_back(nextSensorId(), type);
             numSensors = sensorsList.size();
         }
+        void makeSnapshot() {
+            time_t newTimestamp = getTime();
+            database[newTimestamp];
+            std::vector<DataPoint> data;
+            for (MySensor s : sensorsList) {
+                data.push_back(s.getStatus());
+            }
+            database[newTimestamp] = data;
+        }
 };
-
-void printData(std::vector<DataPoint> data) {
-    for (DataPoint dp : data) {
-        std::cout << dp.type << ": " << dp.value;
-        std::cout << std::endl;
-    }
-}
 
 int main() {
     SystemManager manager;
@@ -92,8 +103,24 @@ int main() {
     manager.addSensor(temperatureSensor);
     manager.addSensor(humiditySensor);
 
-    for (MySensor s : manager.test()) {
-        s.printInfo();
+    // for (MySensor s : manager.test()) {
+    //     s.printInfo();
+    // }
+    manager.makeSnapshot();
+    std::cin.get();
+    manager.makeSnapshot();
+
+    for (auto& pair : manager.database) {
+        std::cout << "Timestamp: " << pair.first << ":\n";
+        for (auto& v : pair.second) {
+            std::cout << "**************\n"
+                      << "deviceId: " << v.deviceId << "\n"
+                      << "type: " << v.type << "\n"
+                      << "value: " << v.value << "\n"
+                      << "isActive: " << v.isActive << "\n"
+                      << "isTriggered: " << v.isTriggered << "\n";
+        }
+        std::cout << std::endl;
     }
 }
 
