@@ -52,38 +52,16 @@ int main() {
     while (!shouldQuit) {
         int choice = menu();
         shouldQuit = action(choice, manager);
-        
     }
     std::cout << "Bye!\n";
     return 0;
 }
-
-// int main() {
-//     SystemManager manager;
-
-//     manager.addSensor(temperatureSensor);
-//     // manager.addSensor(humiditySensor);
-
-//     // manager.makeSnapshot();
-//     // std::cin.get();
-//     // manager.addSensor(temperatureSensor);
-//     manager.makeSnapshot();
-
-//     printDatabase(manager.database);
-
-//     if (writeToFile(manager.database)) std::cout << "Database saved!\n";
-//     else std::cout << "Error saving database!\n";
-//     std::cin.get();
-//     if (readFromFile(manager.database)) std::cout << "Database loaded.\n";
-//     else std::cout << "Error loading database!\n";
-
-//     printDatabase(manager.database);
-// }
 
 /*
 ISSUES:
 - 
 
 BUGS:
-- 
+- When saving data, the loading, then manually deleteing data from data.txt, then collectReadings - the old sensor are ghosts and register new data. 
+
 */
