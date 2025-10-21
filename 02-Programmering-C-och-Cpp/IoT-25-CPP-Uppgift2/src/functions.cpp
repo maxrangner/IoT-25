@@ -27,7 +27,9 @@ bool writeToFile(const std::map<time_t,std::vector<DataPoint>>& database) {
     return true;
 }
 
-bool readFromFile(std::map<time_t,std::vector<DataPoint>> database) {
+bool readFromFile(std::map<time_t,std::vector<DataPoint>>& database) {
+    database.clear();
+    
     std::ifstream inFile("data.txt");
     if (!inFile) return false;
 
@@ -46,6 +48,8 @@ bool readFromFile(std::map<time_t,std::vector<DataPoint>> database) {
         bool triggered {};
         DataPoint newDataPoint;
         while (std::getline(ss, extractedValue, ',')) {
+            if (extractedValue.empty()) continue;
+
             switch (indexCount) {
                 case 0: {
                     timestamp = static_cast<time_t>(std::stoll(extractedValue));
@@ -58,12 +62,30 @@ bool readFromFile(std::map<time_t,std::vector<DataPoint>> database) {
                 case 4: active = std::stoi(extractedValue) ? true : false; break;
                 case 5: triggered = std::stoi(extractedValue) ? true : false; break;
             }
-            if (indexCount == 5) {
-                database[timestamp].emplace_back(id, type, value, active, triggered);
+            indexCount++;
+            if (indexCount == 6) {
+                if (!extractedValue.empty()) {
+                    database[timestamp].emplace_back(id, type, value, active, triggered);
+                }
                 indexCount = 0;
             }
         }
     }
     inFile.close();
     return true;
+}
+
+void printDatabase(const std::map<time_t,std::vector<DataPoint>>& database) {
+    for (auto& pair : database) {
+        std::cout << "Timestamp: " << pair.first << ":\n";
+        for (auto& v : pair.second) {
+            std::cout << "**************\n"
+                      << "deviceId: " << v.deviceId << " | "
+                      << "type: " << v.type << " | "
+                      << "value: " << v.value << " | "
+                      << "isActive: " << v.isActive << " | "
+                      << "isTriggered: " << v.isTriggered << "\n";
+        }
+        std::cout << std::endl;
+    }
 }
