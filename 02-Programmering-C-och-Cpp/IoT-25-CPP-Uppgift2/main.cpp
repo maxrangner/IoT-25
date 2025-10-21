@@ -5,94 +5,96 @@
 #include <ctime>
 #include <fstream>
 
-struct DataPoint {
-    float temperature {};
-    float humidity {};
-    int timestamp {};
+constexpr int NUM_DATAPOINTS = 5;
+
+enum sensorTypes{
+    noType, // 0.
+    temperatureSensor, // 1.
+    humiditySensor, // 2.
+    lightSensor, // 3.
+    movementSensor, // 4.
 };
 
-constexpr int NUM_DATAPOINTS = 5;
+struct DataPoint {
+    int deviceId {};
+    std::string type;
+    float value {};
+    bool isActive = true;
+    bool isTriggered = false;
+};
 
 class MySensor {
     private:
-        int deviceId;
-        std::string type;
-        std::string name;
-        float measuredVal;
+        int deviceId {};
+        int type;
+        float value {};
+        bool isActive = true;
+        bool isTriggered = false;
     public:
         // Constructors
-        MySensor() : deviceId(0), type("Unknown"), name("Unnamed"), measuredVal(0.0f) {}
-        MySensor(int id) : deviceId(id) {}
-        MySensor(int id, std::string t, std::string n, float temp) : deviceId(id), type(t), name(n), measuredVal(temp) {}
+        MySensor() : deviceId(0), type(0), value(0.0f), isActive(true), isTriggered(false) {}
+        MySensor(int id, int t) : deviceId(id), type(t) {}
+        MySensor(int id,
+                 int t,
+                 float v,
+                 bool a,
+                 bool tr
+                ) : deviceId(id), type(t), value(v), isActive(a), isTriggered(tr) {}
         
-        void setType(std::string t) { type = t; }
-        void setName(std::string n) { name = n; }
-        void setVal(float newVal) { measuredVal = newVal; }
-        
+        // Retreivers
         int getId() { return deviceId; }
-        std::string getType() { return type; }
-        float getVal() { return measuredVal; }
+        int getType() { return type; }
+        float getVal() { return value; }
+
+        // Setters
+        void setVal(float newVal) { value = newVal; }
+
+        void printInfo() {
+            std::cout << "************\n"
+                      << "deviceId: " << deviceId << "\n"
+                      << "type: " << type << "\n"
+                      << "value: " << value << "\n"
+                      << "isActive: " << isActive << "\n"
+                      << "isTriggered: " << isTriggered << "\n";
+        }
 };
 
 class SystemManager {
     private:
         int numSensors;
-        std::vector<DataPoint> database;
-    public:
+        int lastUpdateTime {};
         std::vector<MySensor> sensorsList;
-
+        std::map<int,std::vector<DataPoint>> database;
+    public:
         // Constructors
         SystemManager() : numSensors(0) {}
 
         // Functions
         int getNumSensors() { return numSensors; }
         int nextSensorId() { return numSensors++; }
-        void addSensor(MySensor& newSensor) { sensorsList.push_back(newSensor);}
-        void takeReadings() {
-            DataPoint newDataPoint;
-            for (MySensor& s : sensorsList) {
-                if (s.getType() == "temperature-sensor") newDataPoint.temperature = s.getVal();
-                if (s.getType() == "humidity-sensor") newDataPoint.humidity = s.getVal();
-                newDataPoint.timestamp = 2025;
-                // newDataPoint.timestamp = getTime();
-            }
-            database.push_back(newDataPoint);
+        std::vector<MySensor> test() { return sensorsList; }
+        void addSensor(int type) {
+            sensorsList.emplace_back(nextSensorId(), type);
+            numSensors = sensorsList.size();
         }
-        std::vector<DataPoint> getReadings() { return database; }
 };
 
 void printData(std::vector<DataPoint> data) {
     for (DataPoint dp : data) {
-        std::cout << dp.timestamp << " - "
-                  << "Temperature: " << dp.temperature << " "
-                  << "Humidity: " << dp.humidity << " ";
+        std::cout << dp.type << ": " << dp.value;
         std::cout << std::endl;
     }
 }
 
 int main() {
     SystemManager manager;
-    MySensor s1(manager.nextSensorId(), "temperature-sensor", "Temp sensor #1", 25.6);
-    MySensor s2(manager.nextSensorId(), "humidity-sensor", "Humidity sensor", 43.1);
 
-    manager.addSensor(s1);
-    manager.addSensor(s2);
+    manager.addSensor(temperatureSensor);
+    manager.addSensor(humiditySensor);
 
-    manager.takeReadings();
-    printData(manager.getReadings());
-
-    std::cout << "Next reading: \n";
-    int newVal = 0;
-    for (MySensor& s : manager.sensorsList) {
-        newVal += 10;
-        s.setVal(newVal);
+    for (MySensor s : manager.test()) {
+        s.printInfo();
     }
-
-    // MySensor s3(manager.nextSensorId(), "temperature-sensor", 17.1);
-    // manager.addSensor(s3);
-
-    manager.takeReadings();
-    printData(manager.getReadings());
 }
 
 /*
