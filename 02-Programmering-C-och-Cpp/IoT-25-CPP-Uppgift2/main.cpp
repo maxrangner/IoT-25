@@ -59,12 +59,16 @@ int main() {
 
 /*
 TO DO:
+- Add UI class. ui.addValues(manager)
+- Rename "makeSnapshot" to collectReadings
 - Add removeSensors()
 - Only collect from sensors that are ON
 - Add random data generator
 - Add manual sensor value entry. Only sensors that are ON
 - Add Display stats
 - Add history graph
+- System reset option
+- Clean up sensor printout
 
 ISSUES:
 - 

@@ -20,10 +20,10 @@ void SystemManager::addSensor(int type) {
 }
 
 void SystemManager::makeSnapshot() {
-    time_t newTimestamp = getTime();
-    database[newTimestamp];
+    std::time_t newTimestamp = getTime();
+    // database[newTimestamp];
     std::vector<DataPoint> data;
-    for (MySensor s : sensorsList) {
+    for (const MySensor& s : sensorsList) {
         data.push_back(s.getStatus());
     }
     database[newTimestamp] = data;

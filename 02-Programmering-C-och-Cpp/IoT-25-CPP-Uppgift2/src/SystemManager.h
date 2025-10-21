@@ -19,7 +19,9 @@ class SystemManager {
         std::map<time_t,std::vector<DataPoint>> database;
         SystemManager();
         void addSensor(int type);
+        // void removeSensor(int id);
         void makeSnapshot();
+        void resetSystem();
 };
 
 #endif
