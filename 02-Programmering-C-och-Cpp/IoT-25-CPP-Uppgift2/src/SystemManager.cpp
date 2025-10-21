@@ -28,3 +28,9 @@ void SystemManager::makeSnapshot() {
     }
     database[newTimestamp] = data;
 }
+
+void SystemManager::resetSystem() {
+    sensorsList.clear();
+    numSensors = 0;
+    database.clear();
+}

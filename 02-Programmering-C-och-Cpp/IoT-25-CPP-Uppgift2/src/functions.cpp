@@ -4,7 +4,7 @@
 #include <vector>
 #include <sstream>
 #include <ctime>
-
+#include "SystemManager.h"
 #include "functions.h"
 #include "definitions.h"
 
@@ -28,8 +28,8 @@ bool writeToFile(const std::map<time_t,std::vector<DataPoint>>& database) {
     return true;
 }
 
-bool readFromFile(std::map<time_t,std::vector<DataPoint>>& database) {
-    database.clear();
+bool readFromFile(SystemManager& manager) {
+    manager.database.clear();
     
     std::ifstream inFile("data.txt");
     if (!inFile) return false;
@@ -68,13 +68,14 @@ bool readFromFile(std::map<time_t,std::vector<DataPoint>>& database) {
             fieldCount++;
             if (fieldCount == 5) {
                 if (!extractedValue.empty()) {
-                    database[timestamp].emplace_back(id, type, value, active, triggered);
+                    manager.database[timestamp].emplace_back(id, type, value, active, triggered);
                 }
                 fieldCount = 0;
             }
             indexCount++;
         }
     }
+    // manager.resetSystem();
     inFile.close();
     return true;
 }

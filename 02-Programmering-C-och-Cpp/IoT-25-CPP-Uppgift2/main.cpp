@@ -15,7 +15,7 @@ int menu() {
 
     std::cout << "\n*********** MENU ***********\n"
               << "1. addSensor\n"
-              << "2. collectReadings\n"
+              << "2. collectReadings\n" 
               << "3. dispData\n"
               << "4. save\n"
               << "5. load\n"
@@ -36,9 +36,9 @@ bool action(int chosenAction, SystemManager& manager) {
     switch (chosenAction) { 
         case addSensor: manager.addSensor(temperatureSensor); break;
         case collectReadings: manager.makeSnapshot(); break;
-        case dispData: printDatabase(manager.database); break;
-        case save: writeToFile(manager.database); break;
-        case load: readFromFile(manager.database); break;
+        case dispData: printDatabase(manager.database); break; // Change to manager
+        case save: writeToFile(manager.database); break; // Change to manager
+        case load: readFromFile(manager); break;
         case quit: return true;
     }
     return false;
@@ -58,10 +58,18 @@ int main() {
 }
 
 /*
+TO DO:
+- Add removeSensors()
+- Only collect from sensors that are ON
+- Add random data generator
+- Add manual sensor value entry. Only sensors that are ON
+- Add Display stats
+- Add history graph
+
 ISSUES:
 - 
 
 BUGS:
-- When saving data, the loading, then manually deleteing data from data.txt, then collectReadings - the old sensor are ghosts and register new data. 
+- 
 
 */
