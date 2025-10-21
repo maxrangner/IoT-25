@@ -11,6 +11,23 @@ enum sensorTypes{
     movementSensor, // 4.
 };
 
+enum MenuSelection {
+    startofMenu, // 0.
+    addSensor, // 1.
+    collectReadings, // 2.
+    dispData, // 3.
+    save, // 4.
+    load, // 5.
+    quit, // 8.
+    endOfMenu
+};
+
+enum validatorType {
+    wholeNum = 1, // 1.
+    decimalNum, // 2.
+    text // 3.
+};
+
 struct DataPoint {
     int deviceId {};
     int type;

@@ -4,6 +4,7 @@
 #include <vector>
 #include <sstream>
 #include <ctime>
+
 #include "functions.h"
 #include "definitions.h"
 
@@ -35,40 +36,43 @@ bool readFromFile(std::map<time_t,std::vector<DataPoint>>& database) {
 
     std::string newLine;
     while(std::getline(inFile, newLine)) {
-        std::cout << newLine << std::endl;
-
         std::stringstream ss(newLine);
         std::string extractedValue;
+
         int indexCount {};
+        int fieldCount {};
+
         time_t timestamp {};
         int id {};
         int type {};
         float value {};
         bool active {};
         bool triggered {};
-        DataPoint newDataPoint;
+        
         while (std::getline(ss, extractedValue, ',')) {
             if (extractedValue.empty()) continue;
 
-            switch (indexCount) {
-                case 0: {
-                    timestamp = static_cast<time_t>(std::stoll(extractedValue));
-                    database[timestamp];
-                    break;
-                }
-                case 1: id = std::stoi(extractedValue); break;
-                case 2: type = std::stoi(extractedValue); break;
-                case 3: value = std::stof(extractedValue); break;
-                case 4: active = std::stoi(extractedValue) ? true : false; break;
-                case 5: triggered = std::stoi(extractedValue) ? true : false; break;
+            if (indexCount == 0) {      // första värdet
+                timestamp = stoll(extractedValue);
+                indexCount++;
+                continue;
             }
-            indexCount++;
-            if (indexCount == 6) {
+
+            switch (fieldCount) {
+                case 0: id = std::stoi(extractedValue); break;
+                case 1: type = std::stoi(extractedValue); break;
+                case 2: value = std::stof(extractedValue); break;
+                case 3: active = std::stoi(extractedValue) ? true : false; break;
+                case 4: triggered = std::stoi(extractedValue) ? true : false; break;
+            }
+            fieldCount++;
+            if (fieldCount == 5) {
                 if (!extractedValue.empty()) {
                     database[timestamp].emplace_back(id, type, value, active, triggered);
                 }
-                indexCount = 0;
+                fieldCount = 0;
             }
+            indexCount++;
         }
     }
     inFile.close();
@@ -88,4 +92,31 @@ void printDatabase(const std::map<time_t,std::vector<DataPoint>>& database) {
         }
         std::cout << std::endl;
     }
+}
+
+bool isValidInput(const std::string& input, int typeSelector, float min, float max) { // Uses try/catch to try and cast the user input to either int or float.
+    switch (typeSelector) {
+        case wholeNum: {
+            try {
+                int inputVal = std::stoi(input);
+                if (inputVal >= min && inputVal <= max) return true;
+                std::cout << "Please enter a number between " << static_cast<int>(min) << " and " << static_cast<int>(max) << "\n";
+            } catch (...) {
+                std::cout << "Please enter a valid number.\n";
+            }
+            break;
+        }
+        case decimalNum: {
+            try {
+                float inputVal = std::stof(input);
+                if (inputVal >= min && inputVal <= max) return true;
+                std::cout << "Please enter a number between " << min << " and " << max << "\n";
+            } catch (...) {
+                std::cout << "Please enter a valid number.\n";
+            }
+            break;
+        }
+    };
+
+    return false;
 }
