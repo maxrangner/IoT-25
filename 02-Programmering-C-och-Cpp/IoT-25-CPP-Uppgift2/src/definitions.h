@@ -17,6 +17,9 @@ struct DataPoint {
     float value {};
     bool isActive = true;
     bool isTriggered = false;
+    DataPoint() : deviceId(0), type(0), value(0.0f), isActive(true), isTriggered(false) {}
+    DataPoint(int id, int t, float v, bool a, bool tr)
+        : deviceId(id), type(t), value(v), isActive(a), isTriggered(tr) {}
 };
 
 #endif

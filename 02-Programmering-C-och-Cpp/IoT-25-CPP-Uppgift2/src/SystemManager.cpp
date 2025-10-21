@@ -1,6 +1,7 @@
 #include <vector>
 #include <ctime>
 #include <map>
+#include "functions.h"
 #include "SystemManager.h"
 
 SystemManager::SystemManager() : numSensors(0) {}

@@ -4,6 +4,7 @@
 #include <ctime>
 #include <map>
 #include "definitions.h"
+#include "functions.h"
 #include "Sensor.h"
 
 class SystemManager {
@@ -12,11 +13,11 @@ class SystemManager {
         int lastUpdateTime;
         std::vector<MySensor> sensorsList;
         std::time_t getTime();
+        int nextSensorId();
+        int getNumSensors();
     public:
         std::map<time_t,std::vector<DataPoint>> database;
         SystemManager();
-        int getNumSensors();
-        int nextSensorId();
         void addSensor(int type);
         void makeSnapshot();
 };
