@@ -29,9 +29,9 @@ enum validatorType {
 };
 
 struct DataPoint {
-    int deviceId {};
+    int deviceId;
     int type;
-    float value {};
+    float value;
     bool isActive = true;
     bool isTriggered = false;
     DataPoint() : deviceId(0), type(0), value(0.0f), isActive(true), isTriggered(false) {}

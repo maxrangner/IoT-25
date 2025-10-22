@@ -3,9 +3,10 @@
 #include <map>
 #include <vector>
 #include <string>
-#include "functions.h"
-#include "SystemManager.h"
+// #include "SystemManager.h"
 #include "definitions.h"
+
+class SystemManager;
 
 bool writeToFile(const std::map<time_t,std::vector<DataPoint>>& database);
 bool readFromFile(SystemManager& manager);

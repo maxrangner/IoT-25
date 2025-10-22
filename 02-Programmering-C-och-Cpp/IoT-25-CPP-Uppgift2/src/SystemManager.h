@@ -11,16 +11,18 @@ class SystemManager {
     private:
         int numSensors;
         int lastUpdateTime;
-        std::vector<MySensor> sensorsList;
+        std::vector<Sensor> sensorsList;
         std::time_t getTime();
         int nextSensorId();
         int getNumSensors();
     public:
         std::map<time_t,std::vector<DataPoint>> database;
         SystemManager();
-        void addSensor(int type);
+        void addSensor(int type = 0);
         // void removeSensor(int id);
-        void makeSnapshot();
+        void collectReadings();
+        bool writeToFile();
+        bool readFromFile();
         void resetSystem();
 };
 
