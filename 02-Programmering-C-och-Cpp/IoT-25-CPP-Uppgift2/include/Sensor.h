@@ -17,6 +17,7 @@ class Sensor {
         int getId();
         int getType();
         DataPoint getStatus() const;
+        void setValue(float val);
         void updateReading();
         void printInfo();
 };

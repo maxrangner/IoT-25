@@ -22,10 +22,12 @@ class SystemManager {
         void addSensor(int type = 0);
         void removeSensor(int id);
         void collectReadings(int sensor = -1);
+        void setSensorVal(int id, float val);
+        Statistics getStatistics();
         bool writeToFile();
         bool readFromFile();
         void resetSystem();
-        const std::vector<Sensor> getSensorsList();
+        const std::vector<Sensor>& getSensorsList();
 };
 
 #endif

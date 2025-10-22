@@ -16,12 +16,14 @@ class UiManager {
         void addSensor(SystemManager& manager);
         void removeSensor(SystemManager& manager);
         void collectReadings(SystemManager& manager);
+        void setSensorValue(SystemManager& manager);
         void displayData(SystemManager& manager);
+        void displayStats(SystemManager& manager);
         void saveData(SystemManager& manager);
         void loadData(SystemManager& manager);
         void menu(SystemManager& manager);
         std::string getInput(const std::vector<std::string>& valids);
-        std::string getInput(float min, float max);
+        std::string getInput(float min = -FLT_MAX, float max = FLT_MAX);
 };
 
 #endif

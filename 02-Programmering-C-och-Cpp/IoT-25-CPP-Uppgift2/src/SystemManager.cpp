@@ -2,6 +2,7 @@
 #include <vector>
 #include <ctime>
 #include <map>
+#include <cmath>
 #include <fstream>
 #include <sstream>
 #include "Sensor.h"
@@ -19,7 +20,7 @@ std::time_t SystemManager::getTime() {
 // SIMPLE GETTERS
 int SystemManager::getNumSensors() { return numSensors; }
 int SystemManager::nextSensorId() { return numSensors++; }
-const std::vector<Sensor> SystemManager::getSensorsList() {
+const std::vector<Sensor>& SystemManager::getSensorsList() {
     return sensorsList;
 }
 
@@ -55,6 +56,98 @@ void SystemManager::collectReadings(int sensor) {
     }
 
     database[newTimestamp] = data;
+}
+
+void SystemManager::setSensorVal(int id, float val) {
+    std::cout << "setSensorVal() \n";
+    
+    for (int i = 0; i < sensorsList.size(); i++) {
+        if (sensorsList[i].getId() == id) {
+            std::cout << "setValue() \n";
+            sensorsList[i].setValue(val);
+            break;
+        }
+    }
+
+    std::time_t newTimestamp = getTime();
+    std::vector<DataPoint> data;
+
+    for (Sensor& s : sensorsList) {
+        data.push_back(s.getStatus());
+    }
+    database[newTimestamp] = data;
+}
+
+Statistics SystemManager::getStatistics() {
+    Statistics outputStats; 
+    // if (data.empty()) return outputStats;
+
+    outputStats.numTimeStamps = database.size();
+    bool firstTemperatureRun = true;
+    bool firstHumidityRun = true;
+
+    for (const auto& pair : database) {
+        std::time_t timestamp = pair.first;
+        const std::vector<DataPoint>& readings = pair.second;
+        for (const DataPoint& dp : readings) {
+            if (dp.type == 1) {
+                if (firstTemperatureRun) {
+                    outputStats.minValTemperature = dp.value;
+                    outputStats.maxValTemperature = dp.value;
+                    firstTemperatureRun = false;
+                }
+
+                outputStats.sumTemperature += dp.value;
+
+                if (dp.value < outputStats.minValTemperature) {
+                    outputStats.minValTemperature = dp.value;
+                }
+                if (dp.value > outputStats.maxValTemperature) {
+                    outputStats.maxValTemperature = dp.value;
+                }
+                outputStats.numTemperaturePoints++;
+            }
+            if (dp.type == 2) {
+                if (firstHumidityRun) {
+                    outputStats.minValHumidity = dp.value;
+                    outputStats.maxValHumidity = dp.value;
+                    firstHumidityRun = false;
+                } 
+
+                outputStats.sumHumidity += dp.value;
+
+                if (dp.value < outputStats.minValHumidity) {
+                    outputStats.minValHumidity = dp.value;
+                }
+                if (dp.value > outputStats.maxValHumidity) {
+                    outputStats.maxValHumidity = dp.value;
+                }
+                outputStats.numHumidityPoints++;
+            }
+        }
+    }
+    if (outputStats.numTemperaturePoints) outputStats.averageTemperature = outputStats.sumTemperature / outputStats.numTemperaturePoints;
+    if (outputStats.numHumidityPoints) outputStats.averageHumidity = outputStats.sumHumidity / outputStats.numHumidityPoints;
+
+    for (const auto& pair : database) {
+        std::time_t timestamp = pair.first;
+        const std::vector<DataPoint>& readings = pair.second;
+        for (const DataPoint& dp : readings) {
+            if (dp.type == 1) {
+                outputStats.varianceTemperature += (dp.value - outputStats.averageTemperature) * (dp.value - outputStats.averageTemperature);
+            }
+            if (dp.type == 2) {
+                outputStats.varianceHumidity += (dp.value - outputStats.averageHumidity) * (dp.value - outputStats.averageHumidity);
+            }
+        }
+    }
+
+    outputStats.varianceTemperature = outputStats.varianceTemperature / outputStats.numTemperaturePoints;
+    outputStats.varianceHumidity = outputStats.varianceHumidity / outputStats.numHumidityPoints;
+    outputStats.stdDeviationTemperature = std::sqrt(outputStats.varianceTemperature);
+    outputStats.stdDeviationHumidity = std::sqrt(outputStats.varianceHumidity);
+
+    return outputStats;
 }
 
 bool SystemManager::writeToFile() {

@@ -18,10 +18,12 @@ enum MenuSelection : int {
     addSensor, // 1.
     removeSensor, // 2.
     collectReadings, // 3.
-    dispData, // 4.
-    save, // 5.
-    load, // 6.
-    quit, // 7.
+    setSensorValue, // 4.
+    dispData, // 5.
+    dispStats, // 6.
+    save, // 7.
+    load, // 8.
+    quit, // 9.
     endOfMenu
 };
 
@@ -40,6 +42,27 @@ struct DataPoint {
     DataPoint() : deviceId(0), type(0), value(0.0f), isActive(true), isTriggered(false) {}
     DataPoint(int id, int t, float v, bool a, bool tr)
         : deviceId(id), type(t), value(v), isActive(a), isTriggered(tr) {}
+};
+
+struct Statistics {
+    bool empty = true;
+    int numTimeStamps = 0;
+    // Temperature
+    int numTemperaturePoints = 0;
+    double sumTemperature = 0.0;
+    double averageTemperature = 0.0;
+    double varianceTemperature = 0.0;
+    float stdDeviationTemperature = 0.0f;
+    float minValTemperature = 0.0f;
+    float maxValTemperature = 0.0f;
+    //Humidity
+    int numHumidityPoints = 0;
+    double sumHumidity = 0.0;
+    double averageHumidity = 0.0;
+    double varianceHumidity = 0.0;
+    float stdDeviationHumidity = 0.0f;
+    float minValHumidity = 0.0f;
+    float maxValHumidity = 0.0f;
 };
 
 #endif

@@ -23,18 +23,18 @@ int main() {
 /*
 TO DO:
   PRIO:
-- Add manual sensor value entry
 - Add Display stats
 - Add sort DataPoint
 - Add find DataPoint
+- Show formatted time
 
   BONUS:
+- Add error handling.
 - Restore sensors at file load
+- Clean up sensor printout
 - Add toggle sensor on / off
 - Add history graph
 - System reset option
-- Clean up sensor printout
-- Add error handling.
 
 ISSUES:
 - 
