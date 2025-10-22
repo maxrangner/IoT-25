@@ -14,16 +14,18 @@ class SystemManager {
         std::vector<Sensor> sensorsList;
         std::time_t getTime();
         int nextSensorId();
-        int getNumSensors();
+        
     public:
         std::map<time_t,std::vector<DataPoint>> database;
         SystemManager();
+        int getNumSensors();
         void addSensor(int type = 0);
         // void removeSensor(int id);
-        void collectReadings();
+        void collectReadings(int sensor = -1);
         bool writeToFile();
         bool readFromFile();
         void resetSystem();
+        const std::vector<Sensor> getSensorsList();
 };
 
 #endif

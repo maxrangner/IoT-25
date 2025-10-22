@@ -18,6 +18,9 @@ std::time_t SystemManager::getTime() {
 // SIMPLE GETTERS
 int SystemManager::getNumSensors() { return numSensors; }
 int SystemManager::nextSensorId() { return numSensors++; }
+const std::vector<Sensor> SystemManager::getSensorsList() {
+    return sensorsList;
+}
 
 // FUNCTIONS
 void SystemManager::addSensor(int type) {
@@ -25,13 +28,22 @@ void SystemManager::addSensor(int type) {
     numSensors = sensorsList.size();
 }
 
-void SystemManager::collectReadings() {
+void SystemManager::collectReadings(int sensor) {
     std::time_t newTimestamp = getTime();
     std::vector<DataPoint> data;
 
-    for (const Sensor& s : sensorsList) {
-        data.push_back(s.getStatus());
+    if (sensor < 0) {
+        for (Sensor& s : sensorsList) {
+            if (s.getStatus().isActive) {
+                s.updateReading();
+                data.push_back(s.getStatus());
+            }
+        }
+    } else {
+        sensorsList[sensor].updateReading();
+        data.push_back(sensorsList[sensor].getStatus());
     }
+
     database[newTimestamp] = data;
 }
 

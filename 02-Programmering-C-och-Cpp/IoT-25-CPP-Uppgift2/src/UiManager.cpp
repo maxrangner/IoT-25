@@ -1,28 +1,46 @@
 #include <iostream>
 #include <vector>
-#include <cfloat>
 #include "definitions.h"
+#include "functions.h"
 #include "UiManager.h"
 
 UiManager::UiManager() : isRunning(true) {}
 
 void UiManager::addSensor(SystemManager& manager) {
-    std::string userInp;
-    std::cout << "Add sensor: [t]emperature or [h]umidity.\n";
-
+    std::cout << "Add sensor: [t]emperature or [h]umidity. Leave empty to finish.\n";
     while (true) {
-        std::cout << "> ";
-        std::getline(std::cin, userInp);
-        if (isValidChoice(userInp, {"t", "h"})) {
-            if (userInp == "t") manager.addSensor(temperatureSensor);
-            else manager.addSensor(humiditySensor);
-            break;
-        } else std::cout << "Invalid input.\n";
+        std::string userInp = getInput({"t", "h", ""});
+        if (userInp == "t") manager.addSensor(sensorTypes::temperatureSensor);
+        if (userInp == "h") manager.addSensor(sensorTypes::humiditySensor);
+        if (userInp == "") break;
+    }
+}
+
+std::string UiManager::getInput(std::vector<std::string> valids) {
+    std::string userInp;
+    while (true) {
+        userInp = getLine();
+        if (userInp.empty()) return "";
+        if (isValidChoice(userInp, valids)) return userInp;
+        else std::cout << "Invalid input.\n";
+    }
+}
+
+std::string UiManager::getInput(float min, float max) {
+    std::string userInp;
+    while (true) {
+        userInp = getLine();
+        if (userInp.empty()) return "";
+        if (isValidNum(userInp, min, max)) return userInp;
+        else std::cout << "Invalid input.\n";
     }
 }
 
 void UiManager::collectReadings(SystemManager& manager) {
-    manager.collectReadings();
+    std::cout << "Enter deviceId or press \"enter\" for all.\n";
+    std::string userInp = getInput(0, manager.getNumSensors());
+    if (userInp == "") manager.collectReadings();
+    else manager.collectReadings(std::stoi(userInp));
 }
 
 void UiManager::displayData(SystemManager& manager) {
@@ -49,9 +67,6 @@ void UiManager::loadData(SystemManager& manager) {
 }
 
 void UiManager::menu(SystemManager& manager) {
-    int menuChoice = 0;
-    std::string input;
-
     std::cout << "\n*********** MENU ***********\n"
               << "1. addSensor\n"
               << "2. collectReadings\n" 
@@ -60,16 +75,8 @@ void UiManager::menu(SystemManager& manager) {
               << "5. load\n"
               << "6. Quit\n";
 
-    while (true) {
-        std::cout << "> ";
-        std::getline(std::cin, input);
-
-        if (isValidInput(input, wholeNum, startofMenu + 1, endOfMenu - 1)) {
-            menuChoice = std::stoi(input);
-            menuAction(manager, menuChoice);
-            return;
-        }
-    }
+    std::string menuSelection = getInput(static_cast<float>(startofMenu + 1), static_cast<float>(endOfMenu - 1));
+    menuAction(manager, std::stoi(menuSelection));
 }
 
 bool UiManager::menuAction(SystemManager& manager, int chosenAction) {
@@ -84,13 +91,19 @@ bool UiManager::menuAction(SystemManager& manager, int chosenAction) {
     return false;
 }
 
-// bool UiManager::isValidNum(std::string inpStr, float min, float max) {
-
-// }
-
 bool UiManager::isValidChoice(const std::string& inpStr, const std::vector<std::string>& valids) {
     for (const std::string& s : valids) {
         if (inpStr == s) return true;
     }
     return false;
+}
+
+bool UiManager::isValidNum(const std::string& inpStr, float min, float max) {
+    try {
+        float convertedVal = std::stof(inpStr);
+        if (convertedVal >= min && convertedVal <= max) return true;
+        return false;
+    } catch (...) {
+        return false;
+    }
 }

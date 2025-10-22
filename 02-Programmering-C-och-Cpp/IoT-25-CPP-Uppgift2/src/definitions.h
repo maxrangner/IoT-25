@@ -2,8 +2,10 @@
 #define DEFINITIONS_HPP
 
 constexpr int NUM_DATAPOINTS = 5;
+constexpr int RANDOM_MIN = -100;
+constexpr int RANDOM_MAX = 100;
 
-enum sensorTypes{
+enum sensorTypes : int{
     noType, // 0.
     temperatureSensor, // 1.
     humiditySensor, // 2.
@@ -11,7 +13,7 @@ enum sensorTypes{
     movementSensor, // 4.
 };
 
-enum MenuSelection {
+enum MenuSelection : int {
     startofMenu, // 0.
     addSensor, // 1.
     collectReadings, // 2.
@@ -22,7 +24,7 @@ enum MenuSelection {
     endOfMenu
 };
 
-enum validatorType {
+enum validatorType : int {
     wholeNum = 1, // 1.
     decimalNum, // 2.
     text // 3.

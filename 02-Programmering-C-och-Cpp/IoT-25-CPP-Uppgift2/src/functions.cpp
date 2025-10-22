@@ -1,35 +1,30 @@
 #include <iostream>
-#include <map>
-#include <vector>
-
-#include <ctime>
-#include "SystemManager.h"
+#include <random>
+#include <cfloat>
 #include "functions.h"
 #include "definitions.h"
 
-bool isValidInput(const std::string& input, int typeSelector, float min, float max) {
-    switch (typeSelector) {
-        case wholeNum: {
-            try {
-                int inputVal = std::stoi(input);
-                if (inputVal >= min && inputVal <= max) return true;
-                std::cout << "Please enter a number between " << static_cast<int>(min) << " and " << static_cast<int>(max) << "\n";
-            } catch (...) {
-                std::cout << "Please enter a valid number.\n";
-            }
-            break;
-        }
-        case decimalNum: {
-            try {
-                float inputVal = std::stof(input);
-                if (inputVal >= min && inputVal <= max) return true;
-                std::cout << "Please enter a number between " << min << " and " << max << "\n";
-            } catch (...) {
-                std::cout << "Please enter a valid number.\n";
-            }
-            break;
-        }
-    };
+std::string toLowerCase(std::string str) {
+    for (char& c : str) {
+        c = std::tolower(static_cast<unsigned char>(c));
+    }
+    return str;
+}
 
-    return false;
+float getRandomNumber(float min, float max) {
+    static std::random_device randDevice;
+    static std::mt19937 gen(randDevice());
+    std::uniform_real_distribution<float> distrib(min, max);
+    float returnVal = distrib(gen);
+
+    return std::round(returnVal * 100.0f) / 100.0f;
+
+}
+
+std::string getLine() {
+    std::string userInp;
+    std::cout << "> ";
+    std::getline(std::cin, userInp);
+    userInp = toLowerCase(userInp);
+    return userInp;
 }

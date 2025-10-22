@@ -1,5 +1,6 @@
 #include <iostream>
 #include "Sensor.h"
+#include "functions.h"
 
 // CONSTRUCTORS
 Sensor::Sensor() : deviceId(0), type(0), value(0.0f), isActive(true), isTriggered(false) {}
@@ -24,11 +25,11 @@ DataPoint Sensor::getStatus() const {
 void Sensor::updateReading() {
     switch(type) {
         case sensorTypes::temperatureSensor:
-            value = 0.0f;
+            value = getRandomNumber(18, 25);
             isTriggered = false;
             break;
         case sensorTypes::humiditySensor:
-            value = 0.0f;
+            value = getRandomNumber(40, 50);
             isTriggered = false;
             break;
     }

@@ -22,10 +22,9 @@ int main() {
 
 /*
 TO DO:
-- Add removeSensors()
-- Only collect from sensors that are ON
-- Add random data generator. return simulateReading(-10.0f, 40.0f);
 - Add manual sensor value entry. Only sensors that are ON
+- Restore sensors at file load
+- Add removeSensors()
 - Add Display stats
 - Add history graph
 - System reset option
