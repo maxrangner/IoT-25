@@ -34,6 +34,7 @@ TO DO:
 - Add toggle sensor on / off
 - Add history graph
 - System reset option
+- menuAction to void
 
 ISSUES:
 - 

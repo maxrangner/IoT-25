@@ -55,8 +55,8 @@ void UiManager::collectReadings(SystemManager& manager) {
     }
 
     std::cout << "Enter deviceId or press \"enter\" for all.\n";
-
     std::string userInp = getInput(0, manager.getNumSensors());
+
     if (userInp == "") manager.collectReadings();
     else manager.collectReadings(std::stoi(userInp));
 }
@@ -68,27 +68,27 @@ void UiManager::setSensorValue(SystemManager& manager) {
     }
 
     std::cout << "Enter sensorId: \n";
-
     int userInp = std::stoi(getInput(0, manager.getNumSensors() - 1));
-    std::cout << "Enter value: \n";
 
+    std::cout << "Enter value: \n";
     int newVal = std::stoi(getInput());
+
     manager.setSensorVal(userInp, newVal);        
 }
 
 void UiManager::displayData(SystemManager& manager) {
         for (auto& pair : manager.database) {
-        std::cout << "Timestamp: " << pair.first << ":\n";
-        for (auto& v : pair.second) {
-            std::cout << "**************\n"
-                      << "deviceId: " << v.deviceId << " | "
-                      << "type: " << v.type << " | "
-                      << "value: " << v.value << " | "
-                      << "isActive: " << v.isActive << " | "
-                      << "isTriggered: " << v.isTriggered << "\n";
+            std::cout << "Timestamp: " << pair.first << ":\n";
+            for (auto& v : pair.second) {
+                std::cout << "**************\n"
+                        << "deviceId: " << v.deviceId << " | "
+                        << "type: " << v.type << " | "
+                        << "value: " << v.value << " | "
+                        << "isActive: " << v.isActive << " | "
+                        << "isTriggered: " << v.isTriggered << "\n";
+            }
+            std::cout << std::endl;
         }
-        std::cout << std::endl;
-    }
 }
 
 void UiManager::displayStats(SystemManager& manager) {
@@ -131,11 +131,11 @@ void UiManager::menu(SystemManager& manager) {
               << "8. load\n"
               << "9. Quit\n";
 
-    std::string menuSelection = getInput(static_cast<float>(startofMenu + 1), static_cast<float>(endOfMenu - 1));
+    std::string menuSelection = getInput(MenuSelection::startofMenu + 1, MenuSelection::endOfMenu - 1);
     menuAction(manager, std::stoi(menuSelection));
 }
 
-bool UiManager::menuAction(SystemManager& manager, int chosenAction) {
+void UiManager::menuAction(SystemManager& manager, int chosenAction) {
     switch (chosenAction) { 
         case MenuSelection::addSensor: addSensor(manager); break;
         case MenuSelection::removeSensor: removeSensor(manager); break;
@@ -145,9 +145,8 @@ bool UiManager::menuAction(SystemManager& manager, int chosenAction) {
         case MenuSelection::dispStats: displayStats(manager); break;
         case MenuSelection::save: saveData(manager); break;
         case MenuSelection::load: loadData(manager); break;
-        case MenuSelection::quit: return true;
+        case MenuSelection::quit: isRunning = false;
     }
-    return false;
 }
 
 bool UiManager::isValidChoice(const std::string& inpStr, const std::vector<std::string>& valids) {

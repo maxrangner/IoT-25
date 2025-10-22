@@ -23,7 +23,6 @@ DataPoint Sensor::getStatus() const {
 
 // FUNCTIONS
 void Sensor::setValue(float val) {
-    std::cout << "Sensor.setValue()";
     value = val;
 }
 

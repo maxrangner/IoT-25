@@ -59,11 +59,8 @@ void SystemManager::collectReadings(int sensor) {
 }
 
 void SystemManager::setSensorVal(int id, float val) {
-    std::cout << "setSensorVal() \n";
-
     for (int i = 0; i < sensorsList.size(); i++) {
         if (sensorsList[i].getId() == id) {
-            std::cout << "setValue() \n";
             sensorsList[i].setValue(val);
             break;
         }
