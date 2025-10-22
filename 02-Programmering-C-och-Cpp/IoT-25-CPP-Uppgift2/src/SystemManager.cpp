@@ -28,6 +28,15 @@ void SystemManager::addSensor(int type) {
     numSensors = sensorsList.size();
 }
 
+void SystemManager::removeSensor(int id) {
+    for (int i = 0; i < sensorsList.size(); i++) {
+        if (sensorsList[i].getId() == id) {
+            sensorsList.erase(sensorsList.begin() + i);
+            break;
+        }
+    }
+}
+
 void SystemManager::collectReadings(int sensor) {
     std::time_t newTimestamp = getTime();
     std::vector<DataPoint> data;

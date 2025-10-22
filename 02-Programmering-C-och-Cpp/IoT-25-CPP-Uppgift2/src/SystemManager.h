@@ -20,7 +20,7 @@ class SystemManager {
         SystemManager();
         int getNumSensors();
         void addSensor(int type = 0);
-        // void removeSensor(int id);
+        void removeSensor(int id);
         void collectReadings(int sensor = -1);
         bool writeToFile();
         bool readFromFile();

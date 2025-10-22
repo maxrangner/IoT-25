@@ -16,11 +16,12 @@ enum sensorTypes : int{
 enum MenuSelection : int {
     startofMenu, // 0.
     addSensor, // 1.
-    collectReadings, // 2.
-    dispData, // 3.
-    save, // 4.
-    load, // 5.
-    quit, // 8.
+    removeSensor, // 2.
+    collectReadings, // 3.
+    dispData, // 4.
+    save, // 5.
+    load, // 6.
+    quit, // 7.
     endOfMenu
 };
 

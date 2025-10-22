@@ -14,6 +14,7 @@ class UiManager {
         UiManager();
         bool isRunning;
         void addSensor(SystemManager& manager);
+        void removeSensor(SystemManager& manager);
         void collectReadings(SystemManager& manager);
         void displayData(SystemManager& manager);
         void saveData(SystemManager& manager);

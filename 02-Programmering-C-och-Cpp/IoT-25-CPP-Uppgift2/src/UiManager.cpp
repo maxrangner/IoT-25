@@ -6,16 +6,6 @@
 
 UiManager::UiManager() : isRunning(true) {}
 
-void UiManager::addSensor(SystemManager& manager) {
-    std::cout << "Add sensor: [t]emperature or [h]umidity. Leave empty to finish.\n";
-    while (true) {
-        std::string userInp = getInput({"t", "h", ""});
-        if (userInp == "t") manager.addSensor(sensorTypes::temperatureSensor);
-        if (userInp == "h") manager.addSensor(sensorTypes::humiditySensor);
-        if (userInp == "") break;
-    }
-}
-
 std::string UiManager::getInput(std::vector<std::string> valids) {
     std::string userInp;
     while (true) {
@@ -33,6 +23,25 @@ std::string UiManager::getInput(float min, float max) {
         if (userInp.empty()) return "";
         if (isValidNum(userInp, min, max)) return userInp;
         else std::cout << "Invalid input.\n";
+    }
+}
+
+void UiManager::addSensor(SystemManager& manager) {
+    std::cout << "Add sensor: [t]emperature or [h]umidity. Leave empty to finish.\n";
+    while (true) {
+        std::string userInp = getInput({"t", "h", ""});
+        if (userInp == "t") manager.addSensor(sensorTypes::temperatureSensor);
+        if (userInp == "h") manager.addSensor(sensorTypes::humiditySensor);
+        if (userInp == "") break;
+    }
+}
+
+void UiManager::removeSensor(SystemManager& manager) {
+    std::cout << "Enter Id for sensor to be removed. Leave empty to finish.\n";
+    while (true) {
+        std::string userInp = getInput(0, manager.getSensorsList().size());
+        if (userInp.empty()) break;
+        manager.removeSensor(std::stoi(userInp));
     }
 }
 
@@ -69,11 +78,12 @@ void UiManager::loadData(SystemManager& manager) {
 void UiManager::menu(SystemManager& manager) {
     std::cout << "\n*********** MENU ***********\n"
               << "1. addSensor\n"
-              << "2. collectReadings\n" 
-              << "3. dispData\n"
-              << "4. save\n"
-              << "5. load\n"
-              << "6. Quit\n";
+              << "2. removeSensor\n"
+              << "3. collectReadings\n" 
+              << "4. dispData\n"
+              << "5. save\n"
+              << "6. load\n"
+              << "7. Quit\n";
 
     std::string menuSelection = getInput(static_cast<float>(startofMenu + 1), static_cast<float>(endOfMenu - 1));
     menuAction(manager, std::stoi(menuSelection));
@@ -82,6 +92,7 @@ void UiManager::menu(SystemManager& manager) {
 bool UiManager::menuAction(SystemManager& manager, int chosenAction) {
     switch (chosenAction) { 
         case MenuSelection::addSensor: addSensor(manager); break;
+        case MenuSelection::removeSensor: removeSensor(manager); break;
         case MenuSelection::collectReadings: collectReadings(manager); break;
         case MenuSelection::dispData: displayData(manager); break;
         case MenuSelection::save: saveData(manager); break; // writeToFile(manager.database); Change to manager
