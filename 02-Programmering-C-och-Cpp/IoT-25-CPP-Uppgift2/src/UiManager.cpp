@@ -49,6 +49,11 @@ void UiManager::removeSensor(SystemManager& manager) {
 }
 
 void UiManager::collectReadings(SystemManager& manager) {
+    if (manager.getNumSensors() <= 0) {
+        std::cout << "No sensors registered." << std::endl;
+        return;
+    }
+
     std::cout << "Enter deviceId or press \"enter\" for all.\n";
 
     std::string userInp = getInput(0, manager.getNumSensors());
@@ -57,9 +62,14 @@ void UiManager::collectReadings(SystemManager& manager) {
 }
 
 void UiManager::setSensorValue(SystemManager& manager) {
+    if (manager.getNumSensors() <= 0) {
+        std::cout << "No sensors registered." << std::endl;
+        return;
+    }
+
     std::cout << "Enter sensorId: \n";
 
-    int userInp = std::stoi(getInput(0, manager.getNumSensors()));
+    int userInp = std::stoi(getInput(0, manager.getNumSensors() - 1));
     std::cout << "Enter value: \n";
 
     int newVal = std::stoi(getInput());

@@ -23,7 +23,6 @@ int main() {
 /*
 TO DO:
   PRIO:
-- Add Display stats
 - Add sort DataPoint
 - Add find DataPoint
 - Show formatted time
