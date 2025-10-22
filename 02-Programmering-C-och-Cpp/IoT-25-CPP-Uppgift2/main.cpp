@@ -3,11 +3,11 @@
 #include <vector>
 #include <map>
 #include <fstream>
-#include "src/definitions.h"
-#include "src/functions.h"
-#include "src/Sensor.h"
-#include "src/SystemManager.h"
-#include "src/UiManager.h"
+#include "definitions.h"
+#include "functions.h"
+#include "Sensor.h"
+#include "SystemManager.h"
+#include "UiManager.h"
 
 int main() {
     SystemManager manager;
@@ -22,10 +22,15 @@ int main() {
 
 /*
 TO DO:
-- Add manual sensor value entry. Only sensors that are ON
-- Restore sensors at file load
-- Add removeSensors()
+  PRIO:
+- Add manual sensor value entry
 - Add Display stats
+- Add sort DataPoint
+- Add find DataPoint
+
+  BONUS:
+- Restore sensors at file load
+- Add toggle sensor on / off
 - Add history graph
 - System reset option
 - Clean up sensor printout

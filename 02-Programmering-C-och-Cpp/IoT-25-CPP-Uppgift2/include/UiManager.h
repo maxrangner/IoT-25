@@ -20,7 +20,7 @@ class UiManager {
         void saveData(SystemManager& manager);
         void loadData(SystemManager& manager);
         void menu(SystemManager& manager);
-        std::string getInput(std::vector<std::string> valids);
+        std::string getInput(const std::vector<std::string>& valids);
         std::string getInput(float min, float max);
 };
 

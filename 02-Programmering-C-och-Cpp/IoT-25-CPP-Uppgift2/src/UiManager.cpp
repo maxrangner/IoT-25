@@ -6,7 +6,7 @@
 
 UiManager::UiManager() : isRunning(true) {}
 
-std::string UiManager::getInput(std::vector<std::string> valids) {
+std::string UiManager::getInput(const std::vector<std::string>& valids) {
     std::string userInp;
     while (true) {
         userInp = getLine();
