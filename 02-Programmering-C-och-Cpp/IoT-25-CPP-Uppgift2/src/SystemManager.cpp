@@ -10,7 +10,7 @@
 #include "SystemManager.h"
 
 // CONSTRUCTORS
-SystemManager::SystemManager() : isOnline(true), numSensors(0), nextSensorId(0) {}
+SystemManager::SystemManager() : numSensors(0), nextSensorId(0) {}
 
 // TOOLS
 std::time_t SystemManager::getTime() {
@@ -19,13 +19,9 @@ std::time_t SystemManager::getTime() {
 }
 
 // SIMPLE GETTERS
-bool SystemManager::systemStatus() { return isOnline; }
 int SystemManager::getNumSensors() { return numSensors; }
 int SystemManager::getNextSensorId() { return nextSensorId; }
-
-const std::vector<Sensor>& SystemManager::getSensorsList() {
-    return sensorsList;
-}
+const std::vector<Sensor> SystemManager::getSensorsList() { return sensorsList; }
 
 // FUNCTIONS
 void SystemManager::addSensor(int type) {
@@ -77,6 +73,44 @@ void SystemManager::setSensorVal(int id, float val) {
         data.push_back(s.getStatus());
     }
     systemStateHistory[newTimestamp] = data;
+}
+
+std::vector<std::vector<DataPoint>> SystemManager::sortData() {
+    std::vector<std::vector<DataPoint>> sortedData(2);
+
+    for (auto& pair : systemStateHistory) {
+        for (const DataPoint& dp : pair.second) {
+            if (dp.type == 1) sortedData[0].push_back(dp);
+            if (dp.type == 2) sortedData[1].push_back(dp);
+        }
+    }
+    std::sort(sortedData[0].begin(), sortedData[0].end(), [](const DataPoint& a, const DataPoint& b) {return a.value < b.value;});
+    std::sort(sortedData[1].begin(), sortedData[1].end(), [](const DataPoint& a, const DataPoint& b) {return a.value < b.value;});
+
+    return sortedData;
+}
+
+std::vector<DataPoint> SystemManager::findData(std::string searchStr) {
+    std::vector<DataPoint> dataFound;
+    if (isDate(searchStr)) {
+        for (auto& pair : systemStateHistory) {
+            if (readDate(pair.first) == searchStr) {
+                for (const DataPoint dp : pair.second) {
+                    dataFound.push_back(dp);
+                }
+            }
+        }
+    } else {
+        std::cout << "else\n";
+        for (auto& pair : systemStateHistory) {
+            for (const DataPoint dp : pair.second) {
+                if (dp.value == std::stof(searchStr)) {
+                    dataFound.push_back(dp);
+                }
+            }
+        }
+    }
+    return dataFound;
 }
 
 Statistics SystemManager::getStatistics() {
@@ -152,7 +186,6 @@ Statistics SystemManager::getStatistics() {
 }
 
 bool SystemManager::writeToFile() {
-    std::cout << "WRITE!";
     std::ofstream outFile("data.txt");
     if (!outFile) return false;
 
@@ -249,42 +282,4 @@ void SystemManager::resetSystem() {
     sensorsList.clear();
     numSensors = 0;
     systemStateHistory.clear();
-}
-
-std::vector<std::vector<DataPoint>> SystemManager::sortData() {
-    std::vector<std::vector<DataPoint>> sortedData(2);
-
-    for (auto& pair : systemStateHistory) {
-        for (const DataPoint& dp : pair.second) {
-            if (dp.type == 1) sortedData[0].push_back(dp);
-            if (dp.type == 2) sortedData[1].push_back(dp);
-        }
-    }
-    std::sort(sortedData[0].begin(), sortedData[0].end(), [](const DataPoint& a, const DataPoint& b) {return a.value < b.value;});
-    std::sort(sortedData[1].begin(), sortedData[1].end(), [](const DataPoint& a, const DataPoint& b) {return a.value < b.value;});
-
-    return sortedData;
-}
-
-std::vector<DataPoint> SystemManager::findData(std::string searchStr) {
-    std::vector<DataPoint> dataFound;
-
-    if (isDate(searchStr)) {
-        for (auto& pair : systemStateHistory) {
-            if (readDate(pair.first) == searchStr) {
-                for (const DataPoint dp : pair.second) {
-                    dataFound.push_back(dp);
-                }
-            }
-        }
-    } else {
-        for (auto& pair : systemStateHistory) {
-            for (const DataPoint dp : pair.second) {
-                if (dp.value == std::stof(searchStr)) {
-                    dataFound.push_back(dp);
-                }
-            }
-        }
-    }
-    return dataFound;
 }

@@ -1,7 +1,6 @@
 #include <iostream>
 #include <vector>
 #include <iomanip>
-
 #include "definitions.h"
 #include "functions.h"
 #include "UiManager.h"
@@ -12,6 +11,41 @@ void UiManager::greeting() {
     std::cout << "***************************************\n"
               << "********** SUPER SENSOR HUB ***********\n"
               << "***************************************\n" << std::endl;
+}
+
+void UiManager::menu(SystemManager& manager) {
+    std::cout << "\n*--- MENU ---*\n"
+              << "1. addSensor\n"
+              << "2. removeSensor\n"
+              << "3. collectReadings\n"
+            //   << "4. setSensorValue\n" 
+              << "4. dispData\n"
+              << "5. sortData\n"
+              << "6. findData\n"
+              << "7. dispStats\n"
+              << "8. save\n"
+              << "9. load\n"
+              << "10. Quit\n"
+              << "*-----------*" << std::endl;
+
+    std::string menuSelection = getInput(MenuSelection::startofMenu + 1, MenuSelection::endOfMenu - 1, false);
+    menuAction(manager, std::stoi(menuSelection));
+}
+
+void UiManager::menuAction(SystemManager& manager, int chosenAction) {
+    switch (chosenAction) { 
+        case MenuSelection::addSensor: addSensor(manager); break;
+        case MenuSelection::removeSensor: removeSensor(manager); break;
+        case MenuSelection::collectReadings: collectReadings(manager); break;
+        // case MenuSelection::setSensorValue: setSensorValue(manager); break;
+        case MenuSelection::dispData: displayData(manager); break;
+        case MenuSelection::sortData: sortData(manager); break;
+        case MenuSelection::findData: findData(manager); break;
+        case MenuSelection::dispStats: displayStats(manager); break;
+        case MenuSelection::save: saveSystemState(manager); break;
+        case MenuSelection::load: loadSystemState(manager); break;
+        case MenuSelection::quit: isRunning = false;
+    }
 }
 
 std::string UiManager::getInput(const std::vector<std::string>& valids, bool allowNonReturn) {
@@ -46,6 +80,7 @@ std::string UiManager::getInput(bool allowNonReturn) {
 }
 
 void UiManager::addSensor(SystemManager& manager) {
+    int addCount = 0;
     std::cout << "Add sensor: [t]emperature or [h]umidity. Leave empty to finish.\n";
 
     while (true) {
@@ -53,7 +88,10 @@ void UiManager::addSensor(SystemManager& manager) {
         if (userInp == "") break;
         if (userInp == "t") manager.addSensor(sensorTypes::temperatureSensor);
         if (userInp == "h") manager.addSensor(sensorTypes::humiditySensor);
+        addCount++;
     }
+
+    std::cout << addCount << " sensors added.\n";
 }
 
 void UiManager::removeSensor(SystemManager& manager) {
@@ -106,11 +144,12 @@ void UiManager::setSensorValue(SystemManager& manager) {
 
 void UiManager::displayData(SystemManager& manager) {
         for (auto& pair : manager.systemStateHistory) {
-            std::cout << "************** " << readTime(pair.first) << " **************\n";
+            std::cout << "\n*---------------- " << readTime(pair.first) << " ----------------*\n";
             for (auto& v : pair.second) {
-                std::cout << "deviceId: " << v.deviceId << " | "
+                std::cout << std::fixed << std::setprecision(2)
+                          << "deviceId: " << v.deviceId << " | "
                           << "type: " << convertSensorType(v.type) << ((v.type == 1) ? "" : "   ") << " | "
-                          << "value: " << v.value << " | "
+                          << "value: " << v.value << " " << v.getUnit() << " | "
                           << "isActive: " << ((v.isActive) ? "true" : "false") << " | "
                           << "isTriggered: " << ((v.isTriggered) ? "true" : "false") << "\n";
             }
@@ -122,14 +161,14 @@ void UiManager::displayStats(SystemManager& manager) {
     Statistics newStats = manager.getStatistics();
     int spacing = 30;
 
-    std::cout << std::left << std::setw(spacing) << "*** TEMPERATURE ***" << std::endl
+    std::cout << std::left << std::setw(spacing) << "*---------------- TEMPERATURE ----------------*" << std::endl
               << std::left << std::setw(spacing) << "Sum: " << newStats.sumTemperature << std::endl
               << std::left << std::setw(spacing) << "Average:" << newStats.averageTemperature << std::endl
               << std::left << std::setw(spacing) << "Min:" << newStats.minValTemperature << std::endl
               << std::left << std::setw(spacing) << "Max:" << newStats.maxValTemperature << std::endl
               << std::left << std::setw(spacing) << "Variance:" << newStats.varianceTemperature << std::endl
               << std::left << std::setw(spacing) << "Standard deviation:" << newStats.stdDeviationTemperature << std::endl
-              << std::left << std::setw(spacing) << "\n*** HUMIDITY ***" << std::endl
+              << std::left << std::setw(spacing) << "\n*---------------- HUMIDITY ----------------*" << std::endl
               << std::left << std::setw(spacing) << "Sum: " << newStats.sumHumidity << std::endl
               << std::left << std::setw(spacing) << "Average:" << newStats.averageHumidity << std::endl
               << std::left << std::setw(spacing) << "Min:" << newStats.minValHumidity << std::endl
@@ -141,8 +180,8 @@ void UiManager::displayStats(SystemManager& manager) {
 void UiManager::sortData(SystemManager& manager) {
     int index {};
     for (const std::vector v : manager.sortData()) {
-        if (index == 0) std::cout << "*** TEMPERATURE ***" << std::endl;
-        if (index == 1) std::cout << "*** HUMIDITY ***" << std::endl;
+        if (index == 0) std::cout << "*--------------- TEMPERATURE --------------*" << std::endl;
+        if (index == 1) std::cout << "*---------------- HUMIDITY ----------------*" << std::endl;
         for (const DataPoint dp : v) {
             std::cout << "deviceId: " << dp.deviceId << " | "
                       << "type: " << convertSensorType(dp.type) << ((dp.type == 1) ? "" : "   ") << " | "
@@ -177,43 +216,14 @@ void UiManager::findData(SystemManager& manager) {
 
 void UiManager::saveSystemState(SystemManager& manager) {
     manager.writeToFile();
+    std::cout << "\n***************************************\n"
+              << "********* SYSTEM STATE SAVED **********\n"
+              << "***************************************\n" << std::endl;
 }
 
 void UiManager::loadSystemState(SystemManager& manager) {
     manager.readFromFile();
+        std::cout << "\n***************************************\n"
+                  << "********* SYSTEM STATE LOADED *********\n"
+                  << "***************************************\n" << std::endl;
 }
-
-void UiManager::menu(SystemManager& manager) {
-    std::cout << "\n*********** MENU ***********\n"
-              << "1. addSensor\n"
-              << "2. removeSensor\n"
-              << "3. collectReadings\n"
-              << "4. setSensorValue\n" 
-              << "5. dispData\n"
-              << "6. sortData\n"
-              << "7. findData\n"
-              << "8. dispStats\n"
-              << "9. save\n"
-              << "10. load\n"
-              << "11. Quit\n";
-
-    std::string menuSelection = getInput(MenuSelection::startofMenu + 1, MenuSelection::endOfMenu - 1, false);
-    menuAction(manager, std::stoi(menuSelection));
-}
-
-void UiManager::menuAction(SystemManager& manager, int chosenAction) {
-    switch (chosenAction) { 
-        case MenuSelection::addSensor: addSensor(manager); break;
-        case MenuSelection::removeSensor: removeSensor(manager); break;
-        case MenuSelection::collectReadings: collectReadings(manager); break;
-        case MenuSelection::setSensorValue: setSensorValue(manager); break;
-        case MenuSelection::dispData: displayData(manager); break;
-        case MenuSelection::sortData: sortData(manager); break;
-        case MenuSelection::findData: findData(manager); break;
-        case MenuSelection::dispStats: displayStats(manager); break;
-        case MenuSelection::save: saveSystemState(manager); break;
-        case MenuSelection::load: loadSystemState(manager); break;
-        case MenuSelection::quit: isRunning = false;
-    }
-}
-

@@ -21,14 +21,14 @@ enum MenuSelection : int {
     addSensor, // 1.
     removeSensor, // 2.
     collectReadings, // 3.
-    setSensorValue, // 4.
-    dispData, // 5.
-    sortData, // 6.
-    findData, // 7.
-    dispStats, // 8.
-    save, // 9.
-    load, // 10.
-    quit, // 11.
+    // setSensorValue, // 4.
+    dispData, // 4.
+    sortData, // 5.
+    findData, // 6.
+    dispStats, // 7.
+    save, // 8.
+    load, // 9.
+    quit, // 10.
     endOfMenu
 };
 
@@ -47,6 +47,14 @@ struct DataPoint {
     DataPoint() : deviceId(0), type(0), value(0.0f), isActive(true), isTriggered(false) {}
     DataPoint(int id, int t, float v, bool a, bool tr)
         : deviceId(id), type(t), value(v), isActive(a), isTriggered(tr) {}
+    
+    std::string getUnit() {
+        switch (type) {
+            case 1: return "C";
+            case 2: return "%";
+            default: return "";
+        };
+    }
 };
 
 struct Statistics {
