@@ -15,6 +15,7 @@ class UiManager {
         UiManager();
         bool isRunning;
         void greeting();
+        void exitPrompt();
         void menu(SystemManager& manager);
 
         // UI functions for menu

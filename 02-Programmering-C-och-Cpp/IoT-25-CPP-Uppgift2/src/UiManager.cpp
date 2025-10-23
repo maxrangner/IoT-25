@@ -13,6 +13,10 @@ void UiManager::greeting() {
               << "***************************************\n" << std::endl;
 }
 
+void UiManager::exitPrompt() {
+    std::cout << "\n\n********** THANKS! **********\n\n" << std::endl;
+}
+
 void UiManager::menu(SystemManager& manager) {
     std::cout << "\n*--- MENU ---*\n"
               << "1. addSensor\n"
@@ -44,7 +48,7 @@ void UiManager::menuAction(SystemManager& manager, int chosenAction) {
         case MenuSelection::dispStats: displayStats(manager); break;
         case MenuSelection::save: saveSystemState(manager); break;
         case MenuSelection::load: loadSystemState(manager); break;
-        case MenuSelection::quit: isRunning = false;
+        case MenuSelection::quit: exitPrompt(); isRunning = false;
     }
 }
 

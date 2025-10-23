@@ -12,12 +12,10 @@
 int main() {
     SystemManager manager;
     UiManager Ui;
-
     Ui.greeting();
 
     while (Ui.isRunning) {
         Ui.menu(manager);
     }
-    std::cout << "Bye!\n";
     return 0;
 }
