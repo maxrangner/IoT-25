@@ -20,8 +20,8 @@ class UiManager {
         void displayStats(SystemManager& manager);
         void sortData(SystemManager& manager);
         void findData(SystemManager& manager);
-        void saveData(SystemManager& manager);
-        void loadData(SystemManager& manager);
+        void saveSystemState(SystemManager& manager);
+        void loadSystemState(SystemManager& manager);
         void menu(SystemManager& manager);
         std::string getInput(const std::vector<std::string>& valids, bool allowNonReturn = true);
         std::string getInput(float min, float max, bool allowNonReturn = true);

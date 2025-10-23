@@ -22,12 +22,17 @@ int main() {
 
 /*
 TO DO:
-- Add error handling.
-- Restore sensors at file load
+- Check to add const&
 - Add toggle sensor on / off
+- Add error handling.
 - Add history graph
 - System reset option
-- menuAction to void
+- Make sensors list a map with <id, sensor>
+- Make database struxt instead of map
+- Search by day, month, or year.
+
+WANT TO DO
+- Make better input validation.
 
 ISSUES:
 - 

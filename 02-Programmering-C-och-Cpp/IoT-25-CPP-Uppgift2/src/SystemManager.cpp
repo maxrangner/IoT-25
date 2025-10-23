@@ -10,7 +10,7 @@
 #include "SystemManager.h"
 
 // CONSTRUCTORS
-SystemManager::SystemManager() : numSensors(0), nextSensorId(0) {}
+SystemManager::SystemManager() : isOnline(true), numSensors(0), nextSensorId(0) {}
 
 // TOOLS
 std::time_t SystemManager::getTime() {
@@ -19,6 +19,7 @@ std::time_t SystemManager::getTime() {
 }
 
 // SIMPLE GETTERS
+bool SystemManager::systemStatus() { return isOnline; }
 int SystemManager::getNumSensors() { return numSensors; }
 int SystemManager::getNextSensorId() { return nextSensorId; }
 
@@ -58,7 +59,7 @@ void SystemManager::collectReadings(int sensor) {
         data.push_back(sensorsList[sensor].getStatus());
     }
 
-    database[newTimestamp] = data;
+    systemStateHistory[newTimestamp] = data;
 }
 
 void SystemManager::setSensorVal(int id, float val) {
@@ -75,18 +76,18 @@ void SystemManager::setSensorVal(int id, float val) {
     for (Sensor& s : sensorsList) {
         data.push_back(s.getStatus());
     }
-    database[newTimestamp] = data;
+    systemStateHistory[newTimestamp] = data;
 }
 
 Statistics SystemManager::getStatistics() {
     Statistics outputStats; 
     // if (data.empty()) return outputStats;
 
-    outputStats.numTimeStamps = database.size();
+    outputStats.numTimeStamps = systemStateHistory.size();
     bool firstTemperatureRun = true;
     bool firstHumidityRun = true;
 
-    for (const auto& pair : database) {
+    for (const auto& pair : systemStateHistory) {
         std::time_t timestamp = pair.first;
         const std::vector<DataPoint>& readings = pair.second;
         for (const DataPoint& dp : readings) {
@@ -129,7 +130,7 @@ Statistics SystemManager::getStatistics() {
     if (outputStats.numTemperaturePoints) outputStats.averageTemperature = outputStats.sumTemperature / outputStats.numTemperaturePoints;
     if (outputStats.numHumidityPoints) outputStats.averageHumidity = outputStats.sumHumidity / outputStats.numHumidityPoints;
 
-    for (const auto& pair : database) {
+    for (const auto& pair : systemStateHistory) {
         std::time_t timestamp = pair.first;
         const std::vector<DataPoint>& readings = pair.second;
         for (const DataPoint& dp : readings) {
@@ -155,7 +156,7 @@ bool SystemManager::writeToFile() {
     std::ofstream outFile("data.txt");
     if (!outFile) return false;
 
-    for (auto& pair : database) {
+    for (auto& pair : systemStateHistory) {
         outFile << pair.first << ",";
         for (DataPoint DP : pair.second) {
             outFile << DP.deviceId << ","
@@ -171,18 +172,26 @@ bool SystemManager::writeToFile() {
 }
 
 bool SystemManager::readFromFile() {
-    database.clear();
+    systemStateHistory.clear();
     
     std::ifstream inFile("data.txt");
     if (!inFile) return false;
 
+    fileToSystemStateHistory(inFile);
+    restoreSensors();
+
+    inFile.close();
+    return true;
+}
+
+void SystemManager::fileToSystemStateHistory(std::ifstream& file) {
     std::string newLine;
-    while(std::getline(inFile, newLine)) {
+    while(std::getline(file, newLine)) {
         std::stringstream ss(newLine);
         std::string extractedValue;
 
-        int indexCount {};
-        int fieldCount {};
+        int loopCount = 0;
+        int fieldCount = 0;
 
         std::time_t timestamp {};
         int id {};
@@ -194,9 +203,9 @@ bool SystemManager::readFromFile() {
         while (std::getline(ss, extractedValue, ',')) {
             if (extractedValue.empty()) continue;
 
-            if (indexCount == 0) {      // första värdet
+            if (loopCount == 0) {
                 timestamp = stoll(extractedValue);
-                indexCount++;
+                loopCount++;
                 continue;
             }
 
@@ -210,28 +219,42 @@ bool SystemManager::readFromFile() {
             fieldCount++;
             if (fieldCount == 5) {
                 if (!extractedValue.empty()) {
-                    database[timestamp].emplace_back(id, type, value, active, triggered);
+                    systemStateHistory[timestamp].emplace_back(id, type, value, active, triggered);
                 }
                 fieldCount = 0;
             }
-            indexCount++;
+            loopCount++;
         }
     }
-    // manager.loadSensors();
-    inFile.close();
-    return true;
+}
+
+void SystemManager::restoreSensors() {
+    std::vector<DataPoint> lastMeasure;
+    std::vector<Sensor> newSensorsList;
+    int newNextSensorId = 0;
+
+    for (const auto& pair : systemStateHistory) {
+        lastMeasure = pair.second;
+    }
+    for (const DataPoint& dp : lastMeasure) {
+        newSensorsList.emplace_back(dp.deviceId, dp.type);
+        if (newNextSensorId < dp.deviceId + 1) newNextSensorId = dp.deviceId + 1;
+    }
+    sensorsList = newSensorsList;
+    nextSensorId = newNextSensorId;
+    numSensors = sensorsList.size();
 }
 
 void SystemManager::resetSystem() {
     sensorsList.clear();
     numSensors = 0;
-    database.clear();
+    systemStateHistory.clear();
 }
 
 std::vector<std::vector<DataPoint>> SystemManager::sortData() {
     std::vector<std::vector<DataPoint>> sortedData(2);
 
-    for (auto& pair : database) {
+    for (auto& pair : systemStateHistory) {
         for (const DataPoint& dp : pair.second) {
             if (dp.type == 1) sortedData[0].push_back(dp);
             if (dp.type == 2) sortedData[1].push_back(dp);
@@ -247,7 +270,7 @@ std::vector<DataPoint> SystemManager::findData(std::string searchStr) {
     std::vector<DataPoint> dataFound;
 
     if (isDate(searchStr)) {
-        for (auto& pair : database) {
+        for (auto& pair : systemStateHistory) {
             if (readDate(pair.first) == searchStr) {
                 for (const DataPoint dp : pair.second) {
                     dataFound.push_back(dp);
@@ -255,7 +278,7 @@ std::vector<DataPoint> SystemManager::findData(std::string searchStr) {
             }
         }
     } else {
-        for (auto& pair : database) {
+        for (auto& pair : systemStateHistory) {
             for (const DataPoint dp : pair.second) {
                 if (dp.value == std::stof(searchStr)) {
                     dataFound.push_back(dp);

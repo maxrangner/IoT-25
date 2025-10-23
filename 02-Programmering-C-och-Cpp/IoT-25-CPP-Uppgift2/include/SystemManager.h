@@ -14,10 +14,11 @@ class SystemManager {
         int lastUpdateTime;
         std::vector<Sensor> sensorsList;
         std::time_t getTime();
-        
+        void fileToSystemStateHistory(std::ifstream& file);
+        void restoreSensors();
     public:
-        std::map<time_t,std::vector<DataPoint>> database;
         SystemManager();
+        std::map<time_t,std::vector<DataPoint>> systemStateHistory;
         int getNumSensors();
         int getNextSensorId();
         void addSensor(int type = 0);

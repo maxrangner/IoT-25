@@ -8,6 +8,12 @@
 
 UiManager::UiManager() : isRunning(true) {}
 
+void UiManager::greeting() {
+    std::cout << "***************************************\n"
+              << "********** SUPER SENSOR HUB ***********\n"
+              << "***************************************\n" << std::endl;
+}
+
 std::string UiManager::getInput(const std::vector<std::string>& valids, bool allowNonReturn) {
     std::string userInp;
     while (true) {
@@ -99,7 +105,7 @@ void UiManager::setSensorValue(SystemManager& manager) {
 }
 
 void UiManager::displayData(SystemManager& manager) {
-        for (auto& pair : manager.database) {
+        for (auto& pair : manager.systemStateHistory) {
             std::cout << "************** " << readTime(pair.first) << " **************\n";
             for (auto& v : pair.second) {
                 std::cout << "deviceId: " << v.deviceId << " | "
@@ -169,11 +175,11 @@ void UiManager::findData(SystemManager& manager) {
     }
 }
 
-void UiManager::saveData(SystemManager& manager) {
+void UiManager::saveSystemState(SystemManager& manager) {
     manager.writeToFile();
 }
 
-void UiManager::loadData(SystemManager& manager) {
+void UiManager::loadSystemState(SystemManager& manager) {
     manager.readFromFile();
 }
 
@@ -205,8 +211,8 @@ void UiManager::menuAction(SystemManager& manager, int chosenAction) {
         case MenuSelection::sortData: sortData(manager); break;
         case MenuSelection::findData: findData(manager); break;
         case MenuSelection::dispStats: displayStats(manager); break;
-        case MenuSelection::save: saveData(manager); break;
-        case MenuSelection::load: loadData(manager); break;
+        case MenuSelection::save: saveSystemState(manager); break;
+        case MenuSelection::load: loadSystemState(manager); break;
         case MenuSelection::quit: isRunning = false;
     }
 }
