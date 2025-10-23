@@ -25,12 +25,10 @@ TO DO:
   PRIO:
 - Add sort DataPoint
 - Add find DataPoint
-- Show formatted time
 
   BONUS:
 - Add error handling.
 - Restore sensors at file load
-- Clean up sensor printout
 - Add toggle sensor on / off
 - Add history graph
 - System reset option
@@ -41,5 +39,6 @@ ISSUES:
 
 BUGS:
 - When loading from fresh start, sensors are not added to sensorsList. Only database is filled.
+- Print out of database shows 20.0. Fix always show two decimals.
 
 */

@@ -1,27 +1,28 @@
 #include <iostream>
 #include <vector>
 #include <iomanip>
+
 #include "definitions.h"
 #include "functions.h"
 #include "UiManager.h"
 
 UiManager::UiManager() : isRunning(true) {}
 
-std::string UiManager::getInput(const std::vector<std::string>& valids) {
+std::string UiManager::getInput(const std::vector<std::string>& valids, bool allowNonReturn) {
     std::string userInp;
     while (true) {
         userInp = getLine();
-        if (userInp.empty()) return "";
+        if (userInp.empty() && allowNonReturn) return "";
         if (isValidChoice(userInp, valids)) return userInp;
         else std::cout << "Invalid input.\n";
     }
 }
 
-std::string UiManager::getInput(float min, float max) {
+std::string UiManager::getInput(float min, float max, bool allowNonReturn) {
     std::string userInp;
     while (true) {
         userInp = getLine();
-        if (userInp.empty()) return "";
+        if (userInp.empty() && allowNonReturn) return "";
         if (isValidNum(userInp, min, max)) return userInp;
         else std::cout << "Invalid input.\n";
     }
@@ -39,10 +40,20 @@ void UiManager::addSensor(SystemManager& manager) {
 }
 
 void UiManager::removeSensor(SystemManager& manager) {
+    if (manager.getSensorsList().size() <= 0) {
+        std::cout << "No sensors registered." << std::endl;
+        return;
+    }
+
     std::cout << "Enter Id for sensor to be removed. Leave empty to finish.\n";
 
     while (true) {
-        std::string userInp = getInput(0, manager.getSensorsList().size());
+        std::vector<std::string> validIds;
+        for (Sensor s : manager.getSensorsList()) {
+            std::string newId = std::to_string(s.getId());
+            validIds.push_back(newId);
+        }
+        std::string userInp = getInput(validIds);
         if (userInp.empty()) break;
         manager.removeSensor(std::stoi(userInp));
     }
@@ -78,16 +89,15 @@ void UiManager::setSensorValue(SystemManager& manager) {
 
 void UiManager::displayData(SystemManager& manager) {
         for (auto& pair : manager.database) {
-            std::cout << "Timestamp: " << pair.first << ":\n";
+            std::cout << "************** " << readTime(pair.first) << " **************\n";
             for (auto& v : pair.second) {
-                std::cout << "**************\n"
-                        << "deviceId: " << v.deviceId << " | "
-                        << "type: " << v.type << " | "
-                        << "value: " << v.value << " | "
-                        << "isActive: " << v.isActive << " | "
-                        << "isTriggered: " << v.isTriggered << "\n";
+                std::cout << "deviceId: " << v.deviceId << " | "
+                          << "type: " << convertSensorType(v.type) << ((v.type == 1) ? "" : "   ") << " | "
+                          << "value: " << v.value << " | "
+                          << "isActive: " << ((v.isActive) ? "true" : "false") << " | "
+                          << "isTriggered: " << ((v.isTriggered) ? "true" : "false") << "\n";
             }
-            std::cout << std::endl;
+            std::cout << std::endl;;
         }
 }
 
@@ -111,6 +121,23 @@ void UiManager::displayStats(SystemManager& manager) {
               << std::left << std::setw(spacing) << "Standard deviation:" << newStats.stdDeviationHumidity << std::endl;
 }
 
+void UiManager::sortData(SystemManager& manager) {
+    int index {};
+    for (const std::vector v : manager.sortData()) {
+        if (index == 0) std::cout << "*** TEMPERATURE ***" << std::endl;
+        if (index == 1) std::cout << "*** HUMIDITY ***" << std::endl;
+        for (const DataPoint dp : v) {
+            std::cout << "deviceId: " << dp.deviceId << " | "
+                      << "type: " << convertSensorType(dp.type) << ((dp.type == 1) ? "" : "   ") << " | "
+                      << "value: " << dp.value << " | "
+                      << "isActive: " << ((dp.isActive) ? "true" : "false") << " | "
+                      << "isTriggered: " << ((dp.isTriggered) ? "true" : "false") << "\n";
+        }
+        std::cout << std::endl;
+        index++;
+    }
+}
+
 void UiManager::saveData(SystemManager& manager) {
     manager.writeToFile();
 }
@@ -126,12 +153,13 @@ void UiManager::menu(SystemManager& manager) {
               << "3. collectReadings\n"
               << "4. setSensorValue\n" 
               << "5. dispData\n"
-              << "6. dispStats\n"
-              << "7. save\n"
-              << "8. load\n"
-              << "9. Quit\n";
+              << "6. sortData\n"
+              << "7. dispStats\n"
+              << "8. save\n"
+              << "9. load\n"
+              << "10. Quit\n";
 
-    std::string menuSelection = getInput(MenuSelection::startofMenu + 1, MenuSelection::endOfMenu - 1);
+    std::string menuSelection = getInput(MenuSelection::startofMenu + 1, MenuSelection::endOfMenu - 1, false);
     menuAction(manager, std::stoi(menuSelection));
 }
 
@@ -142,6 +170,7 @@ void UiManager::menuAction(SystemManager& manager, int chosenAction) {
         case MenuSelection::collectReadings: collectReadings(manager); break;
         case MenuSelection::setSensorValue: setSensorValue(manager); break;
         case MenuSelection::dispData: displayData(manager); break;
+        case MenuSelection::sortData: sortData(manager); break;
         case MenuSelection::dispStats: displayStats(manager); break;
         case MenuSelection::save: saveData(manager); break;
         case MenuSelection::load: loadData(manager); break;

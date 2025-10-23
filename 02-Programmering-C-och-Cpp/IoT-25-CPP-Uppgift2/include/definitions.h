@@ -4,6 +4,7 @@
 constexpr int NUM_DATAPOINTS = 5;
 constexpr int RANDOM_MIN = -100;
 constexpr int RANDOM_MAX = 100;
+constexpr int CHAR_ARRAY_SIZE = 50;
 
 enum sensorTypes : int{
     noType, // 0.
@@ -14,16 +15,17 @@ enum sensorTypes : int{
 };
 
 enum MenuSelection : int {
-    startofMenu, // 0.
+    startofMenu,
     addSensor, // 1.
     removeSensor, // 2.
     collectReadings, // 3.
     setSensorValue, // 4.
     dispData, // 5.
-    dispStats, // 6.
-    save, // 7.
-    load, // 8.
-    quit, // 9.
+    sortData, // 6.
+    dispStats, // 7.
+    save, // 8.
+    load, // 9.
+    quit, // 10.
     endOfMenu
 };
 

@@ -5,11 +5,12 @@
 #include <cmath>
 #include <fstream>
 #include <sstream>
+#include <algorithm>
 #include "Sensor.h"
 #include "SystemManager.h"
 
 // CONSTRUCTORS
-SystemManager::SystemManager() : numSensors(0) {}
+SystemManager::SystemManager() : numSensors(0), nextSensorId(0) {}
 
 // TOOLS
 std::time_t SystemManager::getTime() {
@@ -19,14 +20,15 @@ std::time_t SystemManager::getTime() {
 
 // SIMPLE GETTERS
 int SystemManager::getNumSensors() { return numSensors; }
-int SystemManager::nextSensorId() { return numSensors++; }
+int SystemManager::getNextSensorId() { return nextSensorId; }
+
 const std::vector<Sensor>& SystemManager::getSensorsList() {
     return sensorsList;
 }
 
 // FUNCTIONS
 void SystemManager::addSensor(int type) {
-    sensorsList.emplace_back(nextSensorId(), type);
+    sensorsList.emplace_back(nextSensorId++, type);
     numSensors = sensorsList.size();
 }
 
@@ -34,6 +36,7 @@ void SystemManager::removeSensor(int id) {
     for (int i = 0; i < sensorsList.size(); i++) {
         if (sensorsList[i].getId() == id) {
             sensorsList.erase(sensorsList.begin() + i);
+            numSensors -= 1;
             break;
         }
     }
@@ -223,4 +226,19 @@ void SystemManager::resetSystem() {
     sensorsList.clear();
     numSensors = 0;
     database.clear();
+}
+
+std::vector<std::vector<DataPoint>> SystemManager::sortData() {
+    std::vector<std::vector<DataPoint>> sortedData(2);
+
+    for (auto& pair : database) {
+        for (const DataPoint& dp : pair.second) {
+            if (dp.type == 1) sortedData[0].push_back(dp);
+            if (dp.type == 2) sortedData[1].push_back(dp);
+        }
+    }
+    std::sort(sortedData[0].begin(), sortedData[0].end(), [](const DataPoint& a, const DataPoint& b) {return a.value < b.value;});
+    std::sort(sortedData[1].begin(), sortedData[1].end(), [](const DataPoint& a, const DataPoint& b) {return a.value < b.value;});
+
+    return sortedData;
 }
