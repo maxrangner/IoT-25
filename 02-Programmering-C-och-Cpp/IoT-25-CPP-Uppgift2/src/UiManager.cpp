@@ -28,6 +28,17 @@ std::string UiManager::getInput(float min, float max, bool allowNonReturn) {
     }
 }
 
+std::string UiManager::getInput(bool allowNonReturn) {
+    std::string userInp;
+    while (true) {
+        userInp = getLine();
+        if (userInp.empty() && allowNonReturn) return "";
+        if (isDate(userInp)) return userInp;
+        if (isValidNum(userInp)) return userInp;
+        else std::cout << "Invalid input.\n";
+    }
+}
+
 void UiManager::addSensor(SystemManager& manager) {
     std::cout << "Add sensor: [t]emperature or [h]umidity. Leave empty to finish.\n";
 
@@ -82,7 +93,7 @@ void UiManager::setSensorValue(SystemManager& manager) {
     int userInp = std::stoi(getInput(0, manager.getNumSensors() - 1));
 
     std::cout << "Enter value: \n";
-    int newVal = std::stoi(getInput());
+    int newVal = std::stoi(getInput(DEFAULT_MIN_INPUT,DEFAULT_MAX_INPUT));
 
     manager.setSensorVal(userInp, newVal);        
 }
@@ -138,6 +149,26 @@ void UiManager::sortData(SystemManager& manager) {
     }
 }
 
+void UiManager::findData(SystemManager& manager) {
+    std::cout << "Find data: enter date (xxxx/xx/xx) or value.\n";
+
+    while (true) {
+        std::string userInp = getInput();
+        if (userInp.empty()) break;
+        if (isValidNum(userInp)) {
+            for (auto& v : manager.findData(userInp)) {
+                    std::cout << "deviceId: " << v.deviceId << " | "
+                            << "type: " << convertSensorType(v.type) << ((v.type == 1) ? "" : "   ") << " | "
+                            << "value: " << v.value << " | "
+                            << "isActive: " << ((v.isActive) ? "true" : "false") << " | "
+                            << "isTriggered: " << ((v.isTriggered) ? "true" : "false") << "\n";
+                }
+            std::cout << std::endl;;
+            return;
+        }
+    }
+}
+
 void UiManager::saveData(SystemManager& manager) {
     manager.writeToFile();
 }
@@ -154,10 +185,11 @@ void UiManager::menu(SystemManager& manager) {
               << "4. setSensorValue\n" 
               << "5. dispData\n"
               << "6. sortData\n"
-              << "7. dispStats\n"
-              << "8. save\n"
-              << "9. load\n"
-              << "10. Quit\n";
+              << "7. findData\n"
+              << "8. dispStats\n"
+              << "9. save\n"
+              << "10. load\n"
+              << "11. Quit\n";
 
     std::string menuSelection = getInput(MenuSelection::startofMenu + 1, MenuSelection::endOfMenu - 1, false);
     menuAction(manager, std::stoi(menuSelection));
@@ -171,6 +203,7 @@ void UiManager::menuAction(SystemManager& manager, int chosenAction) {
         case MenuSelection::setSensorValue: setSensorValue(manager); break;
         case MenuSelection::dispData: displayData(manager); break;
         case MenuSelection::sortData: sortData(manager); break;
+        case MenuSelection::findData: findData(manager); break;
         case MenuSelection::dispStats: displayStats(manager); break;
         case MenuSelection::save: saveData(manager); break;
         case MenuSelection::load: loadData(manager); break;
@@ -178,19 +211,3 @@ void UiManager::menuAction(SystemManager& manager, int chosenAction) {
     }
 }
 
-bool UiManager::isValidChoice(const std::string& inpStr, const std::vector<std::string>& valids) {
-    for (const std::string& s : valids) {
-        if (inpStr == s) return true;
-    }
-    return false;
-}
-
-bool UiManager::isValidNum(const std::string& inpStr, float min, float max) {
-    try {
-        float convertedVal = std::stof(inpStr);
-        if (convertedVal >= min && convertedVal <= max) return true;
-        return false;
-    } catch (...) {
-        return false;
-    }
-}

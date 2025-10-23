@@ -37,6 +37,13 @@ std::string readTime(std::time_t timestamp) {
     return time;
 }
 
+std::string readDate(std::time_t timestamp) {
+    struct tm currentTime = *localtime(&timestamp);
+    char time[CHAR_ARRAY_SIZE];
+    strftime(time, sizeof(time), "%Y/%m/%d", &currentTime);
+    return time;
+}
+
 std::string convertSensorType(int type) {
     switch (type)
     {
@@ -49,4 +56,31 @@ std::string convertSensorType(int type) {
     default:
         return "noType";
     }
+}
+
+bool isValidChoice(const std::string& inpStr, const std::vector<std::string>& valids) {
+    for (const std::string& s : valids) {
+        if (inpStr == s) return true;
+    }
+    return false;
+}
+
+bool isValidNum(const std::string& inpStr, float min, float max) {
+    try {
+        float convertedVal = std::stof(inpStr);
+        if (convertedVal >= min && convertedVal <= max) return true;
+        return false;
+    } catch (...) {
+        return false;
+    }
+}
+
+bool isDate(const std::string& userInp) { 
+    if (userInp.length() != 10) return false;
+    if (userInp.at(4) != '/' || userInp.at(7) != '/') return false;
+    for (int i = 0; i < 10; i++) {
+        if (i != 4 && i != 7 && !std::isdigit(userInp[i])) return false;
+    }
+
+    return true;
 }

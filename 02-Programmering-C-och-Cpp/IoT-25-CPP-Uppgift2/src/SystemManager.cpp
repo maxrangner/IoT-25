@@ -242,3 +242,26 @@ std::vector<std::vector<DataPoint>> SystemManager::sortData() {
 
     return sortedData;
 }
+
+std::vector<DataPoint> SystemManager::findData(std::string searchStr) {
+    std::vector<DataPoint> dataFound;
+
+    if (isDate(searchStr)) {
+        for (auto& pair : database) {
+            if (readDate(pair.first) == searchStr) {
+                for (const DataPoint dp : pair.second) {
+                    dataFound.push_back(dp);
+                }
+            }
+        }
+    } else {
+        for (auto& pair : database) {
+            for (const DataPoint dp : pair.second) {
+                if (dp.value == std::stof(searchStr)) {
+                    dataFound.push_back(dp);
+                }
+            }
+        }
+    }
+    return dataFound;
+}

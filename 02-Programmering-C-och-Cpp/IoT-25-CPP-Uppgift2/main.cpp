@@ -22,11 +22,6 @@ int main() {
 
 /*
 TO DO:
-  PRIO:
-- Add sort DataPoint
-- Add find DataPoint
-
-  BONUS:
 - Add error handling.
 - Restore sensors at file load
 - Add toggle sensor on / off

@@ -30,6 +30,7 @@ class SystemManager {
         void resetSystem();
         const std::vector<Sensor>& getSensorsList();
         std::vector<std::vector<DataPoint>> sortData();
+        std::vector<DataPoint> findData(std::string searchStr);
 };
 
 #endif
