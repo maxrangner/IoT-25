@@ -18,18 +18,20 @@ void UiManager::exitPrompt() {
 }
 
 void UiManager::menu(SystemManager& manager) {
+    int spacing = 4;
+
     std::cout << "\n*--- MENU ---*\n"
-              << "1. addSensor\n"
-              << "2. removeSensor\n"
-              << "3. collectReadings\n"
+              << std::left << std::setw(spacing) << "1." << "Add Sensor\n"
+              << std::left << std::setw(spacing) << "2." << "Remove Sensor\n"
+              << std::left << std::setw(spacing) << "3." << "Collect Readings\n"
             //   << "4. setSensorValue\n" 
-              << "4. dispData\n"
-              << "5. sortData\n"
-              << "6. findData\n"
-              << "7. dispStats\n"
-              << "8. save\n"
-              << "9. load\n"
-              << "10. Quit\n"
+              << std::left << std::setw(spacing) << "4." << "Display Collected Readings\n"
+              << std::left << std::setw(spacing) << "5." << "Sort Collected Readings\n"
+              << std::left << std::setw(spacing) << "6." << "Find Collected Readings\n"
+              << std::left << std::setw(spacing) << "7." << "Disp Statistics from Collected Readings\n"
+              << std::left << std::setw(spacing) << "8." << "Save System State\n"
+              << std::left << std::setw(spacing) << "9." << "Load System State\n"
+              << std::left << std::setw(spacing) << "10." << "Quit\n"
               << "*-----------*" << std::endl;
 
     std::string menuSelection = getInput(MenuSelection::startofMenu + 1, MenuSelection::endOfMenu - 1, false);
