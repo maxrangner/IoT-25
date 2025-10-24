@@ -2,13 +2,19 @@
 #include "Sensor.h"
 #include "functions.h"
 
-// CONSTRUCTORS
+/******************************************************
+********************* CONSTRUCTORS ********************
+******************************************************/
+
 Sensor::Sensor() : deviceId(0), type(0), value(0.0f), isActive(true), isTriggered(false) {}
 Sensor::Sensor(int id, int t) : deviceId(id), type(t), value(0.0f), isActive(true), isTriggered(false) {}
 Sensor::Sensor(int id, int t, float v, bool a, bool tr)
                  : deviceId(id), type(t), value(v), isActive(a), isTriggered(tr) {}
 
-// SIMPLE GETTERS
+/******************************************************
+*********************** GETTERS ***********************
+******************************************************/
+
 int Sensor::getId() { return deviceId; }
 int Sensor::getType() { return type; }
 DataPoint Sensor::getStatus() const {
@@ -21,7 +27,10 @@ DataPoint Sensor::getStatus() const {
             return newDP;
         }
 
-// FUNCTIONS
+/******************************************************
+********************* MAIN METHODS ********************
+******************************************************/
+
 void Sensor::setValue(float val) {
     value = val;
 }
@@ -40,10 +49,10 @@ void Sensor::updateReading() {
 }
 
 void Sensor::printInfo() {
-            std::cout << "************\n"
-                      << "deviceId: " << deviceId << "\n"
-                      << "type: " << type << "\n"
-                      << "value: " << value << "\n"
-                      << "isActive: " << isActive << "\n"
-                      << "isTriggered: " << isTriggered << "\n";
-        }
+    std::cout << "************\n"
+                << "deviceId: " << deviceId << "\n"
+                << "type: " << type << "\n"
+                << "value: " << value << "\n"
+                << "isActive: " << isActive << "\n"
+                << "isTriggered: " << isTriggered << "\n";
+}

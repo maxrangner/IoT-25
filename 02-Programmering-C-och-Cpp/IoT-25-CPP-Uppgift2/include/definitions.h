@@ -21,7 +21,6 @@ enum MenuSelection : int {
     addSensor, // 1.
     removeSensor, // 2.
     collectReadings, // 3.
-    // setSensorValue, // 4.
     dispData, // 4.
     sortData, // 5.
     findData, // 6.
@@ -30,12 +29,6 @@ enum MenuSelection : int {
     load, // 9.
     quit, // 10.
     endOfMenu
-};
-
-enum validatorType : int {
-    wholeNum = 1, // 1.
-    decimalNum, // 2.
-    text // 3.
 };
 
 struct DataPoint {

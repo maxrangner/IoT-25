@@ -5,12 +5,9 @@
 #include "functions.h"
 #include "definitions.h"
 
-std::string toLowerCase(std::string str) {
-    for (char& c : str) {
-        c = std::tolower(static_cast<unsigned char>(c));
-    }
-    return str;
-}
+/******************************************************
+************************ INPUTS ***********************
+******************************************************/
 
 float getRandomNumber(float min, float max) {
     static std::random_device randDevice;
@@ -28,6 +25,17 @@ std::string getLine() {
     std::getline(std::cin, userInp);
     userInp = toLowerCase(userInp);
     return userInp;
+}
+
+/******************************************************
+********************** CONVERTERS *********************
+******************************************************/
+
+std::string toLowerCase(std::string str) {
+    for (char& c : str) {
+        c = std::tolower(static_cast<unsigned char>(c));
+    }
+    return str;
 }
 
 std::string readTime(std::time_t timestamp) {
@@ -57,6 +65,10 @@ std::string convertSensorType(int type) {
         return "noType";
     }
 }
+
+/******************************************************
+********************** VALIDATORS *********************
+******************************************************/
 
 bool isValidChoice(const std::string& inpStr, const std::vector<std::string>& valids) {
     for (const std::string& s : valids) {

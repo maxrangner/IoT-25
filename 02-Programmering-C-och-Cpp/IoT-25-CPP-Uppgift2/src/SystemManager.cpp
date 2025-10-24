@@ -9,23 +9,40 @@
 #include "Sensor.h"
 #include "SystemManager.h"
 
-// CONSTRUCTORS
+/******************************************************
+********************* CONSTRUCTORS ********************
+******************************************************/
+
 SystemManager::SystemManager() : numSensors(0), nextSensorId(0) {}
 
-// TOOLS
+/******************************************************
+************************ TOOLS ************************
+******************************************************/
+
 std::time_t SystemManager::getTime() {
+
+/*
+time_t is used for data storage, and has to be converted to readable format when displayed.
+*/
+
     std::time_t timestamp = std::time(nullptr);
     return timestamp;
 }
 
-// SIMPLE GETTERS
+/******************************************************
+*********************** GETTERS ***********************
+******************************************************/
+
 int SystemManager::getNumSensors() { return numSensors; }
 int SystemManager::getNextSensorId() { return nextSensorId; }
 const std::vector<Sensor> SystemManager::getSensorsList() { return sensorsList; }
 
-// FUNCTIONS
+/******************************************************
+********************* CORE METHODS ********************
+******************************************************/
+
 void SystemManager::addSensor(int type) {
-    sensorsList.emplace_back(nextSensorId++, type);
+    sensorsList.emplace_back(nextSensorId++, type); // Creates a sensor object directly in the vector.
     numSensors = sensorsList.size();
 }
 
@@ -43,7 +60,7 @@ void SystemManager::collectReadings(int sensor) {
     std::time_t newTimestamp = getTime();
     std::vector<DataPoint> data;
 
-    if (sensor < 0) {
+    if (sensor < 0) { // If optional argument is left out, collect data from all Sensors. 
         for (Sensor& s : sensorsList) {
             if (s.getStatus().isActive) {
                 s.updateReading();
@@ -58,7 +75,7 @@ void SystemManager::collectReadings(int sensor) {
     systemStateHistory[newTimestamp] = data;
 }
 
-void SystemManager::setSensorVal(int id, float val) {
+void SystemManager::setSensorVal(int id, float val) { // Debug feature. Not used.
     for (int i = 0; i < sensorsList.size(); i++) {
         if (sensorsList[i].getId() == id) {
             sensorsList[i].setValue(val);
@@ -76,12 +93,17 @@ void SystemManager::setSensorVal(int id, float val) {
 }
 
 std::vector<std::vector<DataPoint>> SystemManager::sortData() {
+
+/*
+Collects all sensor readings in a multi dimentional vector, sorted by Sensor type.
+*/
+
     std::vector<std::vector<DataPoint>> sortedData(2);
 
     for (auto& pair : systemStateHistory) {
         for (const DataPoint& dp : pair.second) {
-            if (dp.type == 1) sortedData[0].push_back(dp);
-            if (dp.type == 2) sortedData[1].push_back(dp);
+            if (dp.type == sensorTypes::temperatureSensor) sortedData[0].push_back(dp);
+            if (dp.type == sensorTypes::humiditySensor) sortedData[1].push_back(dp);
         }
     }
     std::sort(sortedData[0].begin(), sortedData[0].end(), [](const DataPoint& a, const DataPoint& b) {return a.value < b.value;});
@@ -93,16 +115,16 @@ std::vector<std::vector<DataPoint>> SystemManager::sortData() {
 std::vector<DataPoint> SystemManager::findData(std::string searchStr) {
     std::vector<DataPoint> dataFound;
     if (isDate(searchStr)) {
-        for (auto& pair : systemStateHistory) {
-            if (readDate(pair.first) == searchStr) {
-                for (const DataPoint dp : pair.second) {
+        for (auto& [timestamp, DataPointVector] : systemStateHistory) {
+            if (readDate(timestamp) == searchStr) {
+                for (const DataPoint dp : DataPointVector) {
                     dataFound.push_back(dp);
                 }
             }
         }
     } else {
-        for (auto& pair : systemStateHistory) {
-            for (const DataPoint dp : pair.second) {
+        for (auto& [timestamp, DataPointVector] : systemStateHistory) {
+            for (const DataPoint dp : DataPointVector) {
                 if (dp.value == std::stof(searchStr)) {
                     dataFound.push_back(dp);
                 }
@@ -123,10 +145,8 @@ Statistics SystemManager::getStatistics() {
     bool firstTemperatureRun = true;
     bool firstHumidityRun = true;
 
-    for (const auto& pair : systemStateHistory) {
-        std::time_t timestamp = pair.first;
-        const std::vector<DataPoint>& readings = pair.second;
-        for (const DataPoint& dp : readings) {
+    for (const auto& [timestamp, DataPointVector] : systemStateHistory) {
+        for (const DataPoint& dp : DataPointVector) {
             if (dp.type == 1) {
                 if (firstTemperatureRun) {
                     outputStats.minValTemperature = dp.value;
@@ -166,10 +186,8 @@ Statistics SystemManager::getStatistics() {
     if (outputStats.numTemperaturePoints) outputStats.averageTemperature = outputStats.sumTemperature / outputStats.numTemperaturePoints;
     if (outputStats.numHumidityPoints) outputStats.averageHumidity = outputStats.sumHumidity / outputStats.numHumidityPoints;
 
-    for (const auto& pair : systemStateHistory) {
-        std::time_t timestamp = pair.first;
-        const std::vector<DataPoint>& readings = pair.second;
-        for (const DataPoint& dp : readings) {
+    for (const auto& [timestamp, DataPointVector] : systemStateHistory) {
+        for (const DataPoint& dp : DataPointVector) {
             if (dp.type == 1) {
                 outputStats.varianceTemperature += (dp.value - outputStats.averageTemperature) * (dp.value - outputStats.averageTemperature);
             }
@@ -187,18 +205,22 @@ Statistics SystemManager::getStatistics() {
     return outputStats;
 }
 
+/******************************************************
+*********************** FILE I/O **********************
+******************************************************/
+
 bool SystemManager::writeToFile() {
     std::ofstream outFile("data.txt");
     if (!outFile) return false;
 
-    for (auto& pair : systemStateHistory) {
-        outFile << pair.first << ",";
-        for (DataPoint DP : pair.second) {
-            outFile << DP.deviceId << ","
-                    << DP.type << ","
-                    << DP.value << ","
-                    << DP.isActive << ","
-                    << DP.isTriggered << ",";
+    for (auto& [timestamp, DataPointVector] : systemStateHistory) {
+        outFile << timestamp << ",";
+        for (DataPoint dp : DataPointVector) {
+            outFile << dp.deviceId << ","
+                    << dp.type << ","
+                    << dp.value << ","
+                    << dp.isActive << ","
+                    << dp.isTriggered << ",";
         }
         outFile << std::endl;
     }
@@ -220,6 +242,12 @@ bool SystemManager::readFromFile() {
 }
 
 void SystemManager::fileToSystemStateHistory(std::ifstream& file) {
+
+/*
+Reconstructs the DataPoints from saved systemStateHistory, and 
+*/
+    // systemStateHistory.clear(); // Needed?
+
     std::string newLine;
     while(std::getline(file, newLine)) {
         std::stringstream ss(newLine);
@@ -263,13 +291,22 @@ void SystemManager::fileToSystemStateHistory(std::ifstream& file) {
     }
 }
 
+/******************************************************
+************************ OTHER ************************
+******************************************************/
+
 void SystemManager::restoreSensors() {
+
+/*
+Restore the Sensors from the last snapshot in systemStateHistory.
+*/
+
     std::vector<DataPoint> lastMeasure;
     std::vector<Sensor> newSensorsList;
     int newNextSensorId = 0;
 
-    for (const auto& pair : systemStateHistory) {
-        lastMeasure = pair.second;
+    for (const auto& [timestamp, DataPointVector] : systemStateHistory) {
+        lastMeasure = DataPointVector;
     }
     for (const DataPoint& dp : lastMeasure) {
         newSensorsList.emplace_back(dp.deviceId, dp.type);
