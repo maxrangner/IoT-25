@@ -101,7 +101,6 @@ std::vector<DataPoint> SystemManager::findData(std::string searchStr) {
             }
         }
     } else {
-        std::cout << "else\n";
         for (auto& pair : systemStateHistory) {
             for (const DataPoint dp : pair.second) {
                 if (dp.value == std::stof(searchStr)) {
@@ -110,6 +109,9 @@ std::vector<DataPoint> SystemManager::findData(std::string searchStr) {
             }
         }
     }
+    // if (dataFound.empty()) {
+    //     std::cout << "No data to process." << std::endl;
+    // }
     return dataFound;
 }
 

@@ -184,6 +184,10 @@ void UiManager::displayStats(SystemManager& manager) {
 }
 
 void UiManager::sortData(SystemManager& manager) {
+    if (manager.systemStateHistory.empty()) {
+        std::cout << "No data to process." << std::endl;
+        return;
+    }
     int index {};
     for (const std::vector v : manager.sortData()) {
         if (index == 0) std::cout << "*--------------- TEMPERATURE --------------*" << std::endl;
