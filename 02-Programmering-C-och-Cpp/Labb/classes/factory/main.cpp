@@ -12,13 +12,17 @@ int main() {
     Assembler myAssembler;
     MachineComponentMotor* a = new MachineComponentMotor(10);
     MachineComponentBattery* b = new MachineComponentBattery(2);
+    MachineComponentBattery* c = new MachineComponentBattery(5);
 
-    myMachine.addComponent(a);
-    myMachine.addComponent(b);
-    myMachine.viewComponents();
 
-    // myMachine.operate();
-    // myAssembler.operate(a, b);
+    myAssembler.addComponent(a);
+    myAssembler.addComponent(b);
+    myAssembler.viewComponents();
+    myAssembler.addComponent(c);
+    myAssembler.viewComponents();
+
+    // myMachine.use();
+    // myAssembler.use(a, b);
 
     return 0;
 }

@@ -8,17 +8,19 @@
 
 // PARENT
 class Machine {
-    private:
-        std::vector<std::string> acceptedComponents {"motor", "battery"};
-    protected:
+     protected:
         std::string machineType;
-        bool isOn;
+        std::vector<std::string> compatibleComponents {"motor", "battery"};
         std::vector<MachineComponent*> installedParts;
+        bool isOn;
+        
     public:
-        Machine(std::string type = "genericMachine");
+        Machine(std::string type = "genericMachine", std::vector<std::string> compatible = {"motor", "battery"});
         std::string getType() const;
-        void operate();
+        void use();
+        bool isAcceptedComponent(std::string input, const std::vector<std::string>& compatibleComponents);
         void addComponent (MachineComponent* newComp);
+        void removeComponent(MachineComponent* compToRemove);
         void viewComponents();
         virtual ~Machine();
 };
@@ -27,7 +29,7 @@ class Machine {
 class Assembler : public Machine {
     public:
         Assembler();
-        void operate(MachineComponent& a, MachineComponent& b);
+        void use(MachineComponent& a, MachineComponent& b);
 };
 
 #endif

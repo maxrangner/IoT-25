@@ -10,6 +10,7 @@ class MachineComponent {
     private:
         std::string partType;
         int weight;
+        
     public:
         MachineComponent(int w = 0, std::string t = "genericPart");
         virtual void sound();

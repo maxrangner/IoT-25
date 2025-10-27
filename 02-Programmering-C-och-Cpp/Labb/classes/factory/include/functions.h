@@ -3,6 +3,6 @@
 #include <iostream>
 #include <vector>
 
-bool isAcceptedComponent(std::string input, const std::vector<std::string>& acceptedComponents);
+bool isAcceptedComponent(std::string input, const std::vector<std::string>& compatibleComponents);
 
 #endif
