@@ -33,12 +33,25 @@ public:
 // CHILDREN
 class Assembler : public Machine {
 private:
-
+    std::vector<MachineComponent*> inPossessionOf;
 public:
     // CONSTRUCTORS
     Assembler();
     // CORE
     void use() override;
+};
+
+// CHILDREN
+class Grabber : public Machine {
+private:
+    MachineComponent* inPossessionOf;
+public:
+    // CONSTRUCTORS
+    Grabber();
+    // CORE
+    void use() override;
+    void grab(MachineComponent*);
+    void give(MachineComponent*);
 };
 
 #endif

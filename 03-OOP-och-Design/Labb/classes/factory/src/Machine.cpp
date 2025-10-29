@@ -71,10 +71,32 @@ Machine::~Machine() {};
 
 // CHILDREN
 Assembler::Assembler() : Machine("MachineAssembler") {}
-void Assembler::use() {
+    void Assembler::use() {
+        if (!hasCorrectComponents()) {
+            std::cout << "Not enough components.\n"; 
+            return;
+        }
+        std::cout << "Working!\n";
+}
+Grabber::Grabber() : Machine("MachineGrabber") {}
+void Grabber::use() {
     if (!hasCorrectComponents()) {
         std::cout << "Not enough components.\n"; 
         return;
     }
     std::cout << "Working!\n";
-}
+};
+void Grabber::grab(MachineComponent*) {
+    if (!hasCorrectComponents()) {
+        std::cout << "Not enough components.\n"; 
+        return;
+    }
+    std::cout << "Grabbing!\n";
+};
+void Grabber::give(MachineComponent*) {
+    if (!hasCorrectComponents()) {
+            std::cout << "Not enough components.\n"; 
+            return;
+        }
+        std::cout << "Giving!\n";
+};

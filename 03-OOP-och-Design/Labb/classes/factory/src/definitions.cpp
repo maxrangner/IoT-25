@@ -6,6 +6,5 @@
 std::map<std::string, std::vector<std::string>> recepies = {
    {"genericMachine", {}},
    {"MachineAssembler", {"motor", "battery"}}, 
-   {"MachineWelder", {"motor", "battery"}},
-   {"MachineCutter", {"motor", "battery", "cutter"}}
+   {"MachineGrabber", {"motor", "battery", "gripper"}},
 };
