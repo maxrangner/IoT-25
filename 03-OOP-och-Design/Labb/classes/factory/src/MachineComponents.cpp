@@ -18,3 +18,9 @@ MachineComponentBattery::MachineComponentBattery(int w, std::string t) : Machine
 void MachineComponentBattery::sound() {
     std::cout << "B says FZZZ!\n";
 }
+
+MachineComponentGripper::MachineComponentGripper(int w, std::string t) : MachineComponent(w, t) {}
+void MachineComponentGripper::sound() {
+    std::cout << "B says CLOMP!\n";
+}
+
