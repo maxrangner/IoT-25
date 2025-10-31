@@ -1,13 +1,7 @@
-#include <iostream>
 #include <iomanip>
-#include "UiManager.h"
-#include "SensorHub.h"
+#include "Display.h"
 
-UiManager::UiManager(SensorHub& hub) {
-    menuMap["1"] = hub.addSensor;
-}
-
-void UiManager::menu(SensorHub& hub) {
+void Display::printMenu() {
     int spacing = 4;
 
     std::cout << "\n*--- MENU ---*\n"
@@ -20,20 +14,10 @@ void UiManager::menu(SensorHub& hub) {
               << std::left << std::setw(spacing) << "7." << "Save / load System State\n"
               << std::left << std::setw(spacing) << "8." << "Quit\n"
               << "*-----------*" << std::endl;
-    
-    // menuSelection("1");
 }
-void UiManager::menuAction(SensorHub& hub, int chosenAction) {
-    switch (chosenAction) { 
-        case 1: break;
-        case 2: break;
-        case 3: break;
-        case 4: break;
-        case 5: break;
-        case 6: break;
-        case 7: break;
-        case 8: isRunning = false;
-    }
+
+void Display::printHeader(std::string text) {
+    std::cout << "\n***************************************\n"
+              << "********" << text << "********\n"
+              << "***************************************\n" << std::endl;
 }
-}
-void UiManager::triggerFunction() {}
