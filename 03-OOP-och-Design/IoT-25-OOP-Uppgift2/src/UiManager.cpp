@@ -1,10 +1,12 @@
 #include <iostream>
 #include "UiManager.h"
+#include "definitions.h"
 
 UiManager::UiManager() {
     isRunning = true;
-    connectedHub = nullptr;
-    connectedDisplay = nullptr;
+    // connectedHub = nullptr;
+    // connectedDisplay = nullptr;
+    menuChoice = 0;
 }
 UiManager::UiManager(SensorHub& hub, Display& disp) {
     isRunning = true;
@@ -16,26 +18,55 @@ void UiManager::greeting() {
     connectedDisplay->printHeader("Welcome!");
 }
 
+bool UiManager::isRunning() { return isRunning; }
+
 void UiManager::menu() {
-    if (connectedDisplay == nullptr) {
-       std::cout << "No display setup." << std::endl;
-       return;
-    }
     connectedDisplay->printMenu();
+    getMenuInput();
+    menuAction();
 }
 void UiManager::menuAction() {
-    // switch () { 
-    //     case 1: break;
-    //     case 2: break;
-    //     case 3: break;
-    //     case 4: break;
-    //     case 5: break;
-    //     case 6: break;
-    //     case 7: break;
-    //     case 8: isRunning = false; break;
-    // }
+    switch (menuChoice) { 
+        case MenuOptions::addRemove: std::cout << "addRemove"; break; // 1.
+        case MenuOptions::updateInterval: std::cout << "updateInterval"; break; // 2.
+        case MenuOptions::graph: break; // 3.
+        case MenuOptions::stats: break; // 4.
+        case MenuOptions::searchTime: break; // 5.
+        case MenuOptions::searchVal: break; // 6.
+        case MenuOptions::saveLoad: break; // 7.
+        case MenuOptions::quit: isRunning = false; break; // 8.
+    }
 }
 
 void UiManager::getMenuInput() {
+    std::string userInput = "";
+    int min = MenuOptions::startOfMenu;
+    int max = MenuOptions::endOfmenu;
+    while(true) {
+        std::cout << "> ";
+        std::getline(std::cin, userInput);
+        try {
+            int convertedUserInput = std::stoi(userInput);
+            if (!isValidInt(convertedUserInput, min, max)) {
+                throw std::invalid_argument("");
+            }
+            menuChoice = convertedUserInput;
+            break;
+        } catch (...) {
+            std::cout << "Please enter a digit between " << min + 1 << " and " << max - 1 << std::endl;
+        }
+    }
+}
 
+bool UiManager::isValidInt(int input, int min, int max) {
+    if (input > min && input < max) {
+        return true;
+    } else return false;
+}
+
+bool UiManager::isValidInt(std::string input, int min, int max) {
+    int convertedInput = std::stoi(input);
+    if (convertedInput > min && convertedInput < max) {
+        return true;
+    } else return false;
 }
