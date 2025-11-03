@@ -3,27 +3,32 @@
 #include "definitions.h"
 
 UiManager::UiManager() {
-    isRunning = true;
+    isRunning_ = true;
     // connectedHub = nullptr;
     // connectedDisplay = nullptr;
     menuChoice = 0;
 }
 UiManager::UiManager(SensorHub& hub, Display& disp) {
-    isRunning = true;
+    isRunning_ = true;
     connectedHub = &hub;
     connectedDisplay = &disp;
 }
 
-void UiManager::greeting() {
+void UiManager::greeting() const {
     connectedDisplay->printHeader("Welcome!");
 }
 
-bool UiManager::isRunning() { return isRunning; }
+void UiManager::quitProcess() {}
 
-void UiManager::menu() {
-    connectedDisplay->printMenu();
-    getMenuInput();
-    menuAction();
+bool UiManager::isRunning() const { return isRunning_; }
+
+bool UiManager::run() {
+    while(true) {
+        connectedDisplay->printMenu();
+        getMenuInput();
+        menuAction(); 
+    }
+
 }
 void UiManager::menuAction() {
     switch (menuChoice) { 
@@ -34,7 +39,7 @@ void UiManager::menuAction() {
         case MenuOptions::searchTime: break; // 5.
         case MenuOptions::searchVal: break; // 6.
         case MenuOptions::saveLoad: break; // 7.
-        case MenuOptions::quit: isRunning = false; break; // 8.
+        case MenuOptions::quit: isRunning_ = false; break; // 8.
     }
 }
 

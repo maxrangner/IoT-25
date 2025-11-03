@@ -5,9 +5,7 @@ SystemManager::SystemManager() : ui(hub, display){
 
 
 void SystemManager::run() {
-    std::string temp;
-    while(true) {
-        ui.menu();
-        std::cin >> temp;
-    }
+    ui.greeting();
+    ui.run();
+    ui.quitProcess();
 }

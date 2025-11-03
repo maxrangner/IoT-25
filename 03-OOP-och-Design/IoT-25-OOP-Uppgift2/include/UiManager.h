@@ -10,9 +10,10 @@ class UiManager {
 public:
     UiManager();  
     UiManager(SensorHub& hub, Display& disp);
-    void greeting();
-    bool isRunning();
-    bool showMenu();
+    void greeting() const;
+    void quitProcess();
+    bool isRunning() const;
+    bool run();
     void menuAction();
     void getMenuInput();
     bool isValidInt(int input, int min, int max);
