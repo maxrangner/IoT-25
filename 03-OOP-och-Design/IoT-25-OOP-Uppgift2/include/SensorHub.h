@@ -1,10 +1,11 @@
 #pragma once
 #include <vector>
+#include <memory>
 #include "Sensor.h"
 #include "TemperatureSensor.h"
 
 class SensorHub {
-    std::vector<Sensor*> mySensors;
+    std::vector<std::unique_ptr<Sensor>> mySensors;
 public:
     void addSensor();
     void removeSensor(int id);

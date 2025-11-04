@@ -1,7 +1,7 @@
 #include <iomanip>
 #include "Display.h"
 
-void Display::printMenu() {
+void Display::printMenu() const {
     int spacing = 4;
 
     std::cout << "\n*--- MENU ---*\n"
@@ -16,8 +16,16 @@ void Display::printMenu() {
               << "*-----------*" << std::endl;
 }
 
-void Display::printHeader(std::string text) {
+void Display::printHeader(const std::string& text) const {
     std::cout << "\n***************************************\n"
               << "********" << text << "********\n"
               << "***************************************\n" << std::endl;
+}
+
+void Display::printMessage(const std::string& text) const {
+    std::cout << text << std::endl;
+}
+
+void clear() {
+    std::cout << "\033c";
 }

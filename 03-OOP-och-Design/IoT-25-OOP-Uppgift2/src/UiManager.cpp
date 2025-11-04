@@ -1,12 +1,13 @@
 #include <iostream>
 #include "UiManager.h"
 #include "definitions.h"
+#include "InputHandler.h"
 
 UiManager::UiManager() {
     isRunning_ = true;
     // connectedHub = nullptr;
     // connectedDisplay = nullptr;
-    menuChoice = 0;
+    menuChoice = MenuOptions::startOfMenu;
 }
 UiManager::UiManager(SensorHub& hub, Display& disp) {
     isRunning_ = true;
@@ -25,15 +26,38 @@ bool UiManager::isRunning() const { return isRunning_; }
 bool UiManager::run() {
     while(true) {
         connectedDisplay->printMenu();
-        getMenuInput();
+        getMenuSelection();
         menuAction(); 
     }
-
 }
+
+void UiManager::getMenuSelection() {
+    int min = static_cast<int>(MenuOptions::startOfMenu) + 1;
+    int max = static_cast<int>(MenuOptions::endOfmenu) - 1;
+    FunctionReturnStatus menuStatus;
+
+    do {
+        std::string userInput = "";
+        std::cout << "> ";
+        std::getline(std::cin, userInput);
+        menuStatus = InputHandler.validateInt(userInput, min, max);
+
+        if (menuStatus == FunctionReturnStatus::failInvalidInput) {
+            std::string text = "Please enter a digit between " + std::to_string(min) + " and " + std::to_string(max) + ".";
+            connectedDisplay->printMessage(text);
+        } else if (menuStatus == FunctionReturnStatus::failOutOfRange) {
+            std::string text = "Please enter a smaller number.";
+            connectedDisplay->printMessage(text);
+        }
+    } while (menuStatus != FunctionReturnStatus::success);
+}
+
+
+
 void UiManager::menuAction() {
     switch (menuChoice) { 
-        case MenuOptions::addRemove: std::cout << "addRemove"; break; // 1.
-        case MenuOptions::updateInterval: std::cout << "updateInterval"; break; // 2.
+        case MenuOptions::addRemove: std::cout << "addRemove\n"; connectedHub->addSensor(); break; // 1.
+        case MenuOptions::updateInterval: std::cout << "updateInterval\n"; connectedHub->printAllInfo(); break; // 2.
         case MenuOptions::graph: break; // 3.
         case MenuOptions::stats: break; // 4.
         case MenuOptions::searchTime: break; // 5.
@@ -41,37 +65,4 @@ void UiManager::menuAction() {
         case MenuOptions::saveLoad: break; // 7.
         case MenuOptions::quit: isRunning_ = false; break; // 8.
     }
-}
-
-void UiManager::getMenuInput() {
-    std::string userInput = "";
-    int min = MenuOptions::startOfMenu;
-    int max = MenuOptions::endOfmenu;
-    while(true) {
-        std::cout << "> ";
-        std::getline(std::cin, userInput);
-        try {
-            int convertedUserInput = std::stoi(userInput);
-            if (!isValidInt(convertedUserInput, min, max)) {
-                throw std::invalid_argument("");
-            }
-            menuChoice = convertedUserInput;
-            break;
-        } catch (...) {
-            std::cout << "Please enter a digit between " << min + 1 << " and " << max - 1 << std::endl;
-        }
-    }
-}
-
-bool UiManager::isValidInt(int input, int min, int max) {
-    if (input > min && input < max) {
-        return true;
-    } else return false;
-}
-
-bool UiManager::isValidInt(std::string input, int min, int max) {
-    int convertedInput = std::stoi(input);
-    if (convertedInput > min && convertedInput < max) {
-        return true;
-    } else return false;
 }

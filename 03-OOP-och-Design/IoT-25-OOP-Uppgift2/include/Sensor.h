@@ -16,6 +16,6 @@ protected:
 public:
     Sensor();
     void printInfo();
-    int getSensorId();
+    int getSensorId() const;
     virtual Measurement read() = 0;
 };

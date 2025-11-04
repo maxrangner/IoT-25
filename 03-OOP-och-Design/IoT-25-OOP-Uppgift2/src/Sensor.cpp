@@ -8,7 +8,7 @@ int Sensor::getNextId() {
 }
 
 int Sensor::nextId = 0;
-int Sensor::getSensorId() {
+int Sensor::getSensorId() const {
     return sensorId;
 }
 void Sensor::printInfo() {
