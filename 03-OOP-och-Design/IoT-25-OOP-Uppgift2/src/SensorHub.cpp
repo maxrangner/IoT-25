@@ -21,3 +21,7 @@ void SensorHub::printAllInfo() {
         s->printInfo();
     }
 }
+
+const std::vector<std::unique_ptr<Sensor>>& SensorHub::getSensorsList() const {
+    return mySensors;
+}

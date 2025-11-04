@@ -26,6 +26,6 @@ void Display::printMessage(const std::string& text) const {
     std::cout << text << std::endl;
 }
 
-void clear() {
+void Display::clear() {
     std::cout << "\033c";
 }

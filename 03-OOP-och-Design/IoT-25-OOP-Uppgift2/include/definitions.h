@@ -14,12 +14,24 @@ enum class MenuOptions {
 };
 
 enum class FunctionReturnStatus {
-    success, // 0.
-    failInvalidInput, // 1.
-    failOutOfRange // 2.
+    success,
+    fail,
+    none
+    // failInvalidInput,
+    // failOutOfRange
 };
 
-struct InputResult {
+struct InputIntResult {
     FunctionReturnStatus status;
     int result;
+};
+
+struct InputStringResult {
+    FunctionReturnStatus status;
+    std::string result;
+};
+
+struct InputIntOrStringResult {
+    FunctionReturnStatus status;
+    std::string result;
 };
