@@ -1,21 +1,29 @@
 #pragma once
-#include "Measurement.h"
+#include <map>
+#include "definitions.h"
 
 class Sensor {
 protected:
+    // PROPERTIES
     int sensorId;
-    std::string sensorType;
+    SensorType sensorType;
     std::string sensorUnit;
-
     float minMeasure;
     float maxMeasure; 
-    bool isActive;
+    bool isActive_;
 
+    // CORE
     static int nextId;
     int getNextId();
 public:
+    // CONSTRUCTOR
     Sensor();
+
+    //GETTERS
     void printInfo();
     int getSensorId() const;
+    std::map<std::string, std::string> getInfo();
+
+    // CORE
     virtual Measurement read() = 0;
 };

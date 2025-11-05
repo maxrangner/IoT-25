@@ -3,7 +3,7 @@
 #include "Sensor.h"
 #include "SensorHub.h"
 #include "TemperatureSensor.h"
-#include "Measurement.h"
+#include "definitions.h"
 #include "UiManager.h"
 #include "Display.h"
 #include "utils.h"

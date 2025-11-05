@@ -1,17 +1,17 @@
 #include <iostream>
 #include "Sensor.h"
-#include "TemperatureSensor.h"
+#include "HumiditySensor.h"
 #include "definitions.h"
 
-TemperatureSensor::TemperatureSensor() {
+HumiditySensor::HumiditySensor() {
     sensorId = getNextId();
-    sensorType = SensorType::temperatureSensor;
-    sensorUnit = "C";
+    sensorType = SensorType::humiditySensor;
+    sensorUnit = "%";
     minMeasure = 0.0f;
     maxMeasure = 100.0f; 
     isActive_ = true;
 }
-Measurement TemperatureSensor::read() {
+Measurement HumiditySensor::read() {
     Measurement newMeasurement;
     newMeasurement.sensorId = sensorId;
     newMeasurement.sensorType = sensorType;

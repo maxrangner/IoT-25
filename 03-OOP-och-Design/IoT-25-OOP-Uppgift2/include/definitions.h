@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 
 enum class MenuOptions {
     startOfMenu, // 0.
@@ -19,6 +20,21 @@ enum class FunctionReturnStatus {
     none
     // failInvalidInput,
     // failOutOfRange
+};
+
+enum class SensorType {
+    temperatureSensor,
+    humiditySensor,
+    motionSensor,
+    waterSensor
+};
+
+struct Measurement {
+    int sensorId;
+    SensorType sensorType;
+    std::string sensorUnit;
+    float value;
+    time_t timestamp;
 };
 
 struct InputIntResult {

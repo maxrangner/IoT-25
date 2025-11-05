@@ -2,10 +2,13 @@
 #include <iostream>
 #include <string>
 #include "SensorHub.h"
-#include "Sensor.h"
+#include "TemperatureSensor.h"
+#include "HumiditySensor.h"
 
-void SensorHub::addSensor() {
-    mySensors.emplace_back(std::make_unique<TemperatureSensor>());
+void SensorHub::addSensor(SensorType type) {
+    if (type == SensorType::temperatureSensor) mySensors.emplace_back(std::make_unique<TemperatureSensor>());
+    if (type == SensorType::humiditySensor) mySensors.emplace_back(std::make_unique<HumiditySensor>());
+    
 }
 
 void SensorHub::removeSensor(int id) {

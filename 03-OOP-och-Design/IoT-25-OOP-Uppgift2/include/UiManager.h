@@ -27,10 +27,11 @@ public:
     void quitProcess();
     
     // CORE
-    bool run();
+    void run();
     MenuOptions getMenuSelection();
     void menuAction(MenuOptions choice);
 
     // ACTIONS
     void addRemoveSensors();
+    void showAll();
 };

@@ -5,9 +5,6 @@
 
 UiManager::UiManager() {
     isRunning_ = true;
-    // connectedHub = nullptr;
-    // connectedDisplay = nullptr;
-    // menuChoice = MenuOptions::startOfMenu;
 }
 UiManager::UiManager(SensorHub& hub, Display& disp) {
     isRunning_ = true;
@@ -25,8 +22,9 @@ void UiManager::quitProcess() {
 
 bool UiManager::isRunning() const { return isRunning_; }
 
-bool UiManager::run() {
+void UiManager::run() {
     while(isRunning_) {
+        // connectedDisplay->clear();
         connectedDisplay->printMenu();
         MenuOptions choice = getMenuSelection();
         menuAction(choice); 
@@ -52,25 +50,26 @@ MenuOptions UiManager::getMenuSelection() {
 void UiManager::menuAction(MenuOptions choice) {
     switch (choice) { 
         case MenuOptions::addRemove: addRemoveSensors(); break; // 1.
-        case MenuOptions::updateInterval: std::cout << "updateInterval\n"; connectedHub->printAllInfo(); break; // 2.
+        case MenuOptions::updateInterval: showAll(); break; // 2.
         case MenuOptions::graph: break; // 3.
         case MenuOptions::stats: break; // 4.
         case MenuOptions::searchTime: break; // 5.
         case MenuOptions::searchVal: break; // 6.
         case MenuOptions::saveLoad: break; // 7.
-        case MenuOptions::quit: quitProcess(); isRunning_ = false; break; // 8.
+        case MenuOptions::quit: isRunning_ = false; break; // 8.
     }
 }
 
 void UiManager::addRemoveSensors() {
-    connectedDisplay->printMessage("\nTo add sensor: [t]emperature sensor, [h]umidity sensor.\nTo remove: enter sensor Id.\nPress [return] to finish");
+    connectedDisplay->printHeader("Add / Remove Sensors");
+    connectedDisplay->printMessage("To add sensor: [t]emperature sensor, [h]umidity sensor.\nTo remove: enter sensor Id.\nPress [return] to finish.");
     InputStringResult inputCommand;
     std::vector<std::string> validInputs;
 
     do { // Loops until successful input
         validInputs.clear();
         for (const auto& s : connectedHub->getSensorsList()) {
-            validInputs.emplace_back(s->getSensorId());
+            validInputs.emplace_back(std::to_string(s->getSensorId()));
         }
         validInputs.emplace_back("t");
         validInputs.emplace_back("h");
@@ -79,19 +78,35 @@ void UiManager::addRemoveSensors() {
         switch (inputCommand.status) {
             case FunctionReturnStatus::none: break;
             case FunctionReturnStatus::success: {
-                if (inputCommand.result == "t") {
-                    connectedHub->addSensor();
+                if (inputCommand.result == "t"){
+                    connectedHub->addSensor(SensorType::temperatureSensor);
+                    connectedDisplay->printMessage("Temperature sensor added");
+                    break;
                 }
                 if (inputCommand.result == "h") {
-                    connectedHub->addSensor();
+                    connectedHub->addSensor(SensorType::humiditySensor);
+                    connectedDisplay->printMessage("Humidity sensor added");
+                    break;
                 }
+                connectedHub->removeSensor(std::stoi(inputCommand.result));
                 break;
             } 
             case FunctionReturnStatus::fail: {
-                std::string text = "Please enter a valid sensorId.";
+                std::string text = "Please enter a valid command.";
                 connectedDisplay->printMessage(text);
                 break;
             }
         }
     } while (inputCommand.status != FunctionReturnStatus::none);
+}
+
+void UiManager::showAll() {
+    for (auto& s : connectedHub->getSensorsList()) {
+        std::cout << "Sensor:\n";
+        for (auto& e : s->getInfo()) {
+            connectedDisplay->printMessage(e.first, false);
+            connectedDisplay->printMessage(e.second);
+        }
+        std::cout << "\n";
+    }
 }

@@ -2,8 +2,8 @@
 #include "Sensor.h"
 #include "definitions.h"
 
-class TemperatureSensor: public Sensor {
+class HumiditySensor: public Sensor {
 public:
-    TemperatureSensor();
+    HumiditySensor();
     Measurement read() override;
 };

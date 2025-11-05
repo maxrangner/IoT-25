@@ -1,4 +1,5 @@
 #include <iomanip>
+// #include <cstdlib>
 #include "Display.h"
 
 void Display::printMenu() const {
@@ -22,10 +23,20 @@ void Display::printHeader(const std::string& text) const {
               << "***************************************\n" << std::endl;
 }
 
-void Display::printMessage(const std::string& text) const {
-    std::cout << text << std::endl;
+void Display::printMessage(const std::string& text, bool lineBreak) const {
+    std::cout << text;
+    if (lineBreak) std::cout << " " << std::endl;
 }
 
+// void Display::printMessage(const int& text, bool lineBreak) const {
+//     std::cout << std::to_string(text) << std::endl;
+//     if (lineBreak) std::cout << " " << std::endl;
+// }
+
 void Display::clear() {
-    std::cout << "\033c";
+    #ifdef _WIN32
+    system("cls");
+    return;
+    #endif
+    system("clear");
 }
