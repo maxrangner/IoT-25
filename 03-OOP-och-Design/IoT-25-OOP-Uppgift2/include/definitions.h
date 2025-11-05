@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
 
+constexpr int CHAR_ARRAY_SIZE = 50;
+
 enum class MenuOptions {
     startOfMenu, // 0.
     addRemove, // 1.
@@ -34,7 +36,6 @@ struct Measurement {
     SensorType sensorType;
     std::string sensorUnit;
     float value;
-    time_t timestamp;
 };
 
 struct InputIntResult {

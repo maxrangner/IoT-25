@@ -2,14 +2,17 @@
 #include "UiManager.h"
 #include "definitions.h"
 #include "InputHandler.h"
+#include "Logger.h"
+#include "utils.h"
 
 UiManager::UiManager() {
     isRunning_ = true;
 }
-UiManager::UiManager(SensorHub& hub, Display& disp) {
+UiManager::UiManager(SensorHub& hub, Display& disp, Logger& log) {
     isRunning_ = true;
     connectedHub = &hub;
     connectedDisplay = &disp;
+    connectedLog = &log;
 }
 
 void UiManager::greeting() const {

@@ -6,9 +6,10 @@
 #include "HumiditySensor.h"
 
 void SensorHub::addSensor(SensorType type) {
-    if (type == SensorType::temperatureSensor) mySensors.emplace_back(std::make_unique<TemperatureSensor>());
-    if (type == SensorType::humiditySensor) mySensors.emplace_back(std::make_unique<HumiditySensor>());
-    
+    switch (type) {
+        case SensorType::temperatureSensor: mySensors.emplace_back(std::make_unique<TemperatureSensor>()); break;
+        case SensorType::humiditySensor: mySensors.emplace_back(std::make_unique<HumiditySensor>()); break;
+    }
 }
 
 void SensorHub::removeSensor(int id) {

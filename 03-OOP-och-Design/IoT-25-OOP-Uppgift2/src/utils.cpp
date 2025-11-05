@@ -1,4 +1,6 @@
 #include <string>
+#include <ctime>
+#include <random>
 #include "utils.h"
 // #include "definitions.h"
 
@@ -18,4 +20,27 @@ std::string convertSensorType(SensorType type) {
         case SensorType::waterSensor: return "water sensor";
         default: return "unknown";
     }
+}
+
+float getRandomNumber(float min, float max) {
+    static std::random_device randDevice;
+    static std::mt19937 gen(randDevice());
+    std::uniform_real_distribution<float> distrib(min, max);
+    float returnVal = distrib(gen);
+
+    return std::round(returnVal * 100.0f) / 100.0f;
+
+}
+
+time_t getTime() {
+    time_t timestamp;
+    std::time(&timestamp);
+    return timestamp;
+}
+
+std::string readTime(std::time_t timestamp) {
+    struct tm currentTime = *localtime(&timestamp);
+    char time[CHAR_ARRAY_SIZE];
+    strftime(time, sizeof(time), "%a%e %b %H:%M:%S", &currentTime);
+    return time;
 }

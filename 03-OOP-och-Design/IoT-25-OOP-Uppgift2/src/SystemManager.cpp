@@ -1,10 +1,23 @@
 #include "SystemManager.h"
+#include <thread>
+#include <mutex>
+#include <atomic>
 
-SystemManager::SystemManager() : ui(hub, display){
+SystemManager::SystemManager() : ui(hub, display, log){
 }
 
 void SystemManager::run() {
+    std::thread t(&SystemManager::sensorReadThread, this);
+
     ui.greeting();
     ui.run();
+    t.join();
     ui.quitProcess();
+}
+
+void SystemManager::sensorReadThread() {
+    while (ui.isRunning()) {
+        hub.printAllInfo();
+        std::this_thread::sleep_for(std::chrono::seconds(2));
+    }
 }

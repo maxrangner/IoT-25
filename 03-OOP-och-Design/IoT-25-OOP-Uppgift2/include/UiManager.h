@@ -3,6 +3,7 @@
 #include "Display.h"
 #include "InputHandler.h"
 #include "definitions.h"
+#include "Logger.h"
 
 class UiManager {
     // VARIABLES
@@ -13,11 +14,12 @@ class UiManager {
     // SYSTEM
     SensorHub* connectedHub;
     Display* connectedDisplay;
+    Logger* connectedLog;
 
 public:
     // CONSTRUCTORS
     UiManager();  
-    UiManager(SensorHub& hub, Display& disp);
+    UiManager(SensorHub& hub, Display& disp, Logger& log);
 
     // GETTERS
     bool isRunning() const;
