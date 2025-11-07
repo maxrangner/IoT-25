@@ -7,7 +7,14 @@
 #include "HumiditySensor.h"
 #include "utils.h"
 
-SensorHub::SensorHub(Logger& connectedLogger) {}
+SensorHub::SensorHub(Logger& log) {
+    connectedLog = &log;
+    updateInterval = 10; // Seconds
+}
+
+int SensorHub::getUpdateInterval() const {
+    return updateInterval;
+}
 
 void SensorHub::addSensor(SensorType type) {
     switch (type) {
@@ -42,4 +49,11 @@ void SensorHub::printAllInfo() {
 
 const std::vector<std::unique_ptr<Sensor>>& SensorHub::getSensorsList() const {
     return mySensors;
+}
+
+void SensorHub::readAllSensors() {
+    time_t timestamp = getTime();
+    for (auto& s : mySensors) {
+        connectedLog->addMeasurments(timestamp, s->read());
+    }
 }

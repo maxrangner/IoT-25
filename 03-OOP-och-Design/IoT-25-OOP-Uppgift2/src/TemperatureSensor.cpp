@@ -2,6 +2,7 @@
 #include "Sensor.h"
 #include "TemperatureSensor.h"
 #include "definitions.h"
+#include "utils.h"
 
 TemperatureSensor::TemperatureSensor() {
     sensorId = getNextId();
@@ -13,9 +14,11 @@ TemperatureSensor::TemperatureSensor() {
 }
 Measurement TemperatureSensor::read() {
     Measurement newMeasurement;
-    newMeasurement.sensorId = sensorId;
-    newMeasurement.sensorType = sensorType;
-    newMeasurement.sensorUnit = sensorUnit;
+
+    newMeasurement.sensorId = this->sensorId;
+    newMeasurement.sensorType = this->sensorType;
+    newMeasurement.sensorUnit = this->sensorUnit;
+    newMeasurement.value = getRandomNumber();
 
     return newMeasurement;
 }
