@@ -38,7 +38,7 @@ InputStringResult InputHandler::getString(std::vector<std::string> valids) {
     std::cout << "> ";
     std::getline(std::cin, userInput);
     if (userInput == "") { // Return if input is empty.
-        output.status = FunctionReturnStatus::success;
+        output.status = FunctionReturnStatus::none;
         return output;
     }
     for (const std::string& s : valids) { // Loops through vector of accepted inputs and looks for match.
