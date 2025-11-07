@@ -50,16 +50,15 @@ MenuOptions UiManager::getMenuSelection() {
     return static_cast<MenuOptions>(menuStatus.result);
 }
 
+
 void UiManager::menuAction(MenuOptions choice) {
     switch (choice) { 
         case MenuOptions::addRemove: addRemoveSensors(); break; // 1.
-        case MenuOptions::updateInterval: showAll(); break; // 2.
-        case MenuOptions::graph: break; // 3.
-        case MenuOptions::stats: break; // 4.
-        case MenuOptions::searchTime: break; // 5.
-        case MenuOptions::searchVal: break; // 6.
-        case MenuOptions::saveLoad: break; // 7.
-        case MenuOptions::quit: isRunning_ = false; break; // 8.
+        case MenuOptions::statusScreen: showAll(); break; // 2.
+        case MenuOptions::searchMeasure: break; // 3.
+        case MenuOptions::settings: break; // 4.
+        case MenuOptions::saveLoad: break; // 5.
+        case MenuOptions::quit: isRunning_ = false; break; // 6.
     }
 }
 
@@ -81,6 +80,9 @@ void UiManager::addRemoveSensors() {
         switch (inputCommand.status) {
             case FunctionReturnStatus::none: break;
             case FunctionReturnStatus::success: {
+                if (inputCommand.result == "") {
+                    break;
+                }
                 if (inputCommand.result == "t"){
                     connectedHub->addSensor(SensorType::temperatureSensor);
                     connectedDisplay->printMessage("Temperature sensor added");

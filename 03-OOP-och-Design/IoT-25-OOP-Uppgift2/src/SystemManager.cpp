@@ -3,7 +3,7 @@
 #include <mutex>
 #include <atomic>
 
-SystemManager::SystemManager() : ui(hub, display, log){
+SystemManager::SystemManager() : hub(log), ui(hub, display, log){
 }
 
 void SystemManager::run() {
@@ -17,7 +17,8 @@ void SystemManager::run() {
 
 void SystemManager::sensorReadThread() {
     while (ui.isRunning()) {
-        hub.printAllInfo();
+        // hub.printAllInfo();
+        hub.updateSensors();
         std::this_thread::sleep_for(std::chrono::seconds(2));
     }
 }

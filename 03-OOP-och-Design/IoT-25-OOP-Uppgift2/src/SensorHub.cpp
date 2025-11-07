@@ -1,9 +1,13 @@
 #include <memory>
 #include <iostream>
 #include <string>
+#include <vector>
 #include "SensorHub.h"
 #include "TemperatureSensor.h"
 #include "HumiditySensor.h"
+#include "utils.h"
+
+SensorHub::SensorHub(Logger& connectedLogger) {}
 
 void SensorHub::addSensor(SensorType type) {
     switch (type) {
@@ -17,6 +21,16 @@ void SensorHub::removeSensor(int id) {
         if (mySensors[i]->getSensorId() == id) {
             mySensors.erase(mySensors.begin() + i);
         }
+    }
+}
+
+void SensorHub::updateSensors(std::vector<int> sensors) {
+    time_t now = getTime();
+    if (sensors.empty()) {
+        // Logic for empty sensors list.
+    }
+    for (const auto& s : mySensors) {
+
     }
 }
 

@@ -7,9 +7,9 @@
 #include "utils.h"
 
 class SystemManager {
+    Logger log;
     SensorHub hub;
     Display display;
-    Logger log;
     UiManager ui;
 public:
     SystemManager();

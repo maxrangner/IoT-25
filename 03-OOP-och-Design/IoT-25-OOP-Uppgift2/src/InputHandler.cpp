@@ -12,6 +12,10 @@ InputIntResult InputHandler::getInt(int min, int max) {
 
     std::cout << "> ";
     std::getline(std::cin, userInput);
+    if (userInput == "") {
+        output.status = FunctionReturnStatus::success;
+        return output;
+    }
     if (std::all_of(userInput.begin(), userInput.end(), ::isdigit)) {
         int convertedInput = std::stoi(userInput);
         if (!(min == max) && ((convertedInput < min) || (convertedInput > max))) {
