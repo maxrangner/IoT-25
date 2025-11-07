@@ -32,13 +32,13 @@ float getRandomNumber(float min, float max) {
 
 }
 
-time_t getTime() {
+time_t getTime() { // Returns current time
     time_t timestamp;
     std::time(&timestamp);
     return timestamp;
 }
 
-std::string readTime(std::time_t timestamp) {
+std::string readTime(std::time_t timestamp) { // Converts time_t to a readable string
     struct tm currentTime = *localtime(&timestamp);
     char time[CHAR_ARRAY_SIZE];
     strftime(time, sizeof(time), "%a%e %b %H:%M:%S", &currentTime);

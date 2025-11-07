@@ -12,11 +12,11 @@ InputIntResult InputHandler::getInt(int min, int max) {
 
     std::cout << "> ";
     std::getline(std::cin, userInput);
-    if (userInput == "") {
+    if (userInput == "") { // Return if input is empty.
         output.status = FunctionReturnStatus::success;
         return output;
     }
-    if (std::all_of(userInput.begin(), userInput.end(), ::isdigit)) {
+    if (std::all_of(userInput.begin(), userInput.end(), ::isdigit)) { // If input is all digits.
         int convertedInput = std::stoi(userInput);
         if (!(min == max) && ((convertedInput < min) || (convertedInput > max))) {
             output.status = FunctionReturnStatus::fail;
@@ -37,11 +37,11 @@ InputStringResult InputHandler::getString(std::vector<std::string> valids) {
 
     std::cout << "> ";
     std::getline(std::cin, userInput);
-    if (userInput == "") {
-        output.status = FunctionReturnStatus::none;
+    if (userInput == "") { // Return if input is empty.
+        output.status = FunctionReturnStatus::success;
         return output;
     }
-    for (const std::string& s : valids) {
+    for (const std::string& s : valids) { // Loops through vector of accepted inputs and looks for match.
         if (makeLower(userInput) == s) {
             output.result = userInput;
             output.status = FunctionReturnStatus::success;
@@ -51,35 +51,3 @@ InputStringResult InputHandler::getString(std::vector<std::string> valids) {
     output.status = FunctionReturnStatus::fail;
     return output; 
 }
-
-// InputIntOrStringResult InputHandler::getIntOrString(int min, int max, std::vector<std::string> valids) {
-//     InputIntOrStringResult output;
-//     output.result = "";
-//     std::string userInput = "";
-
-//     while (true) {
-//         std::cout << "> ";
-//         std::getline(std::cin, userInput);
-
-//         if (std::all_of(userInput.begin(), userInput.end(), ::isdigit)) {
-//             int convertedInput = std::stoi(userInput);
-//             if (!(min == max) && ((convertedInput < min) || (convertedInput > max))) {
-//                 output.status = FunctionReturnStatus::failInvalidInput;
-//                 return output;
-//             }
-//             output.result = userInput;
-//             output.status = FunctionReturnStatus::success;
-//             return output;
-//         } else {
-//             for (const std::string& s : valids) {
-//                 if (makeLower(userInput) == s) {
-//                     output.result = userInput;
-//                     output.status = FunctionReturnStatus::success;
-//                     return output;
-//                 }
-//             }
-//             output.status = FunctionReturnStatus::failInvalidInput;
-//             return output;
-//         }
-//     }
-// }

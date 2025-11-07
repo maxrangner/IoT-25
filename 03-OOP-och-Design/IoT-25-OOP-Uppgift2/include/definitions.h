@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 
+// CONSTS
 constexpr int CHAR_ARRAY_SIZE = 50;
 
 enum class MenuOptions {
@@ -18,8 +19,6 @@ enum class FunctionReturnStatus {
     success,
     fail,
     none
-    // failInvalidInput,
-    // failOutOfRange
 };
 
 enum class SensorType {
@@ -29,6 +28,7 @@ enum class SensorType {
     waterSensor
 };
 
+// Return type for the Sensors.
 struct Measurement {
     int sensorId;
     SensorType sensorType;
@@ -36,6 +36,7 @@ struct Measurement {
     float value;
 };
 
+// INPUT RESULTS - These returns a status struct along with the return value.
 struct InputIntResult {
     FunctionReturnStatus status;
     int result;

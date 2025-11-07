@@ -35,5 +35,5 @@ public:
 
     // ACTIONS
     void addRemoveSensors();
-    void showAll();
+    void printAllSensorInfo();
 };

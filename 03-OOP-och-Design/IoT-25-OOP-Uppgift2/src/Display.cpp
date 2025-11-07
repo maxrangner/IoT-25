@@ -26,11 +26,6 @@ void Display::printMessage(const std::string& text, bool lineBreak) const {
     if (lineBreak) std::cout << " " << std::endl;
 }
 
-// void Display::printMessage(const int& text, bool lineBreak) const {
-//     std::cout << std::to_string(text) << std::endl;
-//     if (lineBreak) std::cout << " " << std::endl;
-// }
-
 void Display::clear() {
     #ifdef _WIN32
     system("cls");
