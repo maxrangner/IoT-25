@@ -31,3 +31,8 @@ This system has a central `SystemManager` class that handles various `Sensors`. 
     - `run()` main program loop which prints the menu and calls `getMenuSelection()` function to access user functions via `menuAction()`.
 - `Sensor class` base class
     - `Temperature Sensor` and `Humidity Sensor` inherits from the Sensor base class. 
+
+## RUN
+Compile with:
+
+` g++ -Iinclude -Isrc src/*.cpp *.cpp -o build/build.exe -std=c++17 -Wall -Wextra -g`
