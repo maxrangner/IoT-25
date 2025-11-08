@@ -43,3 +43,13 @@ std::string readTime(std::time_t timestamp) { // Converts time_t to a readable s
     strftime(time, sizeof(time), "%a%e %b %H:%M:%S", &currentTime);
     return time;
 }
+
+std::string sensorTypeToString(SensorType type) {
+    switch (type) {
+        case SensorType::temperatureSensor: return "Temperature Sensor";
+        case SensorType::humiditySensor: return "Humidity Sensor";
+        case SensorType::motionSensor: return "Motion Sensor";
+        case SensorType::waterSensor: return "Water Sensor";
+        default: return "unknown";
+    }
+}

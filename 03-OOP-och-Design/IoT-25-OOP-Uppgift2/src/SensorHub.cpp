@@ -5,6 +5,7 @@
 #include "SensorHub.h"
 #include "TemperatureSensor.h"
 #include "HumiditySensor.h"
+#include "Logger.h"
 #include "utils.h"
 
 SensorHub::SensorHub(Logger& log) {
@@ -20,6 +21,8 @@ void SensorHub::addSensor(SensorType type) {
     switch (type) {
         case SensorType::temperatureSensor: mySensors.emplace_back(std::make_unique<TemperatureSensor>()); break;
         case SensorType::humiditySensor: mySensors.emplace_back(std::make_unique<HumiditySensor>()); break;
+        case SensorType::motionSensor: break;
+        case SensorType::waterSensor: break;
     }
 }
 
@@ -36,8 +39,8 @@ void SensorHub::updateSensors(std::vector<int> sensors) {
     if (sensors.empty()) {
         // Logic for empty sensors list.
     }
-    for (const auto& s : mySensors) {
-
+    for (const auto& s : mySensors) { // Logic for retreving sensor values.
+        connectedLog->addMeasurments(now, s->read());
     }
 }
 
@@ -49,11 +52,4 @@ void SensorHub::printAllInfo() {
 
 const std::vector<std::unique_ptr<Sensor>>& SensorHub::getSensorsList() const {
     return mySensors;
-}
-
-void SensorHub::readAllSensors() {
-    time_t timestamp = getTime();
-    for (auto& s : mySensors) {
-        connectedLog->addMeasurments(timestamp, s->read());
-    }
 }

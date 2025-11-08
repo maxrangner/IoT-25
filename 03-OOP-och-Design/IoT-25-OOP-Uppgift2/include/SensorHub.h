@@ -18,5 +18,4 @@ public:
     void updateSensors(std::vector<int> sensors = {});
     void printAllInfo();
     const std::vector<std::unique_ptr<Sensor>>& getSensorsList() const;
-    void readAllSensors();
 };

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <thread>
 #include "UiManager.h"
 #include "definitions.h"
 #include "InputHandler.h"
@@ -54,7 +55,7 @@ MenuOptions UiManager::getMenuSelection() {
 void UiManager::menuAction(MenuOptions choice) {
     switch (choice) { 
         case MenuOptions::addRemove: addRemoveSensors(); break; // 1.
-        case MenuOptions::statusScreen: printAllSensorInfo(); break; // 2. This is a temporary function. This will bring you to a status screen with all current data displayed.
+        case MenuOptions::statusScreen: statusScreen(); break; // 2. This is a temporary function. This will bring you to a status screen with all current data displayed.
         case MenuOptions::searchMeasure: break; // 3. Not yet implemented.
         case MenuOptions::settings: break; // 4. Not yet implemented.
         case MenuOptions::saveLoad: break; // 5. Not yet implemented.
@@ -107,8 +108,18 @@ void UiManager::printAllSensorInfo() {
         std::cout << "Sensor:\n";
         for (auto& e : s->getInfo()) {
             connectedDisplay->printMessage(e.first, false);
+            connectedDisplay->printMessage(": ", false);
             connectedDisplay->printMessage(e.second);
         }
         std::cout << "\n";
+    }
+    connectedDisplay->printMessage("\n*************************************\n");
+}
+
+void UiManager::statusScreen() {
+    int updateInterval = connectedHub->getUpdateInterval();
+    while (true) {
+        connectedLog->printLog();
+        std::this_thread::sleep_for(std::chrono::seconds(updateInterval));
     }
 }
