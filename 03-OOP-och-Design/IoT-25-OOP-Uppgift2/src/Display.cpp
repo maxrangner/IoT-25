@@ -37,7 +37,7 @@ void Display::printMeasurement(const Measurement measurment) const {
             << std::endl;
 }
 
-void Display::drawGraph(const std::map<time_t, std::vector<Measurement>>& log) const {
+void Display::drawGraph(const std::array<std::vector<Measurement>, 10>& graphData) const {
     /*
     15 rows (i) = values (15-30c)
     10 columns (j) = time
@@ -57,10 +57,11 @@ void Display::drawGraph(const std::map<time_t, std::vector<Measurement>>& log) c
 
     // Place values
     int column = 9;
-    for (auto it = log.rbegin(); it != log.rend(); ++it) {
+    for (auto it = graphData.rbegin(); it != graphData.rend(); ++it) {
         if (column < 0) break;
-        if (it->second.empty()) continue;
-        float value = it->second[sensorId].value;
+        const auto& measurements = *it;
+        if (measurements.empty()) continue;
+        float value = measurements[sensorId].value;
         value = std::round(maxTemp - value);
         graph[static_cast<int>(value)][column--] = "x";
     }

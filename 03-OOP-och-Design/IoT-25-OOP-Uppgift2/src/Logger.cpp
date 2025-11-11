@@ -9,6 +9,7 @@ Logger::Logger(Display& display) {
 void Logger::addMeasurments(time_t timestamp, Measurement measurements) {
     std::lock_guard<std::mutex> lock(logMutex);
     this->log[timestamp].emplace_back(measurements);
+    updateGraphData(this->log[timestamp]);
 }
 
 void Logger::printLog() {

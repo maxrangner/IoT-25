@@ -121,7 +121,7 @@ void UiManager::statusScreen() {
     while (true) {
         std::vector<Measurement> latestMeasurements = connectedLog->getLatestEntry();
         connectedDisplay->clear();
-        connectedDisplay->drawGraph(connectedLog->getLog());
+        connectedDisplay->drawGraph(connectedLog->getGraphData());
         // for (auto& m : latestMeasurements) {
         //     connectedDisplay->printMeasurement(m);
         // }
