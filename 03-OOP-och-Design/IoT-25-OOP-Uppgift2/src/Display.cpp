@@ -1,6 +1,10 @@
 #include <iomanip>
-// #include <cstdlib>
+#include <array>
+#include <vector>
+#include <map>
+#include <cmath>
 #include "Display.h"
+#include "utils.h"
 
 void Display::printMenu() const {
     int spacing = 4;
@@ -24,6 +28,49 @@ void Display::printHeader(const std::string& text) const {
 void Display::printMessage(const std::string& text, bool lineBreak) const {
     std::cout << text;
     if (lineBreak) std::cout << " " << std::endl;
+}
+
+void Display::printMeasurement(const Measurement measurment) const {
+    std::cout << "id: " << measurment.sensorId << " | "
+            << "type: " << convertSensorType(measurment.sensorType) << " | "
+            << measurment.value << " " << measurment.sensorUnit
+            << std::endl;
+}
+
+void Display::drawGraph(const std::map<time_t, std::vector<Measurement>>& log) const {
+    /*
+    15 rows (i) = values (15-30c)
+    10 columns (j) = time
+    */
+
+    int minTemp = 15;
+    int maxTemp = 30;
+    int sensorId = 0;
+
+    // Initialize graph
+    std::array<std::array<std::string, 10>, 15> graph;
+    for (int i = 0; i < 15; i++) { // ROWS
+        for (int j = 0; j < 10; j++) { // COLUMNS
+            graph[i][j] = " ";
+        }
+    }
+
+    // Place values
+    int column = 9;
+    for (auto it = log.rbegin(); it != log.rend(); ++it) {
+        if (column < 0) break;
+        if (it->second.empty()) continue;
+        float value = it->second[sensorId].value;
+        value = std::round(maxTemp - value);
+        graph[static_cast<int>(value)][column--] = "x";
+    }
+
+    for (int i = 14; i >= 0; i--) {
+        for (int j = 0; j < 10; j++) {
+            std::cout << graph[i][j] << "  ";
+        }
+        std::cout << std::endl;
+    }
 }
 
 void Display::clear() {

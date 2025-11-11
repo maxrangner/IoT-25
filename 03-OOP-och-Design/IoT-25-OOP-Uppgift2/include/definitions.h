@@ -22,6 +22,7 @@ enum class FunctionReturnStatus {
 };
 
 enum class SensorType {
+    unknownSensor,
     temperatureSensor,
     humiditySensor,
     motionSensor,
@@ -30,10 +31,10 @@ enum class SensorType {
 
 // Return type for the Sensors.
 struct Measurement {
-    int sensorId;
-    SensorType sensorType;
-    std::string sensorUnit;
-    float value;
+    int sensorId = -1;
+    SensorType sensorType = SensorType::unknownSensor;
+    std::string sensorUnit = "";
+    float value = 0.0f;
 };
 
 // INPUT RESULTS - These returns a status struct along with the return value.

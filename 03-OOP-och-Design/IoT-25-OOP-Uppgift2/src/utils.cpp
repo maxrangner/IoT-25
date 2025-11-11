@@ -23,12 +23,12 @@ std::string convertSensorType(SensorType type) {
 }
 
 float getRandomNumber(float min, float max) {
-    std::random_device randDevice;
-    std::mt19937 gen(randDevice());
+    static std::random_device randDevice;
+    static std::mt19937 gen(randDevice());
     std::uniform_real_distribution<float> distrib(min, max);
     float returnVal = distrib(gen);
 
-    return std::round(returnVal * 100.0f) / 100.0f;
+    return std::round(returnVal * 100.0f) / 100.0f; // Rounds return to two decimals
 }
 
 time_t getTime() { // Returns current time

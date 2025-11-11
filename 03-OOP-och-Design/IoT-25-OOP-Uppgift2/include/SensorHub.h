@@ -16,6 +16,7 @@ public:
     void addSensor(SensorType type);
     void removeSensor(int id);
     void updateSensors(std::vector<int> sensors = {});
-    void printAllInfo();
+    void printAllInfo() const;
     const std::vector<std::unique_ptr<Sensor>>& getSensorsList() const;
+    void printCurrentData();
 };

@@ -119,7 +119,12 @@ void UiManager::printAllSensorInfo() {
 void UiManager::statusScreen() {
     int updateInterval = connectedHub->getUpdateInterval();
     while (true) {
-        connectedLog->printLog();
+        std::vector<Measurement> latestMeasurements = connectedLog->getLatestEntry();
+        connectedDisplay->clear();
+        connectedDisplay->drawGraph(connectedLog->getLog());
+        // for (auto& m : latestMeasurements) {
+        //     connectedDisplay->printMeasurement(m);
+        // }
         std::this_thread::sleep_for(std::chrono::seconds(updateInterval));
     }
 }

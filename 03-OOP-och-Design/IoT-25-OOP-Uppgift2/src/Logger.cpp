@@ -27,3 +27,31 @@ void Logger::printLog() {
     }
     connectedDisplay->printMessage("\n*************************************\n");
 }
+
+std::vector<Measurement>& Logger::getLatestEntry() {
+    time_t latest = 0;
+    for (auto [t, m] : log) {
+        if (latest == 0) {
+            latest = t;
+        }
+        if (t > latest) {
+            latest = t;
+        }
+    }
+    return log[latest];
+}
+
+std::map<time_t, std::vector<Measurement>>& Logger::getLog() {
+    return log;
+}
+
+void Logger::updateGraphData(std::vector<Measurement> newMeasurement) {
+    for (int i = 0; i < 9; i++) {
+        graphData[i] = graphData[i + 1];
+    }
+    graphData[9] = newMeasurement;
+}
+
+std::array<std::vector<Measurement>, 10> Logger::getGraphData() const {
+    return graphData;
+}

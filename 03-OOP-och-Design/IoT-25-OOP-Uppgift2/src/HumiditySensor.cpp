@@ -2,6 +2,7 @@
 #include "Sensor.h"
 #include "HumiditySensor.h"
 #include "definitions.h"
+#include "utils.h"
 
 HumiditySensor::HumiditySensor() {
     sensorId = getNextId();
@@ -16,6 +17,7 @@ Measurement HumiditySensor::read() {
     newMeasurement.sensorId = sensorId;
     newMeasurement.sensorType = sensorType;
     newMeasurement.sensorUnit = sensorUnit;
+    newMeasurement.value = getRandomNumber();
 
     return newMeasurement;
 }
