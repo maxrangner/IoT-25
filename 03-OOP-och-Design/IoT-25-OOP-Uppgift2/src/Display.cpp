@@ -62,8 +62,11 @@ void Display::drawGraph(const std::array<std::vector<Measurement>, 10>& graphDat
         const auto& measurements = *it;
         if (measurements.empty()) continue;
         float value = measurements[sensorId].value;
-        value = std::round(maxTemp - value);
-        graph[static_cast<int>(value)][column--] = "x";
+        value = static_cast<int>(std::round(maxTemp - value));
+        for (int row = 0; row < value; row++) {
+            graph[row][column] = "x";
+        }
+        graph[value][column--] = "x";
     }
 
     for (int i = 14; i >= 0; i--) {
