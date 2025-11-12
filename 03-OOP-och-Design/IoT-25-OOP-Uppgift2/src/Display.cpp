@@ -37,41 +37,48 @@ void Display::printMeasurement(const Measurement measurment) const {
             << std::endl;
 }
 
-void Display::drawGraph(const std::array<std::vector<Measurement>, 10>& graphData) const {
+void Display::drawGraph(const std::array<std::vector<Measurement>, 10>& graphData, int sensorId) const {
     /*
     15 rows (i) = values (15-30c)
     10 columns (j) = time
+    TODO:
+    - Input sensorId + Check valid sensorId
     */
+    constexpr size_t graphResolution = 15;
+    constexpr size_t timeEntires = 10;
+    constexpr int graphMaxTemp = 30;
 
-    int minTemp = 15;
-    int maxTemp = 30;
-    int sensorId = 0;
-
-    // Initialize graph
-    std::array<std::array<std::string, 10>, 15> graph;
-    for (int i = 0; i < 15; i++) { // ROWS
-        for (int j = 0; j < 10; j++) { // COLUMNS
-            graph[i][j] = " ";
-        }
+    // Initialize graph 2d array with empty spaces
+    std::array<std::array<std::string, timeEntires>, graphResolution> graph;
+    for (auto& col : graph) {
+        std::fill(col.begin(), col.end(), " ");
     }
 
     // Place values
-    int column = 9;
-    for (auto it = graphData.rbegin(); it != graphData.rend(); ++it) {
+    int column = timeEntires - 1; // Start with right most column. -1 to align with indexing
+    for (auto it = graphData.rbegin(); it != graphData.rend(); it++) { // Iterate backwards from the right
         if (column < 0) break;
-        const auto& measurements = *it;
+        const auto& measurements = *it; // Create iterator reference to current measurement object, and dereference it.
         if (measurements.empty()) continue;
-        float value = measurements[sensorId].value;
-        value = static_cast<int>(std::round(maxTemp - value));
-        for (int row = 0; row < value; row++) {
+
+        float sensorValue = 0;
+        for (auto& m : measurements) {
+            if (m.sensorId == sensorId) {
+                sensorValue = static_cast<int>(std::round(graphMaxTemp - m.value));
+            }
+        }
+    
+        for (int row = 0; row < sensorValue; row++) {
             graph[row][column] = "x";
         }
-        graph[value][column--] = "x";
+        graph[sensorValue][column--] = "\033[31mx\033[0m";
+        // column--;
     }
 
-    for (int i = 14; i >= 0; i--) {
-        for (int j = 0; j < 10; j++) {
-            std::cout << graph[i][j] << "  ";
+    // Draw graph
+    for (int row = graphResolution - 1; row >= 0; row--) {
+        for (int column = 0; column < timeEntires; column++) {
+            std::cout << graph[row][column] << "  ";
         }
         std::cout << std::endl;
     }
