@@ -37,13 +37,36 @@ void Display::printMeasurement(const Measurement measurment) const {
             << std::endl;
 }
 
-void Display::drawGraph(const std::array<std::vector<Measurement>, 10>& graphData, int sensorId) const {
+void Display::drawSensorsList(const std::vector<Measurement>& log, const std::vector<std::unique_ptr<Sensor>>& SensorsList) const {
+    for (auto& s : SensorsList) { // Loopa över varje sensor
+        bool valueFound = false;
+        for (auto it = log.rbegin(); it != log.rend(); ++it) {
+            Measurement m = *it;
+            if (s->getSensorId() == m.sensorId) {
+                printMessage(std::to_string(m.sensorId), false);
+                printMessage(" ", false);
+                printMessage(std::to_string(m.value), false);
+                printMessage(" | ", false);
+                valueFound = true;
+                break;
+            }
+        }
+        if (!valueFound) {
+            printMessage(std::to_string(s->getSensorId()), false);
+            printMessage(" - ", false);
+        }
+    }
+    printMessage(" ");
+}
+
+void Display::drawGraph(const std::array<Measurement, 10>& graphData, int sensorId) const {
     /*
     15 rows (i) = values (15-30c)
     10 columns (j) = time
     TODO:
     - Input sensorId + Check valid sensorId
     */
+
     constexpr size_t graphResolution = 15;
     constexpr size_t timeEntires = 10;
     constexpr int graphMaxTemp = 30;
@@ -58,15 +81,14 @@ void Display::drawGraph(const std::array<std::vector<Measurement>, 10>& graphDat
     int column = timeEntires - 1; // Start with right most column. -1 to align with indexing
     for (auto it = graphData.rbegin(); it != graphData.rend(); it++) { // Iterate backwards from the right
         if (column < 0) break;
-        const auto& measurements = *it; // Create iterator reference to current measurement object, and dereference it.
-        if (measurements.empty()) continue;
+        const auto& measurement = *it; // Create iterator reference to current measurement object, and dereference it.
+        if (measurement.sensorId == -1) {
+            column--;
+            continue;
+        }
 
         float sensorValue = 0;
-        for (auto& m : measurements) {
-            if (m.sensorId == sensorId) {
-                sensorValue = static_cast<int>(std::round(graphMaxTemp - m.value));
-            }
-        }
+        sensorValue = static_cast<int>(std::round(graphMaxTemp - measurement.value));
     
         for (int row = 0; row < sensorValue; row++) {
             graph[row][column] = "x";

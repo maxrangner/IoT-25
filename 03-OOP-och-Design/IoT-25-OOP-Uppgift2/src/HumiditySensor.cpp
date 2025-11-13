@@ -17,7 +17,8 @@ Measurement HumiditySensor::read() {
     newMeasurement.sensorId = sensorId;
     newMeasurement.sensorType = sensorType;
     newMeasurement.sensorUnit = sensorUnit;
-    newMeasurement.value = getRandomNumber();
+    newMeasurement.value = getRandomNumber(40, 60);
+    newMeasurement.timestamp = getTime();
 
     return newMeasurement;
 }

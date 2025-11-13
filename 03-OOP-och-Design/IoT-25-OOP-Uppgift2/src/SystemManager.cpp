@@ -19,8 +19,8 @@ void SystemManager::run() {
 void SystemManager::sensorReadThread() {
     while (ui.isRunning()) {
         int updateInterval = hub.getUpdateInterval();
-        hub.updateSensors(); // Not properly implemented yet.
+        hub.readAllSensors();
+
         std::this_thread::sleep_for(std::chrono::seconds(updateInterval));
-        // log.printLog();
     }
 }

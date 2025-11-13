@@ -8,15 +8,12 @@
 
 class Logger {
     Display* connectedDisplay;
-    std::map<time_t, std::vector<Measurement>> log;
-    std::array<std::vector<Measurement>, 10> graphData;
+    std::vector<Measurement> log;
     std::mutex logMutex;
 public:
     Logger(Display& display);
-    void addMeasurments(time_t timestamp, Measurement measurements);
+    void addMeasurment(Measurement measurement);
     void printLog();
-    std::vector<Measurement>& getLatestEntry();
-    std::map<time_t, std::vector<Measurement>>& getLog();
-    void updateGraphData(std::vector<Measurement> newMeasurement);
-    std::array<std::vector<Measurement>, 10> getGraphData() const;
+    std::vector<Measurement>& getLog();
+    std::array<Measurement, 10> getGraphData(int sensorId);
 };

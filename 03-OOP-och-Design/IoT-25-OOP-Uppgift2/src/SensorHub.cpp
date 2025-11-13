@@ -34,32 +34,16 @@ void SensorHub::removeSensor(int id) {
     }
 }
 
-void SensorHub::updateSensors(std::vector<int> sensors) {
-    time_t now = getTime();
+void SensorHub::readAllSensors(std::vector<int> sensors) {
     if (sensors.empty()) {
         // Logic for empty sensors list.
     }
     for (const auto& s : mySensors) {
-        connectedLog->addMeasurments(now, s->read());
-    }
-}
-
-void SensorHub::printAllInfo() const {
-    for (const std::unique_ptr<Sensor>& s : mySensors) {
-        s->printInfo();
+        connectedLog->addMeasurment(s->read());
+        // connectedLog->printLog();
     }
 }
 
 const std::vector<std::unique_ptr<Sensor>>& SensorHub::getSensorsList() const {
     return mySensors;
-}
-
-void SensorHub::printCurrentData() {
-    std::vector<Measurement> currentData = connectedLog->getLatestEntry();
-    for (auto& m : currentData) {
-        std::cout << "id: " << m.sensorId << " | "
-                << "type: " << sensorTypeToString(m.sensorType) << " | "
-                << m.value << " " << m.sensorUnit
-                << std::endl;
-    }
 }

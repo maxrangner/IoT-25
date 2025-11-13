@@ -18,6 +18,7 @@ protected:
 public:
     // CONSTRUCTOR
     Sensor();
+    virtual ~Sensor() = default;
 
     //GETTERS
     void printInfo();

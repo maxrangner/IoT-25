@@ -35,6 +35,7 @@ struct Measurement {
     SensorType sensorType = SensorType::unknownSensor;
     std::string sensorUnit = "";
     float value = 0.0f;
+    time_t timestamp = 0;
 };
 
 // INPUT RESULTS - These returns a status struct along with the return value.

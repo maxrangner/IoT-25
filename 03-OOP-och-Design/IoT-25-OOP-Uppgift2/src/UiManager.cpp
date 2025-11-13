@@ -119,7 +119,8 @@ void UiManager::printAllSensorInfo() {
 void UiManager::statusScreen() {
     while (true) {
         connectedDisplay->clear();
-        connectedDisplay->drawGraph(connectedLog->getGraphData(), 0);
+        connectedDisplay->drawSensorsList(connectedLog->getLog(), connectedHub->getSensorsList());
+        connectedDisplay->drawGraph(connectedLog->getGraphData(0), 0);
 
         std::this_thread::sleep_for(std::chrono::seconds(connectedHub->getUpdateInterval()));
     }
