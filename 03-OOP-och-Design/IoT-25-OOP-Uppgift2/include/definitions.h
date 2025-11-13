@@ -52,3 +52,10 @@ struct InputIntOrStringResult {
     FunctionReturnStatus status;
     std::string result;
 };
+
+struct Alarms {
+    float temperatureLow = 18;
+    float temperatureHigh = 25;
+    float humidityLow = 50;
+    float humidityHigh = 57;
+};

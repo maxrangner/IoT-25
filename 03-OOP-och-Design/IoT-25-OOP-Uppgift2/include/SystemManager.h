@@ -12,6 +12,7 @@ class SystemManager {
     Display display;
     UiManager ui;
     int updateInterval;
+
 public:
     SystemManager();
     void run();

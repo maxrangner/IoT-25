@@ -42,3 +42,17 @@ void SensorHub::readAllSensors(std::vector<int> sensors) {
 const std::vector<std::unique_ptr<Sensor>>& SensorHub::getSensorsList() const {
     return mySensors;
 }
+
+const Alarms& SensorHub::getAlarms() const {
+    return alarms;
+}
+
+void SensorHub::setTemperatureAlarms(float low, float high) {
+    alarms.temperatureLow = low;
+    alarms.temperatureHigh = high;
+}
+
+void SensorHub::setHumidityAlarms(float low, float high) {
+    alarms.humidityLow = low;
+    alarms.humidityHigh = high;
+}

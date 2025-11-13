@@ -48,6 +48,7 @@ MenuOptions UiManager::getMenuSelection() {
         if (menuStatus.status == FunctionReturnStatus::fail) {
             std::string text = "Please enter a digit between " + std::to_string(menuMin) + " and " + std::to_string(menuMax) + ".";
             connectedDisplay->printMessage(text);
+            connectedDisplay->printMessage("");
         }
     } while (menuStatus.status != FunctionReturnStatus::success);
 
@@ -87,18 +88,20 @@ void UiManager::addRemoveSensors() {
                 if (inputCommand.result == "t"){
                     connectedHub->addSensor(SensorType::temperatureSensor);
                     connectedDisplay->printMessage("Temperature sensor added");
+                    connectedDisplay->printMessage("");
                     break;
                 }
                 if (inputCommand.result == "h") {
                     connectedHub->addSensor(SensorType::humiditySensor);
                     connectedDisplay->printMessage("Humidity sensor added");
+                    connectedDisplay->printMessage("");
                     break;
                 }
                 connectedHub->removeSensor(std::stoi(inputCommand.result));
                 break;
             } 
             case FunctionReturnStatus::fail: {
-                connectedDisplay->printMessage("Please enter a valid command.");
+                connectedDisplay->printMessage("Please enter a valid command.\n");
                 break;
             }
         }
@@ -124,7 +127,7 @@ void UiManager::statusScreen() {
         if (drawResult) {
             connectedDisplay->clear();
             connectedDisplay->printHeader(" StatusScreen ");
-            connectedDisplay->printSensorsList(connectedLog->getLog(), connectedHub->getSensorsList());
+            connectedDisplay->printSensorsList(connectedLog->getLog(), connectedHub->getSensorsList(), connectedHub->getAlarms());
             connectedDisplay->drawGraph(connectedLog->getGraphData(selectedSensorId));
             drawResult = false;
         }
@@ -140,7 +143,8 @@ void UiManager::statusScreen() {
             case FunctionReturnStatus::success: {
                 if (inputCommand.result == "") break;
                 if (inputCommand.result == "u") {
-                    drawResult = true;
+                    if (selectedSensorId != -1) drawResult = true;
+                    else connectedDisplay->printMessage("");
                     break;
                 }
                 if (inputCommand.result == "t") {
@@ -158,7 +162,7 @@ void UiManager::statusScreen() {
                 break;
             } 
             case FunctionReturnStatus::fail: {
-                connectedDisplay->printMessage("Please enter a valid command.");
+                connectedDisplay->printMessage("Please enter a valid command.\n");
                 drawResult = false;
                 break;
             }

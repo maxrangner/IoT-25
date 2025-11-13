@@ -36,26 +36,36 @@ void Display::printMeasurement(const Measurement measurment) const {
             << std::endl;
 }
 
-void Display::printSensorsList(const std::vector<Measurement>& log, const std::vector<std::unique_ptr<Sensor>>& SensorsList) const {
+void Display::printSensorsList(const std::vector<Measurement>& log, const std::vector<std::unique_ptr<Sensor>>& SensorsList, Alarms alarms) const {
     int numSensorsPrinted = 0;
     int spacing = 30;
     printMessage("****** Active sensors ******");
+
     for (auto& s : SensorsList) { // Loopa över varje sensor
         bool valueFound = false;
         
         for (auto it = log.rbegin(); it != log.rend(); ++it) {
             Measurement m = *it;
             if (s->getSensorId() == m.sensorId) {
-                std::string sensorStringFirst;
-                std::string sensorStringSecond;
-                sensorStringFirst += std::to_string(m.sensorId);
-                sensorStringFirst += ": ";
-                sensorStringFirst += convertSensorType(m.sensorType);
-                sensorStringFirst += ": ";
-                sensorStringSecond += trimDecimals(m.value, 1);
-                sensorStringSecond += m.sensorUnit;
+                std::string color = "";
+                switch (m.sensorType) {
+                    case SensorType::temperatureSensor: {
+                        if (m.value <= alarms.temperatureLow || m.value >= alarms.temperatureHigh) color = "\033[31m";
+                        else color = "\033[32m";
+                        break;
+                    }
+                    case SensorType::humiditySensor: {
+                        if (m.value <= alarms.humidityLow || m.value >= alarms.humidityHigh) color = "\033[31m";
+                        else color = "\033[32m";
+                        break;
+                    }
+                    default: break;
+                }
+                std::string coloredIdType = std::to_string(m.sensorId) + ": " + convertSensorType(m.sensorType) + ": ";
+                std::string coloredValue = color + trimDecimals(m.value, 1) + "\033[0m";
+                std::string coloredUnit = m.sensorUnit;
 
-                std::cout << std::setw(26) << std::left << sensorStringFirst << std::setw(8) << std::left << sensorStringSecond;
+                std::cout << std::setw(26) << std::left << coloredIdType << std::setw(4) << std::left << coloredValue << coloredUnit;
                 numSensorsPrinted++;
 
                 if (numSensorsPrinted < 3) {
@@ -75,7 +85,6 @@ void Display::printSensorsList(const std::vector<Measurement>& log, const std::v
         }
     }
     printMessage(" ");
-    printMessage("****************************");
 }
 
 void Display::drawGraph(const std::array<Measurement, 10>& graphData) const {
@@ -85,6 +94,7 @@ void Display::drawGraph(const std::array<Measurement, 10>& graphData) const {
     int valueMarker;
     int graphMinTemp;
     SensorType currentSensorType = graphData[9].sensorType;
+    std::string sensorIdString = "";
 
     switch (currentSensorType) {
         case SensorType::temperatureSensor: {
@@ -120,7 +130,12 @@ void Display::drawGraph(const std::array<Measurement, 10>& graphData) const {
         if (measurement.sensorId == -1) {
             column--;
             continue;
+        } else {
+            std::string typeColored = "\033[36m" + convertSensorType(measurement.sensorType) + "\033[0m"; 
+            std::string idColored = "\033[36m" + std::to_string(measurement.sensorId) + "\033[0m"; 
+            sensorIdString = measurement.sensorUnit + "   ***** " + typeColored + ": " + idColored + " *****";
         }
+        
         int sensorValue = static_cast<int>(measurement.value - graphMinTemp);
 
         // Limit values
@@ -135,8 +150,9 @@ void Display::drawGraph(const std::array<Measurement, 10>& graphData) const {
         }
         column--;
     }
-
+    
     // Draw graph
+    printMessage(sensorIdString);
     for (int r = graphResolution - 1; r >= 0; r--) {
         std::cout << valueMarker-- << "|";
         for (int c = 0; c < timeEntires; c++) {
