@@ -1,6 +1,9 @@
 #include <string>
 #include <ctime>
 #include <random>
+#include <cmath>
+#include <sstream>
+#include <iomanip>
 #include "utils.h"
 // #include "definitions.h"
 
@@ -52,4 +55,13 @@ std::string sensorTypeToString(SensorType type) {
         case SensorType::waterSensor: return "Water Sensor";
         default: return "unknown";
     }
+}
+
+std::string trimDecimals(float value, int precision) {
+    value = std::round(value * 2.0f) / 2.0f;
+    std::string returnString;
+    std::stringstream ss;
+    ss << std::fixed << std::setprecision(precision) << value;
+    returnString = ss.str();
+    return returnString;
 }

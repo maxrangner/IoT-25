@@ -38,14 +38,19 @@ void Display::printMeasurement(const Measurement measurment) const {
 }
 
 void Display::drawSensorsList(const std::vector<Measurement>& log, const std::vector<std::unique_ptr<Sensor>>& SensorsList) const {
+    printMessage("****** Active sensors ******");
     for (auto& s : SensorsList) { // Loopa över varje sensor
         bool valueFound = false;
+        
         for (auto it = log.rbegin(); it != log.rend(); ++it) {
             Measurement m = *it;
             if (s->getSensorId() == m.sensorId) {
                 printMessage(std::to_string(m.sensorId), false);
-                printMessage(" ", false);
-                printMessage(std::to_string(m.value), false);
+                printMessage(":  ", false);
+                printMessage(convertSensorType(m.sensorType), false);
+                printMessage(": ", false);
+                printMessage(trimDecimals(m.value, 1), false);
+                printMessage(m.sensorUnit, false);
                 printMessage(" | ", false);
                 valueFound = true;
                 break;
@@ -57,6 +62,7 @@ void Display::drawSensorsList(const std::vector<Measurement>& log, const std::ve
         }
     }
     printMessage(" ");
+    printMessage("****************************");
 }
 
 void Display::drawGraph(const std::array<Measurement, 10>& graphData, int sensorId) const {
@@ -82,13 +88,15 @@ void Display::drawGraph(const std::array<Measurement, 10>& graphData, int sensor
     for (auto it = graphData.rbegin(); it != graphData.rend(); it++) { // Iterate backwards from the right
         if (column < 0) break;
         const auto& measurement = *it; // Create iterator reference to current measurement object, and dereference it.
-        if (measurement.sensorId == -1) {
+        if (measurement.sensorId != sensorId) {
             column--;
             continue;
         }
 
         float sensorValue = 0;
         sensorValue = static_cast<int>(std::round(graphMaxTemp - measurement.value));
+        if (sensorValue < 0) sensorValue = 0;
+        if (sensorValue >= graphResolution) sensorValue = graphResolution - 1;
     
         for (int row = 0; row < sensorValue; row++) {
             graph[row][column] = "x";
