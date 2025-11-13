@@ -6,12 +6,6 @@ Logger::Logger(Display& display) {
     connectedDisplay = &display;
 }
 
-void Logger::addMeasurment(Measurement measurement) {
-    std::lock_guard<std::mutex> lock(logMutex);
-    this->log.emplace_back(measurement);
-    // updateGraphData(this->log);
-}
-
 void Logger::printLog() {
     std::lock_guard<std::mutex> lock(logMutex);
     for (const auto& m : log) {
@@ -26,6 +20,12 @@ void Logger::printLog() {
     }
     connectedDisplay->printMessage("\n");
     connectedDisplay->printMessage("\n*************************************\n");
+}
+
+void Logger::addMeasurment(Measurement measurement) {
+    std::lock_guard<std::mutex> lock(logMutex);
+    this->log.emplace_back(measurement);
+    // updateGraphData(this->log);
 }
 
 std::vector<Measurement>& Logger::getLog() {

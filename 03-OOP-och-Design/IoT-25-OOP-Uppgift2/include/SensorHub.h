@@ -9,10 +9,8 @@
 class SensorHub {
     std::vector<std::unique_ptr<Sensor>> mySensors;
     Logger* connectedLog;
-    int updateInterval;
 public:
     SensorHub(Logger& log);
-    int getUpdateInterval() const;
     void addSensor(SensorType type);
     void removeSensor(int id);
     void readAllSensors(std::vector<int> sensors = {});

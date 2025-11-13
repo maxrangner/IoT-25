@@ -7,12 +7,11 @@ constexpr int CHAR_ARRAY_SIZE = 50;
 enum class MenuOptions {
     startOfMenu, // 0.
     addRemove, // 1.
-    statusScreen, // 2.
-    searchMeasure, // 3. 
-    settings, // 4. 
-    saveLoad, // 5.
-    quit, // 6.
-    endOfmenu // 7.
+    statusScreen, // 2. 
+    settings, // 3. 
+    saveLoad, // 4.
+    quit, // 5.
+    endOfmenu // 6.
 };
 
 enum class FunctionReturnStatus {

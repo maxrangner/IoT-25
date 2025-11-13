@@ -4,10 +4,10 @@
 #include <atomic>
 
 SystemManager::SystemManager() : log(display), ui(hub, display, log), hub(log) {
+    updateInterval = 5; // Seconds
 }
 
 void SystemManager::run() {
-    // Run sensorRead thread
     std::thread t(&SystemManager::sensorReadThread, this); // Starts thread that handles sensor interval updates.
 
     ui.greeting();
@@ -18,7 +18,6 @@ void SystemManager::run() {
 
 void SystemManager::sensorReadThread() {
     while (ui.isRunning()) {
-        int updateInterval = hub.getUpdateInterval();
         hub.readAllSensors();
 
         std::this_thread::sleep_for(std::chrono::seconds(updateInterval));

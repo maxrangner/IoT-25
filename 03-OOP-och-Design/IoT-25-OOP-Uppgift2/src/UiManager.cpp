@@ -16,6 +16,10 @@ UiManager::UiManager(SensorHub& hub, Display& disp, Logger& log) {
     connectedLog = &log;
 }
 
+// GETTERS
+bool UiManager::isRunning() const { return isRunning_; }
+
+// STARTUP & SHUTDOWN
 void UiManager::greeting() const {
     connectedDisplay->printHeader("Welcome!");
 }
@@ -24,11 +28,10 @@ void UiManager::quitProcess() {
     connectedDisplay->printMessage("Bye!");
 }
 
-bool UiManager::isRunning() const { return isRunning_; }
-
+// CORE
 void UiManager::run() {
     while(isRunning_) {
-        // connectedDisplay->clear(); // Not yet implementet.
+        connectedDisplay->clear();
         connectedDisplay->printMenu();
         MenuOptions choice = getMenuSelection();
         menuAction(choice); 
@@ -51,18 +54,17 @@ MenuOptions UiManager::getMenuSelection() {
     return static_cast<MenuOptions>(menuStatus.result);
 }
 
-
 void UiManager::menuAction(MenuOptions choice) {
     switch (choice) { 
         case MenuOptions::addRemove: addRemoveSensors(); break; // 1.
         case MenuOptions::statusScreen: statusScreen(); break; // 2. This is a temporary function. This will bring you to a status screen with all current data displayed.
-        case MenuOptions::searchMeasure: break; // 3. Not yet implemented.
-        case MenuOptions::settings: break; // 4. Not yet implemented.
-        case MenuOptions::saveLoad: break; // 5. Not yet implemented.
-        case MenuOptions::quit: isRunning_ = false; break; // 6.
+        case MenuOptions::settings: break; // 3. Not yet implemented.
+        case MenuOptions::saveLoad: break; // 4. Not yet implemented.
+        case MenuOptions::quit: isRunning_ = false; break; // 5.
     }
 }
 
+// ACTIONS
 void UiManager::addRemoveSensors() {
     connectedDisplay->printHeader(" Add / Remove Sensors ");
     connectedDisplay->printMessage("* To add sensor: [t]emperature sensor, [h]umidity sensor.\n* To remove: enter sensor Id.\n* Press [return] to finish.");
@@ -103,29 +105,18 @@ void UiManager::addRemoveSensors() {
     } while (inputCommand.status != FunctionReturnStatus::none);
 }
 
-void UiManager::printAllSensorInfo() {
-    for (auto& s : connectedHub->getSensorsList()) {
-        std::cout << "Sensor:\n";
-        for (auto& e : s->getInfo()) {
-            connectedDisplay->printMessage(e.first, false);
-            connectedDisplay->printMessage(": ", false);
-            connectedDisplay->printMessage(e.second);
-        }
-        std::cout << "\n";
-    }
-    connectedDisplay->printMessage("\n*************************************\n");
-}
-
 void UiManager::statusScreen() {
     InputStringResult inputCommand;
     std::vector<std::string> validInputs;
-    int selectedSensorId;
-    static bool drawResult = true;
+    int selectedSensorId = -1;
+    static bool drawResult = false;
+    connectedDisplay->printHeader(" StatusScreen ");
 
     do {
         validInputs.clear();
         validInputs.emplace_back("t");
         validInputs.emplace_back("h");
+        validInputs.emplace_back("u");
         for (const auto& s : connectedHub->getSensorsList()) {
                 validInputs.emplace_back(std::to_string(s->getSensorId()));
             }
@@ -133,19 +124,26 @@ void UiManager::statusScreen() {
         if (drawResult) {
             connectedDisplay->clear();
             connectedDisplay->printHeader(" StatusScreen ");
-            connectedDisplay->drawSensorsList(connectedLog->getLog(), connectedHub->getSensorsList());
-            connectedDisplay->drawGraph(connectedLog->getGraphData(selectedSensorId), selectedSensorId);
+            connectedDisplay->printSensorsList(connectedLog->getLog(), connectedHub->getSensorsList());
+            connectedDisplay->drawGraph(connectedLog->getGraphData(selectedSensorId));
             drawResult = false;
         }
 
-        connectedDisplay->printMessage("* Enter sensorId or \n* All sensors of type [t]emperature, [h]umidity.");
+        connectedDisplay->printMessage("* Enter sensorId or \n* All sensors of type [t]emperature, [h]umidity.\n* [u]pdate.");
         inputCommand = inputHandler.getString(validInputs);
 
         switch (inputCommand.status) {
-            case FunctionReturnStatus::none: break;
+            case FunctionReturnStatus::none: {
+                drawResult = false;
+                break; 
+            }
             case FunctionReturnStatus::success: {
                 if (inputCommand.result == "") break;
-                if (inputCommand.result == "t"){
+                if (inputCommand.result == "u") {
+                    drawResult = true;
+                    break;
+                }
+                if (inputCommand.result == "t") {
                     // Logic for all temperature sensors
                     drawResult = true;
                     break;
@@ -161,9 +159,9 @@ void UiManager::statusScreen() {
             } 
             case FunctionReturnStatus::fail: {
                 connectedDisplay->printMessage("Please enter a valid command.");
+                drawResult = false;
                 break;
             }
         }
     } while (inputCommand.status != FunctionReturnStatus::none);
-    drawResult = true;
 }

@@ -11,6 +11,7 @@ class SystemManager {
     SensorHub hub;
     Display display;
     UiManager ui;
+    int updateInterval;
 public:
     SystemManager();
     void run();

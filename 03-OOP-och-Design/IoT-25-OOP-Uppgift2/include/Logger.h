@@ -12,8 +12,8 @@ class Logger {
     std::mutex logMutex;
 public:
     Logger(Display& display);
-    void addMeasurment(Measurement measurement);
     void printLog();
+    void addMeasurment(Measurement measurement);
     std::vector<Measurement>& getLog();
     std::array<Measurement, 10> getGraphData(int sensorId);
 };

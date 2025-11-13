@@ -10,11 +10,6 @@
 
 SensorHub::SensorHub(Logger& log) {
     connectedLog = &log;
-    updateInterval = 2; // Seconds
-}
-
-int SensorHub::getUpdateInterval() const {
-    return updateInterval;
 }
 
 void SensorHub::addSensor(SensorType type) {

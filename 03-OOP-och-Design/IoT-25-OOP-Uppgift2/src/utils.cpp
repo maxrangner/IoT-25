@@ -58,7 +58,6 @@ std::string sensorTypeToString(SensorType type) {
 }
 
 std::string trimDecimals(float value, int precision) {
-    value = std::round(value * 2.0f) / 2.0f;
     std::string returnString;
     std::stringstream ss;
     ss << std::fixed << std::setprecision(precision) << value;
