@@ -36,4 +36,8 @@ public:
     // ACTIONS
     void addRemoveSensors();
     void statusScreen();
+    void setAlarms();
+
+    // UTILS
+    std::vector<std::string> buildValidInputs(const std::vector<std::string>& valids);
 };

@@ -50,9 +50,15 @@ const Alarms& SensorHub::getAlarms() const {
 void SensorHub::setTemperatureAlarms(float low, float high) {
     alarms.temperatureLow = low;
     alarms.temperatureHigh = high;
+    alarms.isOn = true;
 }
 
 void SensorHub::setHumidityAlarms(float low, float high) {
     alarms.humidityLow = low;
     alarms.humidityHigh = high;
+    alarms.isOn = true;
+}
+
+void SensorHub::turnOffAlarms() {
+    alarms.isOn = false;
 }

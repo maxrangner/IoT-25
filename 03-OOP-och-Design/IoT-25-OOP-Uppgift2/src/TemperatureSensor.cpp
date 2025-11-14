@@ -18,7 +18,7 @@ Measurement TemperatureSensor::read() {
     newMeasurement.sensorId = this->sensorId;
     newMeasurement.sensorType = this->sensorType;
     newMeasurement.sensorUnit = this->sensorUnit;
-    newMeasurement.value = getRandomNumber(17, 28);
+    newMeasurement.value = getRandomNumber(17.0f, 28.0f);
     newMeasurement.timestamp = getTime();
 
     return newMeasurement;

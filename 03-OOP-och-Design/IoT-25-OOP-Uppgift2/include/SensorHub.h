@@ -19,4 +19,5 @@ public:
     const Alarms& getAlarms() const;
     void setTemperatureAlarms(float low, float high);
     void setHumidityAlarms(float low, float high);
+    void turnOffAlarms();
 };

@@ -48,14 +48,32 @@ struct InputStringResult {
     std::string result;
 };
 
-struct InputIntOrStringResult {
-    FunctionReturnStatus status;
-    std::string result;
+struct Alarms {
+    bool isOn = true;
+
+    float temperatureLow = 18.0f;
+    float temperatureHigh = 26.0f;
+    float humidityLow = 48.0f;
+    float humidityHigh = 56.0f;
 };
 
-struct Alarms {
-    float temperatureLow = 18;
-    float temperatureHigh = 25;
-    float humidityLow = 50;
-    float humidityHigh = 57;
+struct Statistics {
+    bool empty = true;
+
+    // Temperature
+    int numTemperaturePoints = 0;
+    double sumTemperature = 0.0;
+    double averageTemperature = 0.0;
+    double varianceTemperature = 0.0;
+    float stdDeviationTemperature = 0.0f;
+    float minValTemperature = 0.0f;
+    float maxValTemperature = 0.0f;
+    //Humidity
+    int numHumidityPoints = 0;
+    double sumHumidity = 0.0;
+    double averageHumidity = 0.0;
+    double varianceHumidity = 0.0;
+    float stdDeviationHumidity = 0.0f;
+    float minValHumidity = 0.0f;
+    float maxValHumidity = 0.0f;
 };

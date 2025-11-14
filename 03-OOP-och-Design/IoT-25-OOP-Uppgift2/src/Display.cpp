@@ -9,8 +9,8 @@
 void Display::printMenu() const {
     int spacing = 4;
 
-    std::cout << "\n*--- MENU ---*\n"
-              << std::left << std::setw(spacing) << "[1]    " << "Add / remove sensor\n"
+    printHeader("MENU");
+    std::cout << std::left << std::setw(spacing) << "[1]    " << "Add / remove sensor\n"
               << std::left << std::setw(spacing) << "[2]    " << "Status Screen\n"
               << std::left << std::setw(spacing) << "[3]    " << "Settings *** NOT IMPELEMENTED ***\n"
               << std::left << std::setw(spacing) << "[4]    " << "Save / load System State *** NOT IMPELEMENTED ***\n"
@@ -20,7 +20,7 @@ void Display::printMenu() const {
 
 void Display::printHeader(const std::string& text) const {
     clear();
-    std::cout << "\n*---" << text << "---*\n"
+    std::cout << "\033[30;47m\n*---" << text << "---*\n\033[0m"
               << std::endl;
 }
 
@@ -36,7 +36,7 @@ void Display::printMeasurement(const Measurement measurment) const {
             << std::endl;
 }
 
-void Display::printSensorsList(const std::vector<Measurement>& log, const std::vector<std::unique_ptr<Sensor>>& SensorsList, Alarms alarms) const {
+void Display::printSensorsList(const std::vector<Measurement>& log, const std::vector<std::unique_ptr<Sensor>>& SensorsList, const Alarms& alarms) const {
     int numSensorsPrinted = 0;
     int spacing = 30;
     printMessage("****** Active sensors ******");
@@ -50,12 +50,12 @@ void Display::printSensorsList(const std::vector<Measurement>& log, const std::v
                 std::string color = "";
                 switch (m.sensorType) {
                     case SensorType::temperatureSensor: {
-                        if (m.value <= alarms.temperatureLow || m.value >= alarms.temperatureHigh) color = "\033[31m";
+                        if ((m.value <= alarms.temperatureLow || m.value >= alarms.temperatureHigh) && alarms.isOn) color = "\033[31m";
                         else color = "\033[32m";
                         break;
                     }
                     case SensorType::humiditySensor: {
-                        if (m.value <= alarms.humidityLow || m.value >= alarms.humidityHigh) color = "\033[31m";
+                        if ((m.value <= alarms.humidityLow || m.value >= alarms.humidityHigh) && alarms.isOn) color = "\033[31m";
                         else color = "\033[32m";
                         break;
                     }
@@ -85,6 +85,26 @@ void Display::printSensorsList(const std::vector<Measurement>& log, const std::v
         }
     }
     printMessage(" ");
+}
+
+void Display::printStats(std::vector<Measurement>& log) {
+    Statistics newStats = getStatistics(log);
+    
+    if (newStats.numTemperaturePoints > 0) {
+        std::cout << "\n*--- Temperature --- Average: " << trimDecimals(newStats.averageTemperature, 2)
+                                                        << " |   Min: " << newStats.minValTemperature
+                                                        << " |   Max: " << newStats.maxValTemperature
+                                                        << " |   Variance: " << trimDecimals(newStats.varianceTemperature, 2)
+                                                        << " |   Std dev: " << trimDecimals(newStats.stdDeviationTemperature, 2);
+    }
+    if (newStats.numTemperaturePoints > 0) {
+    std::cout << "\n*----- Humidity ---- Average: " << trimDecimals(newStats.averageHumidity, 2)
+                                                    << " |   Min: " << newStats.minValHumidity
+                                                    << " |   Max: " << newStats.maxValHumidity
+                                                    << " |   Variance: " << trimDecimals(newStats.varianceHumidity, 2)
+                                                    << " |   Std dev: " << trimDecimals(newStats.stdDeviationHumidity, 2) << std::endl;
+    }
+    std::cout << std::endl;
 }
 
 void Display::drawGraph(const std::array<Measurement, 10>& graphData) const {

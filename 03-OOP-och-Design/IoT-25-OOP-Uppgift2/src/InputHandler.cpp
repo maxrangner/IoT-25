@@ -10,7 +10,7 @@ InputIntResult InputHandler::getInt(int min, int max) {
     output.result = 0;
     std::string userInput = "";
 
-    std::cout << "> ";
+    std::cout << "\n\033[30;47m > \033[0m ";
     std::getline(std::cin, userInput);
     if (userInput == "") { // Return if input is empty.
         output.status = FunctionReturnStatus::success;
@@ -27,6 +27,7 @@ InputIntResult InputHandler::getInt(int min, int max) {
         return output;
     }
     output.status = FunctionReturnStatus::fail;
+    std::cout << "fail" << std::endl;
     return output;
 }
 
@@ -35,7 +36,7 @@ InputStringResult InputHandler::getString(std::vector<std::string> valids) {
     output.result = "";
     std::string userInput = "";
 
-    std::cout << "> ";
+    std::cout << "\n\033[30;47m > \033[0m ";
     std::getline(std::cin, userInput);
     if (userInput == "") { // Return if input is empty.
         output.status = FunctionReturnStatus::none;

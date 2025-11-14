@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <vector>
 #include <ctime>
 #include "definitions.h"
 
@@ -10,3 +11,4 @@ time_t getTime();
 std::string readTime(std::time_t timestamp);
 std::string sensorTypeToString(SensorType type);
 std::string trimDecimals(float value, int precision = 1);
+Statistics getStatistics(std::vector<Measurement>& log);
