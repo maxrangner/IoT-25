@@ -12,8 +12,8 @@ void Display::printMenu() const {
     printHeader("MENU");
     std::cout << std::left << std::setw(spacing) << "[1]    " << "Add / remove sensor\n"
               << std::left << std::setw(spacing) << "[2]    " << "Status Screen\n"
-              << std::left << std::setw(spacing) << "[3]    " << "Settings *** NOT IMPELEMENTED ***\n"
-              << std::left << std::setw(spacing) << "[4]    " << "Save / load System State *** NOT IMPELEMENTED ***\n"
+              << std::left << std::setw(spacing) << "[3]    " << "Setup alarms\n"
+              << std::left << std::setw(spacing) << "[4]    " << "Save / load System State\n"
               << std::left << std::setw(spacing) << "[5]    " << "Quit\n"
               << "*-----------*" << std::endl;
 }
