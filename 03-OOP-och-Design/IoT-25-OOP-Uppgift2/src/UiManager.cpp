@@ -30,8 +30,7 @@ void UiManager::quitProcess() {
 // CORE
 void UiManager::run() {
     while(isRunning_) {
-        // connectedDisplay->clear();
-        // connectedLog->printLog();
+        connectedDisplay->clear();
         connectedDisplay->printMenu();
         MenuOptions choice = getMenuSelection();
         menuAction(choice); 
@@ -51,8 +50,6 @@ MenuOptions UiManager::getMenuSelection() {
             connectedDisplay->printMessage("");
         }
     } while (menuStatus.status != FunctionReturnStatus::success);
-
-    connectedLog->printLog();
 
     return static_cast<MenuOptions>(menuStatus.result);
 }

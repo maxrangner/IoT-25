@@ -12,6 +12,16 @@ HumiditySensor::HumiditySensor() {
     maxMeasure = 100.0f; 
     isActive_ = true;
 }
+
+HumiditySensor::HumiditySensor(int id) {
+    sensorId = id;
+    sensorType = SensorType::humiditySensor;
+    sensorUnit = "%";
+    minMeasure = 0.0f;
+    maxMeasure = 100.0f; 
+    isActive_ = true;
+}
+
 Measurement HumiditySensor::read() {
     Measurement newMeasurement;
     newMeasurement.sensorId = sensorId;

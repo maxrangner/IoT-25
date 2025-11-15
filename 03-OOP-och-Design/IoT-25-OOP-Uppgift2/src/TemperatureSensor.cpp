@@ -14,7 +14,14 @@ TemperatureSensor::TemperatureSensor() {
     isActive_ = true;
 }
 
-TemperatureSensor::TemperatureSensor(int id) : Sensor(id) {}
+TemperatureSensor::TemperatureSensor(int id) : Sensor(id) {
+    sensorId = id;
+    sensorType = SensorType::temperatureSensor;
+    sensorUnit = "C";
+    minMeasure = 0.0f;
+    maxMeasure = 100.0f; 
+    isActive_ = true;
+}
 
 Measurement TemperatureSensor::read() {
     Measurement newMeasurement;

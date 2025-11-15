@@ -5,5 +5,6 @@
 class HumiditySensor: public Sensor {
 public:
     HumiditySensor();
+    HumiditySensor(int id);
     Measurement read() override;
 };

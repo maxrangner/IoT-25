@@ -2,6 +2,8 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <unordered_set>
+#include <algorithm>
 #include "SensorHub.h"
 #include "TemperatureSensor.h"
 #include "HumiditySensor.h"
@@ -30,13 +32,25 @@ void SensorHub::removeSensor(int id) {
 }
 
 void SensorHub::restoreSensors() {
-    std::vector<std::unique_ptr<Sensor>> newMySensors;
+    std::unordered_set<int> seenSensors;
+    mySensors.clear();
 
-    for (auto& m : connectedLog->getLog()) {
+    std::vector<Measurement>& log = connectedLog->getLog();
+
+    for (auto it = log.rbegin(); it != log.rend(); it++) {
+        const auto& m = *it;
+        if (seenSensors.count(m.sensorId)) break;
+        seenSensors.insert(m.sensorId);
         switch (m.sensorType) {
-            case SensorType::temperatureSensor: newMySensors.emplace_back(std::make_unique<TemperatureSensor>(m.sensorId)); break;
+            case SensorType::temperatureSensor: mySensors.emplace_back(std::make_unique<TemperatureSensor>(m.sensorId)); break;
+            case SensorType::humiditySensor: mySensors.emplace_back(std::make_unique<HumiditySensor>(m.sensorId)); break;
         }
     }
+
+    std::sort(mySensors.begin(), mySensors.end(), [](auto& a, auto& b) {
+        return a->getSensorId() < b->getSensorId();
+    });
+
 }
 
 void SensorHub::readAllSensors(std::vector<int> sensors) {
@@ -71,4 +85,10 @@ void SensorHub::setHumidityAlarms(float low, float high) {
 
 void SensorHub::turnOffAlarms() {
     alarms.isOn = false;
+}
+
+void SensorHub::printAllSensors() {
+    for (auto& s : mySensors) {
+        s->printInfo();
+    }
 }
