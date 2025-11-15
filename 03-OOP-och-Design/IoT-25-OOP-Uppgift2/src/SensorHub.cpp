@@ -83,8 +83,12 @@ void SensorHub::setHumidityAlarms(float low, float high) {
     alarms.isOn = true;
 }
 
-void SensorHub::turnOffAlarms() {
+void SensorHub::turnAlarmsOff() {
     alarms.isOn = false;
+}
+
+void SensorHub::turnAlarmsOn() {
+    alarms.isOn = true;
 }
 
 void SensorHub::printAllSensors() {

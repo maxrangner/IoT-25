@@ -67,7 +67,7 @@ void UiManager::menuAction(MenuOptions choice) {
 // ACTIONS
 void UiManager::addRemoveSensors() {
     connectedDisplay->printHeader(" Add / Remove Sensors ");
-    connectedDisplay->printMessage("> To add sensor: [t]emperature sensor, [h]umidity sensor.\n> To remove: enter sensor Id.\n> Press [return] to finish.");
+    connectedDisplay->printMessage("> Add [t]emperature sensor\n> Add [h]umidity sensor\n> To remove: enter sensor [Id]\n> Press [return] to finish.");
     InputStringResult inputCommand;
     std::vector<std::string> validInputs;
 
@@ -150,38 +150,51 @@ void UiManager::statusScreen() {
 
 void UiManager::setAlarms() {
     connectedDisplay->printHeader(" Set Alarms ");
-    connectedDisplay->printMessage("> [t]emperature sensor\n> [h]umidity sensor\n> Press [return] to finish.");
+    connectedDisplay->printMessage("> Set [t]emperature sensor alarm\n> Set [h]umidity sensor alarm\n> [off] to turn alarms off\n> Press [return] to finish");
     InputStringResult inputCommand;
     std::vector<std::string> validInputs;
 
     do { // Loops until successful input
-        validInputs = buildValidInputs({"t", "h"});
+        validInputs = buildValidInputs({"t", "h", "on", "off"});
         inputCommand = inputHandler.getString(validInputs);
 
         switch (inputCommand.status) {
             case FunctionReturnStatus::none: break;
             case FunctionReturnStatus::success: {
                 if (inputCommand.result == "") break;
+                if (inputCommand.result == "on") {
+                    connectedHub->turnAlarmsOn();
+                    return;
+                }
+                if (inputCommand.result == "off") {
+                    connectedHub->turnAlarmsOff();
+                    return;
+                }
                 if (inputCommand.result == "t"){
-                    connectedDisplay->printMessage("> Enter [low] then [high]\n> Enter [return] or [0] to turn alarms off.");
+                    connectedDisplay->printMessage("> Enter [low] then [high]\n> [enter] to cancel.");
                     
                     InputIntResult tempMin;
                     do {
                         tempMin = inputHandler.getInt();
+                        if (tempMin.status == FunctionReturnStatus::success && tempMin.result == 0) {                            
+                            return;
+                        }
                     } while (tempMin.status == FunctionReturnStatus::fail);
                     
                     InputIntResult tempMax;
                     do {
                         tempMax = inputHandler.getInt();
+                        if (tempMax.status == FunctionReturnStatus::success && tempMax.result == 0) {
+                            return;
+                        }
                     } while (tempMax.status == FunctionReturnStatus::fail);
 
                     if (tempMin.result == 0 || tempMax.result == 0) {
-                        connectedHub->turnOffAlarms();
                         break;
                     }
                     connectedHub->setTemperatureAlarms(tempMin.result, tempMax.result);
                     connectedDisplay->printMessage("Temperature alarm set!");
-                    inputCommand.status = FunctionReturnStatus::none;
+                    return;
                     break;
                 }
                 // if (inputCommand.result == "h") {
@@ -189,7 +202,7 @@ void UiManager::setAlarms() {
                 //     InputIntResult humidMin = inputHandler.getInt();
                 //     InputIntResult humidMax = inputHandler.getInt();
                 //     if (humidMin.result == 0 || humidMax.result == 0) {
-                //         connectedHub->turnOffAlarms();
+                //         connectedHub->turnAlarmsOff();
                 //         break;
                 //     }
                 //     connectedHub->setTemperatureAlarms(humidMin.result, humidMax.result);
