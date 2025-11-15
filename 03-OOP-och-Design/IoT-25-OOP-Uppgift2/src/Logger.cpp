@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>
 #include "Logger.h"
 #include "utils.h"
 
@@ -43,4 +44,62 @@ std::array<Measurement, 10> Logger::getGraphData(int sensorId) {
         if (index < 0) break;
     }
     return newGraphData;
+}
+
+bool Logger::saveData() {
+    std::ofstream outFile("data.csv");
+    if (!outFile) return false;
+    time_t lastTimestamp = log[0].timestamp;
+
+    for (auto& Measurement : this->getLog()) {
+        if (lastTimestamp != Measurement.timestamp) outFile << std::endl;
+
+        outFile << Measurement.sensorId << ","
+                << sensorTypeToString(Measurement.sensorType) << ","
+                << Measurement.value << ","
+                << Measurement.sensorUnit << ","
+                << Measurement.timestamp << ","
+                << std::endl;
+        lastTimestamp = Measurement.timestamp;
+    }
+    outFile.close();
+    
+    return true;
+}
+
+bool Logger::loadData() {
+    std::cout << "loadData()\n";
+    log.clear();
+    
+    std::ifstream inFile("data.csv");
+    if (!inFile) return false;
+
+    std::string newLine;
+
+    while(std::getline(inFile, newLine)) {
+        std::stringstream ss(newLine);
+        std::string extractedValue;
+
+        int fieldCount = 0;
+        Measurement newMeasurement;
+        
+        while (std::getline(ss, extractedValue, ',')) {
+            if (extractedValue.empty()) continue;
+            std::cout << fieldCount << ": " << extractedValue << std::endl;
+            switch (fieldCount) {
+                case 0: newMeasurement.sensorId = std::stoi(extractedValue); break;
+                case 1: newMeasurement.sensorType = convertToSensorType(extractedValue); break;
+                case 2: newMeasurement.value = std::stoi(extractedValue); break;
+                case 3: newMeasurement.sensorUnit = extractedValue; break;
+                case 4: newMeasurement.timestamp = std::stoll(extractedValue); break;
+            }
+            fieldCount++;
+        }
+        std::cout << "after while(getline)\n";
+        log.push_back(newMeasurement);
+    }
+    // restoreSensors();
+    std::cout << "closeFile()\n";
+    inFile.close();
+    return true;
 }

@@ -3,7 +3,6 @@
 #include "UiManager.h"
 #include "definitions.h"
 #include "InputHandler.h"
-#include "Logger.h"
 #include "utils.h"
 
 UiManager::UiManager() {
@@ -60,7 +59,7 @@ void UiManager::menuAction(MenuOptions choice) {
         case MenuOptions::addRemove: addRemoveSensors(); break; // 1.
         case MenuOptions::statusScreen: statusScreen(); break; // 2. This is a temporary function. This will bring you to a status screen with all current data displayed.
         case MenuOptions::settings: setAlarms(); break; // 3. Not yet implemented.
-        case MenuOptions::saveLoad: break; // 4. Not yet implemented.
+        case MenuOptions::saveLoad: saveLoadData(); break; // 4. Not yet implemented.
         case MenuOptions::quit: isRunning_ = false; break; // 5.
     }
 }
@@ -117,6 +116,7 @@ void UiManager::statusScreen() {
             connectedDisplay->printSensorsList(connectedLog->getLog(), connectedHub->getSensorsList(), connectedHub->getAlarms());
             connectedDisplay->drawGraph(connectedLog->getGraphData(selectedSensorId));
             connectedDisplay->printStats(connectedLog->getLog());
+            connectedDisplay->printAlarms(connectedHub->getAlarms());
             drawResult = false;
         }
 
@@ -204,6 +204,30 @@ void UiManager::setAlarms() {
             }
         }
     } while (inputCommand.status != FunctionReturnStatus::none);
+}
+
+void UiManager::saveLoadData() {
+    InputStringResult choice;
+    std::vector<std::string> validInputs = buildValidInputs({"s", "l"});
+
+    do { // Loops until successful input
+        choice = inputHandler.getString(validInputs);
+        if (choice.status == FunctionReturnStatus::fail) {
+            std::string text = "Please enter [" + validInputs[0] + "] or [" + validInputs[2] + "].";
+            connectedDisplay->printMessage(text);
+            connectedDisplay->printMessage("");
+        }
+    } while (choice.status != FunctionReturnStatus::success);
+
+    if (choice.result == "s") {
+        connectedLog->saveData();
+        connectedDisplay->printMessage("Data saved.");
+    } 
+    if (choice.result == "l") {
+        connectedLog->loadData();
+        connectedHub->restoreSensors();
+        connectedDisplay->printMessage("Data loaded.");
+    }
 }
 
 std::vector<std::string> UiManager::buildValidInputs(const std::vector<std::string>& valids) {

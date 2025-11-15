@@ -31,7 +31,7 @@ void Display::printMessage(const std::string& text, bool lineBreak) const {
 
 void Display::printMeasurement(const Measurement measurment) const {
     std::cout << "id: " << measurment.sensorId << " | "
-            << "type: " << convertSensorType(measurment.sensorType) << " | "
+            << "type: " << convertFromSensorType(measurment.sensorType) << " | "
             << measurment.value << " " << measurment.sensorUnit
             << std::endl;
 }
@@ -61,7 +61,7 @@ void Display::printSensorsList(const std::vector<Measurement>& log, const std::v
                     }
                     default: break;
                 }
-                std::string coloredIdType = std::to_string(m.sensorId) + ": " + convertSensorType(m.sensorType) + ": ";
+                std::string coloredIdType = std::to_string(m.sensorId) + ": " + convertFromSensorType(m.sensorType) + ": ";
                 std::string coloredValue = color + trimDecimals(m.value, 1) + "\033[0m";
                 std::string coloredUnit = m.sensorUnit;
 
@@ -91,20 +91,26 @@ void Display::printStats(std::vector<Measurement>& log) {
     Statistics newStats = getStatistics(log);
     
     if (newStats.numTemperaturePoints > 0) {
-        std::cout << "\n*--- Temperature --- Average: " << trimDecimals(newStats.averageTemperature, 2)
+        std::cout << "\n*--- Temperature ---* Average: " << trimDecimals(newStats.averageTemperature, 2)
                                                         << " |   Min: " << newStats.minValTemperature
                                                         << " |   Max: " << newStats.maxValTemperature
                                                         << " |   Variance: " << trimDecimals(newStats.varianceTemperature, 2)
                                                         << " |   Std dev: " << trimDecimals(newStats.stdDeviationTemperature, 2);
     }
     if (newStats.numTemperaturePoints > 0) {
-    std::cout << "\n*----- Humidity ---- Average: " << trimDecimals(newStats.averageHumidity, 2)
+    std::cout << "\n*----- Humidity ----* Average: " << trimDecimals(newStats.averageHumidity, 2)
                                                     << " |   Min: " << newStats.minValHumidity
                                                     << " |   Max: " << newStats.maxValHumidity
                                                     << " |   Variance: " << trimDecimals(newStats.varianceHumidity, 2)
                                                     << " |   Std dev: " << trimDecimals(newStats.stdDeviationHumidity, 2) << std::endl;
     }
-    std::cout << std::endl;
+}
+
+void Display::printAlarms(const Alarms& alarms) const {
+    std::cout << ((alarms.isOn) ? "*--- Alarm is on ---* " : "*--- Alarm is off --* ")
+            << "temperature: " << alarms.temperatureLow << " - " << alarms.temperatureHigh << "  |  "
+            << "humidity: " << alarms.humidityLow << " - " << alarms.humidityHigh << std::endl
+            << std::endl;
 }
 
 void Display::drawGraph(const std::array<Measurement, 10>& graphData) const {
@@ -151,7 +157,7 @@ void Display::drawGraph(const std::array<Measurement, 10>& graphData) const {
             column--;
             continue;
         } else {
-            std::string typeColored = "\033[36m" + convertSensorType(measurement.sensorType) + "\033[0m"; 
+            std::string typeColored = "\033[36m" + convertFromSensorType(measurement.sensorType) + "\033[0m"; 
             std::string idColored = "\033[36m" + std::to_string(measurement.sensorId) + "\033[0m"; 
             sensorIdString = measurement.sensorUnit + "   ***** " + typeColored + ": " + idColored + " *****";
         }

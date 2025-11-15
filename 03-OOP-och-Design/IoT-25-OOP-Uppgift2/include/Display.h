@@ -14,6 +14,7 @@ public:
     void printMeasurement(const Measurement measurment) const;
     void printSensorsList(const std::vector<Measurement>& log, const std::vector<std::unique_ptr<Sensor>>& SensorsList, const Alarms& alarms) const;
     void printStats(std::vector<Measurement>& log);
+    void printAlarms(const Alarms& alarms) const;
     void drawGraph(const std::array<Measurement, 10>& graphData) const;
     void clear() const;
 };

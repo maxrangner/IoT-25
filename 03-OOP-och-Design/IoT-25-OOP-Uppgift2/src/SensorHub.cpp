@@ -29,6 +29,17 @@ void SensorHub::removeSensor(int id) {
     }
 }
 
+void SensorHub::restoreSensors() {
+    std::vector<std::unique_ptr<Sensor>> newMySensors;
+
+    for (auto& m : connectedLog->getLog()) {
+        switch (m.sensorType) {
+            case SensorType::temperatureSensor: newMySensors.emplace_back(m.sensorId); break;
+        }
+    }
+
+}
+
 void SensorHub::readAllSensors(std::vector<int> sensors) {
     if (sensors.empty()) {
         // Logic for empty sensors list.

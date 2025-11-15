@@ -14,6 +14,7 @@ public:
     SensorHub(Logger& log);
     void addSensor(SensorType type);
     void removeSensor(int id);
+    void restoreSensors();
     void readAllSensors(std::vector<int> sensors = {});
     const std::vector<std::unique_ptr<Sensor>>& getSensorsList() const;
     const Alarms& getAlarms() const;

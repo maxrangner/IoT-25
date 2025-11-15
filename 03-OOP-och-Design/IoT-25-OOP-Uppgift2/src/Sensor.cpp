@@ -8,6 +8,7 @@ int Sensor::nextId = 0;
 
 // CONSTRUCTORS
 Sensor::Sensor() {}
+Sensor::Sensor(int id) : sensorId(id) {}
 
 // GETTERS
 int Sensor::getNextId() {
@@ -16,7 +17,7 @@ int Sensor::getNextId() {
 
 void Sensor::printInfo() { // Temporary method for debug. Will be deleted.
     std::cout << "SensorId: " << sensorId << " | "
-        << "SensorType: " << convertSensorType(sensorType) << " | "
+        << "SensorType: " << convertFromSensorType(sensorType) << " | "
         << "SensorUnit: " <<  sensorUnit << " | "
         << "minVal: " << minMeasure << " | "
         << "maxVal: " << maxMeasure << " | "
@@ -31,7 +32,7 @@ int Sensor::getSensorId() const {
 std::map<std::string, std::string> Sensor::getInfo() {
     std::map<std::string, std::string> returnVector;
     returnVector["sensorId"] = std::to_string(sensorId);
-    returnVector["sensorType"] = convertSensorType(sensorType);
+    returnVector["sensorType"] = convertFromSensorType(sensorType);
     returnVector["sensorUnit"] = sensorUnit;
     returnVector["minMeasure"] = std::to_string(minMeasure);
     returnVector["maxMeasure"] = std::to_string(maxMeasure);

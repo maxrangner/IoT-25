@@ -15,7 +15,7 @@ std::string makeLower(std::string input) {
     return output;
 }
 
-std::string convertSensorType(SensorType type) {
+std::string convertFromSensorType(SensorType type) {
     switch (type) {
         case SensorType::temperatureSensor: return "temperature sensor";
         case SensorType::humiditySensor: return "humidity sensor";
@@ -23,6 +23,14 @@ std::string convertSensorType(SensorType type) {
         case SensorType::waterSensor: return "water sensor";
         default: return "unknown";
     }
+}
+
+SensorType convertToSensorType(std::string type) {
+    if (type == "temperature sensor") return SensorType::temperatureSensor;
+    if (type == "humidity sensor") return SensorType::humiditySensor;
+    if (type == "motion sensor") return SensorType::motionSensor;
+    if (type == "water sensor") return SensorType::waterSensor;
+    else return SensorType::unknownSensor;
 }
 
 float getRandomNumber(float min, float max) {
