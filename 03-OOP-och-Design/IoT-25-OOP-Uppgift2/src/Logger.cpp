@@ -69,7 +69,7 @@ bool Logger::saveData() {
 
 bool Logger::loadData() {
     std::cout << "loadData()\n";
-    log.clear();
+    this->log.clear();
     
     std::ifstream inFile("data.csv");
     if (!inFile) return false;
@@ -89,17 +89,16 @@ bool Logger::loadData() {
             switch (fieldCount) {
                 case 0: newMeasurement.sensorId = std::stoi(extractedValue); break;
                 case 1: newMeasurement.sensorType = convertToSensorType(extractedValue); break;
-                case 2: newMeasurement.value = std::stoi(extractedValue); break;
+                case 2: newMeasurement.value = std::stof(extractedValue); break;
                 case 3: newMeasurement.sensorUnit = extractedValue; break;
                 case 4: newMeasurement.timestamp = std::stoll(extractedValue); break;
             }
             fieldCount++;
         }
-        std::cout << "after while(getline)\n";
-        log.push_back(newMeasurement);
+        if (fieldCount > 0) this->log.push_back(newMeasurement);
     }
     // restoreSensors();
-    std::cout << "closeFile()\n";
+
     inFile.close();
     return true;
 }

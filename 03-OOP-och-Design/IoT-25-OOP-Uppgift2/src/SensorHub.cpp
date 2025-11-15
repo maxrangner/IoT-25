@@ -34,10 +34,9 @@ void SensorHub::restoreSensors() {
 
     for (auto& m : connectedLog->getLog()) {
         switch (m.sensorType) {
-            case SensorType::temperatureSensor: newMySensors.emplace_back(m.sensorId); break;
+            case SensorType::temperatureSensor: newMySensors.emplace_back(std::make_unique<TemperatureSensor>(m.sensorId)); break;
         }
     }
-
 }
 
 void SensorHub::readAllSensors(std::vector<int> sensors) {

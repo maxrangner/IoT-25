@@ -4,6 +4,7 @@
 #include "definitions.h"
 #include "utils.h"
 
+// CONSTRUCTORS
 TemperatureSensor::TemperatureSensor() {
     sensorId = getNextId();
     sensorType = SensorType::temperatureSensor;
@@ -12,6 +13,9 @@ TemperatureSensor::TemperatureSensor() {
     maxMeasure = 100.0f; 
     isActive_ = true;
 }
+
+TemperatureSensor::TemperatureSensor(int id) : Sensor(id) {}
+
 Measurement TemperatureSensor::read() {
     Measurement newMeasurement;
 
