@@ -48,11 +48,33 @@ time_t getTime() { // Returns current time
     return timestamp;
 }
 
-std::string readTime(std::time_t timestamp) { // Converts time_t to a readable string
+std::string formatTime(std::time_t timestamp, bool showDate) { // Converts time_t to a readable string
     struct tm currentTime = *localtime(&timestamp);
     char time[CHAR_ARRAY_SIZE];
-    strftime(time, sizeof(time), "%a%e %b %H:%M:%S", &currentTime);
+    if (showDate) {
+        strftime(time, sizeof(time), "%a%e %b %H:%M:%S", &currentTime);
+    } else {
+        strftime(time, sizeof(time), "%H:%M", &currentTime);
+    }
     return time;
+}
+
+std::string formatStringColor(const Measurement& m, const Alarms& alarms) {
+    std::string color = "";
+        switch (m.sensorType) {
+            case SensorType::temperatureSensor: {
+                if ((m.value <= alarms.temperatureLow || m.value >= alarms.temperatureHigh) && alarms.isOn) color = "\033[31m";
+                else color = "\033[32m";
+                break;
+            }
+            case SensorType::humiditySensor: {
+                if ((m.value <= alarms.humidityLow || m.value >= alarms.humidityHigh) && alarms.isOn) color = "\033[31m";
+                else color = "\033[32m";
+                break;
+            }
+            default: break;
+        }
+    return color;
 }
 
 std::string sensorTypeToString(SensorType type) {

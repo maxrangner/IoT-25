@@ -114,7 +114,7 @@ void UiManager::statusScreen() {
             connectedDisplay->clear();
             connectedDisplay->printHeader(" StatusScreen ");
             connectedDisplay->printSensorsList(connectedLog->getLog(), connectedHub->getSensorsList(), connectedHub->getAlarms());
-            connectedDisplay->drawGraph(connectedLog->getGraphData(selectedSensorId));
+            connectedDisplay->drawGraph(connectedLog->getGraphData(selectedSensorId), connectedHub->getAlarms());
             connectedDisplay->printStats(connectedLog->getLog());
             connectedDisplay->printAlarms(connectedHub->getAlarms());
             drawResult = false;

@@ -47,20 +47,7 @@ void Display::printSensorsList(const std::vector<Measurement>& log, const std::v
         for (auto it = log.rbegin(); it != log.rend(); ++it) {
             Measurement m = *it;
             if (s->getSensorId() == m.sensorId) {
-                std::string color = "";
-                switch (m.sensorType) {
-                    case SensorType::temperatureSensor: {
-                        if ((m.value <= alarms.temperatureLow || m.value >= alarms.temperatureHigh) && alarms.isOn) color = "\033[31m";
-                        else color = "\033[32m";
-                        break;
-                    }
-                    case SensorType::humiditySensor: {
-                        if ((m.value <= alarms.humidityLow || m.value >= alarms.humidityHigh) && alarms.isOn) color = "\033[31m";
-                        else color = "\033[32m";
-                        break;
-                    }
-                    default: break;
-                }
+                std::string color = formatStringColor(m, alarms);
                 std::string coloredIdType = std::to_string(m.sensorId) + ": " + convertFromSensorType(m.sensorType) + ": ";
                 std::string coloredValue = color + trimDecimals(m.value, 1) + "\033[0m";
                 std::string coloredUnit = m.sensorUnit;
@@ -113,42 +100,38 @@ void Display::printAlarms(const Alarms& alarms) const {
             << std::endl;
 }
 
-void Display::drawGraph(const std::array<Measurement, 10>& graphData) const {
-    constexpr size_t timeEntires = 10;
+void Display::drawGraph(const std::array<Measurement, 10>& graphData, const Alarms& alarms) const {
+    if (graphData.size() == 0) return;
+
+    constexpr size_t TIME_RESOLUTION = 10;
     constexpr size_t MAX_GRAPH_RESOLUTION = 20;
-    int graphResolution = 15;
-    int valueMarker;
-    int graphMinTemp;
+    int graphResolution = MAX_GRAPH_RESOLUTION;
+    int graphMinValue = 0;
+    int rowMarkers = 0;
+    std::array<int, 10> columnMarkers = {0};
     SensorType currentSensorType = graphData[9].sensorType;
     std::string sensorIdString = "";
 
+    // Set graph for sensor type
     switch (currentSensorType) {
-        case SensorType::temperatureSensor: {
-            graphMinTemp = 15;
-            break;
-        }
-        case SensorType::humiditySensor: {
-            graphMinTemp = 45;
-            break;
-        }
+        case SensorType::temperatureSensor: graphMinValue = 15; graphResolution = 15; break;
+        case SensorType::humiditySensor: graphMinValue = 45; graphResolution = 15; break;
         case SensorType::motionSensor: break;
         case SensorType::waterSensor: break;
-        default: {
-            graphResolution = MAX_GRAPH_RESOLUTION;
-            graphMinTemp = 0;
-            break;
-        }; 
+        default: break;
     }
-    valueMarker = graphMinTemp + graphResolution;
+
+    rowMarkers = graphMinValue + graphResolution;
 
     // Initialize graph 2d array with empty spaces
-    std::array<std::array<std::string, timeEntires>, MAX_GRAPH_RESOLUTION> graph;
+    std::array<std::array<std::string, TIME_RESOLUTION>, MAX_GRAPH_RESOLUTION> graph;
     for (auto& col : graph) {
-        std::fill(col.begin(), col.end(), "\033[390m-\033[0m");
+        std::fill(col.begin(), col.end(), "\033[90m---\033[0m");
     }
 
-    // Place values
-    int column = timeEntires - 1;
+    // Place values in 2d array
+    int column = TIME_RESOLUTION - 1;
+
     for (auto it = graphData.rbegin(); it != graphData.rend(); it++) {
         if (column < 0) break;
         const auto& measurement = *it;
@@ -162,7 +145,7 @@ void Display::drawGraph(const std::array<Measurement, 10>& graphData) const {
             sensorIdString = measurement.sensorUnit + "   ***** " + typeColored + ": " + idColored + " *****";
         }
         
-        int sensorValue = static_cast<int>(measurement.value - graphMinTemp);
+        int sensorValue = static_cast<int>(measurement.value - graphMinValue);
 
         // Limit values
         if (sensorValue < 0) sensorValue = 0;
@@ -170,9 +153,10 @@ void Display::drawGraph(const std::array<Measurement, 10>& graphData) const {
     
         if (sensorValue > 0) {
             for (int row = 0; row < sensorValue - 1; row++) {
-                graph[row][column] = "\033[33mx\033[0m";
+                graph[row][column] = "\033[43m   \033[0m";
             }
-            graph[sensorValue - 1][column] = "\033[32mx\033[0m";
+            std::string peakColor = formatStringColor(measurement, alarms);
+            graph[sensorValue - 1][column] = peakColor + " x \033[0m";
         }
         column--;
     }
@@ -180,12 +164,21 @@ void Display::drawGraph(const std::array<Measurement, 10>& graphData) const {
     // Draw graph
     printMessage(sensorIdString);
     for (int r = graphResolution - 1; r >= 0; r--) {
-        std::cout << valueMarker-- << "|";
-        for (int c = 0; c < timeEntires; c++) {
-            std::cout << graph[r][c] << "  ";
+        std::cout << rowMarkers-- << " | "; // Draw values
+        for (int c = 0; c < TIME_RESOLUTION; c++) {
+            std::cout << graph[r][c];
+            if (c != TIME_RESOLUTION - 1) std::cout << "\033[90m-----\033[0m";
         }
         std::cout << std::endl;
     }
+
+    // Draw keys
+    std::cout << "    ";
+    for (int i = 0; i < graphData.size(); i++) {
+        std::cout << formatTime(graphData[i].timestamp, false);
+        if (i < graphData.size() - 1) std::cout << " | ";
+    }
+    std::cout << std::endl;
 }
 
 void Display::clear() const {
