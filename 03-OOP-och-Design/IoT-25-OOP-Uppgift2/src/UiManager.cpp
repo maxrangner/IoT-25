@@ -67,37 +67,55 @@ void UiManager::menuAction(MenuOptions choice) {
 // ACTIONS
 void UiManager::addRemoveSensors() {
     connectedDisplay->printHeader(" Add / Remove Sensors ");
-    connectedDisplay->printMessage("> Add [t]emperature sensor\n> Add [h]umidity sensor\n> To remove: enter sensor [Id]\n> Press [return] to finish.");
     InputStringResult inputCommand;
-    std::vector<std::string> validInputs;
+    std::vector<std::string> validInputs = buildValidInputs({"t", "h"});
+    
+    while (true) {
+        connectedDisplay->printMessage("> Add [t]emperature sensor\n> Add [h]umidity sensor\n> To remove: enter sensor [Id]\n> Press [return] to finish.");
 
-    do { // Loops until successful input
-        validInputs = buildValidInputs({"t", "h"});
-        inputCommand = inputHandler.getString(validInputs);
+        do { // Loops until successful input
+            inputCommand = inputHandler.getString(validInputs, true);
+            if (inputCommand.status == FunctionReturnStatus::fail) {
+                std::string text = "Please enter valid sensor type or sensor id.";
 
-        switch (inputCommand.status) {
-            case FunctionReturnStatus::none: break;
-            case FunctionReturnStatus::success: {
-                if (inputCommand.result == "") break;
-                if (inputCommand.result == "t"){
-                    connectedHub->addSensor(SensorType::temperatureSensor);
-                    connectedDisplay->printMessage("Temperature sensor added");
-                    break;
-                }
-                if (inputCommand.result == "h") {
-                    connectedHub->addSensor(SensorType::humiditySensor);
-                    connectedDisplay->printMessage("Humidity sensor added");
-                    break;
-                }
-                connectedHub->removeSensor(std::stoi(inputCommand.result));
-                break;
-            } 
-            case FunctionReturnStatus::fail: {
-                connectedDisplay->printMessage("Please enter a valid command.\n");
+                connectedDisplay->printMessage(text);
+                connectedDisplay->printMessage("");
+            }
+        } while (inputCommand.status == FunctionReturnStatus::fail);
+
+        if (inputCommand.result == "") break; // User enter nothing
+        if (inputCommand.result == "t"){ // Add temperature sensor
+            connectedHub->addSensor(SensorType::temperatureSensor);
+            connectedDisplay->printMessage("Temperature sensor added");
+            inputHandler.inputPause();
+            continue;
+        }
+        if (inputCommand.result == "h") { // Add humidity sensor
+            connectedHub->addSensor(SensorType::humiditySensor);
+            connectedDisplay->printMessage("Humidity sensor added");
+            inputHandler.inputPause();
+            continue;
+        }
+
+        // User enter id to delete sensor
+        int sensorDelete = std::stoi(inputCommand.result);
+        bool sensorFound = false;
+        for (auto& s : connectedHub->getSensorsList()) {
+            if (s->getSensorId() == sensorDelete) {
+                sensorFound = true;
                 break;
             }
         }
-    } while (inputCommand.status != FunctionReturnStatus::none);
+        if (sensorFound) {
+            connectedHub->removeSensor(sensorDelete);
+            std::string text = "Removed sensor with id: " + std::to_string(sensorDelete);
+            connectedDisplay->printMessage(text);
+        } else {
+            std::string text = "No sensor with id: " + std::to_string(sensorDelete) + " found.";
+            connectedDisplay->printMessage(text);
+        }
+        inputHandler.inputPause();
+    }
 }
 
 void UiManager::statusScreen() {
@@ -220,27 +238,30 @@ void UiManager::setAlarms() {
 }
 
 void UiManager::saveLoadData() {
-    InputStringResult choice;
+    connectedDisplay->printHeader(" Save / Load data ");
+    connectedDisplay->printMessage("> [s]ave or [l]oad");
+    InputStringResult inputCommand;
     std::vector<std::string> validInputs = buildValidInputs({"s", "l"});
 
     do { // Loops until successful input
-        choice = inputHandler.getString(validInputs);
-        if (choice.status == FunctionReturnStatus::fail) {
-            std::string text = "Please enter [" + validInputs[0] + "] or [" + validInputs[2] + "].";
+        inputCommand = inputHandler.getString(validInputs);
+        if (inputCommand.status == FunctionReturnStatus::fail) {
+            std::string text = "Please enter [" + validInputs[0] + "]ave or [" + validInputs[1] + "]oad.";
             connectedDisplay->printMessage(text);
             connectedDisplay->printMessage("");
         }
-    } while (choice.status != FunctionReturnStatus::success);
+    } while (inputCommand.status == FunctionReturnStatus::fail);
 
-    if (choice.result == "s") {
+    if (inputCommand.result == "s") {
         connectedLog->saveData();
-        connectedDisplay->printMessage("Data saved.");
+        connectedDisplay->printMessage("Data saved to file.");
     } 
-    if (choice.result == "l") {
+    if (inputCommand.result == "l") {
         connectedLog->loadData();
         connectedHub->restoreSensors();
-        connectedDisplay->printMessage("Data loaded.");
+        connectedDisplay->printMessage("Data loaded from file.");
     }
+    inputHandler.inputPause();
 }
 
 std::vector<std::string> UiManager::buildValidInputs(const std::vector<std::string>& valids) {

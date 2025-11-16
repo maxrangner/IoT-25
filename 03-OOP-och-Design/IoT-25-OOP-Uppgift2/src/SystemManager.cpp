@@ -17,9 +17,16 @@ void SystemManager::run() {
 }
 
 void SystemManager::sensorReadThread() {
+    const int updateIntervalMs = updateInterval * 1000;
+    const int step = THREAD_SLEEP_MS;
+
     while (ui.isRunning()) {
         hub.readAllSensors();
 
-        std::this_thread::sleep_for(std::chrono::seconds(updateInterval));
+        int waited = 0;
+        while (waited < updateIntervalMs && ui.isRunning()) { 
+            std::this_thread::sleep_for(std::chrono::milliseconds(step));
+            waited += step;
+        }
     }
 }

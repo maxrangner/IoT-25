@@ -28,4 +28,5 @@ public:
 
     // CORE
     virtual Measurement read() = 0;
+    static void setNextId(int num);
 };

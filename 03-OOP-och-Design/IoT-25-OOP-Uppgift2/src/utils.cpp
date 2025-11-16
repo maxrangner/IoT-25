@@ -176,3 +176,9 @@ Statistics getStatistics(std::vector<Measurement>& log) {
     outputStats.empty = false;
     return outputStats;
 }
+
+void trimCR(std::string& s) {
+    if (!s.empty() && s.back() == '\r') {
+        s.pop_back();
+    }
+}

@@ -32,10 +32,11 @@ void SensorHub::removeSensor(int id) {
 }
 
 void SensorHub::restoreSensors() {
+    std::vector<Measurement>& log = connectedLog->getLog();
+    if (log.empty()) return;
+
     std::unordered_set<int> seenSensors;
     mySensors.clear();
-
-    std::vector<Measurement>& log = connectedLog->getLog();
 
     for (auto it = log.rbegin(); it != log.rend(); it++) {
         const auto& m = *it;
@@ -50,7 +51,7 @@ void SensorHub::restoreSensors() {
     std::sort(mySensors.begin(), mySensors.end(), [](auto& a, auto& b) {
         return a->getSensorId() < b->getSensorId();
     });
-
+    Sensor::setNextId(log.rbegin()->sensorId);
 }
 
 void SensorHub::readAllSensors(std::vector<int> sensors) {

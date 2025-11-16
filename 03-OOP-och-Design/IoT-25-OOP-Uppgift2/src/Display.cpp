@@ -175,7 +175,8 @@ void Display::drawGraph(const std::array<Measurement, 10>& graphData, const Alar
     // Draw keys
     std::cout << "    ";
     for (int i = 0; i < graphData.size(); i++) {
-        std::cout << formatTime(graphData[i].timestamp, false);
+        if (graphData[i].timestamp != 0) std::cout << formatTime(graphData[i].timestamp, false);
+        else std::cout << "     ";
         if (i < graphData.size() - 1) std::cout << " | ";
     }
     std::cout << std::endl;

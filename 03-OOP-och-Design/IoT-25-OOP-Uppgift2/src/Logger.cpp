@@ -47,6 +47,7 @@ std::array<Measurement, 10> Logger::getGraphData(int sensorId) {
 }
 
 bool Logger::saveData() {
+    if (log.size() == 0) return false;
     std::ofstream outFile("data.csv");
     if (!outFile) return false;
     time_t lastTimestamp = log[0].timestamp;
@@ -68,7 +69,6 @@ bool Logger::saveData() {
 }
 
 bool Logger::loadData() {
-    std::cout << "loadData()\n";
     this->log.clear();
     
     std::ifstream inFile("data.csv");
@@ -85,7 +85,6 @@ bool Logger::loadData() {
         
         while (std::getline(ss, extractedValue, ',')) {
             if (extractedValue.empty()) continue;
-            std::cout << fieldCount << ": " << extractedValue << std::endl;
             switch (fieldCount) {
                 case 0: newMeasurement.sensorId = std::stoi(extractedValue); break;
                 case 1: newMeasurement.sensorType = convertToSensorType(extractedValue); break;
@@ -97,7 +96,6 @@ bool Logger::loadData() {
         }
         if (fieldCount > 0) this->log.push_back(newMeasurement);
     }
-    // restoreSensors();
 
     inFile.close();
     return true;

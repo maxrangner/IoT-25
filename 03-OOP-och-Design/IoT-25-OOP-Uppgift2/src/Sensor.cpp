@@ -39,3 +39,7 @@ std::map<std::string, std::string> Sensor::getInfo() {
     returnVector["isActive"] = std::to_string(isActive_);
     return returnVector;
 }
+
+void Sensor::setNextId(int num) {
+    nextId = num + 1;
+}

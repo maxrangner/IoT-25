@@ -3,6 +3,7 @@
 
 // CONSTS
 constexpr int CHAR_ARRAY_SIZE = 50;
+constexpr int THREAD_SLEEP_MS = 100;
 
 enum class MenuOptions {
     startOfMenu, // 0.

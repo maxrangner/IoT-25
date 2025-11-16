@@ -1,9 +1,15 @@
 #include <cctype>
 #include <algorithm>
 #include <vector>
+#include <limits>
 #include "InputHandler.h"
 #include "definitions.h"
 #include "utils.h"
+
+void InputHandler::inputPause() {
+    std::string x;
+    std::getline(std::cin, x);
+}
 
 InputIntResult InputHandler::getInt(int min, int max) {
     InputIntResult output;
@@ -12,6 +18,8 @@ InputIntResult InputHandler::getInt(int min, int max) {
 
     std::cout << "\n\033[30;47m > \033[0m ";
     std::getline(std::cin, userInput);
+    userInput = makeLower(userInput);
+
     if (userInput == "") { // Return if input is empty.
         output.status = FunctionReturnStatus::success;
         return output;
@@ -27,21 +35,24 @@ InputIntResult InputHandler::getInt(int min, int max) {
         return output;
     }
     output.status = FunctionReturnStatus::fail;
-    std::cout << "fail" << std::endl;
     return output;
 }
 
-InputStringResult InputHandler::getString(std::vector<std::string> valids) {
+InputStringResult InputHandler::getString(std::vector<std::string> valids, bool allowNum) {
     InputStringResult output;
     output.result = "";
     std::string userInput = "";
+    bool isDigits = true;
 
     std::cout << "\n\033[30;47m > \033[0m ";
     std::getline(std::cin, userInput);
+    userInput = makeLower(userInput);
+    
     if (userInput == "") { // Return if input is empty.
         output.status = FunctionReturnStatus::none;
         return output;
     }
+
     for (const std::string& s : valids) { // Loops through vector of accepted inputs and looks for match.
         if (makeLower(userInput) == s) {
             output.result = userInput;
@@ -49,6 +60,20 @@ InputStringResult InputHandler::getString(std::vector<std::string> valids) {
             return output;
         }
     }
+
+    for (const auto& c : userInput) {
+        if (!isdigit(c)) {
+            isDigits = false;
+            break;
+        }
+    }
+
+    if (isDigits && allowNum) {
+        output.result = userInput;
+        output.status = FunctionReturnStatus::success;
+        return output;
+    }
+
     output.status = FunctionReturnStatus::fail;
     return output; 
 }

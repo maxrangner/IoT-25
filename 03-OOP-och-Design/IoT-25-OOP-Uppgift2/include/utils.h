@@ -14,3 +14,4 @@ std::string formatStringColor(const Measurement& m, const Alarms& alarms);
 std::string sensorTypeToString(SensorType type);
 std::string trimDecimals(float value, int precision = 1);
 Statistics getStatistics(std::vector<Measurement>& log);
+void trimCR(std::string& s);
