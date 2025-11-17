@@ -58,6 +58,12 @@ struct Alarms {
     float humidityHigh = 56.0f;
 };
 
+struct AlarmRangeResult {
+    FunctionReturnStatus status;
+    int low = 0;
+    int high = 0;
+};
+
 struct Statistics {
     bool empty = true;
 

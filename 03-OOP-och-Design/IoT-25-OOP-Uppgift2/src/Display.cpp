@@ -20,7 +20,7 @@ void Display::printMenu() const {
 
 void Display::printHeader(const std::string& text) const {
     // clear();
-    std::cout << "\033[30;47m\n*---" << text << "---*\n\033[0m"
+    std::cout << "\033[30;47m\n*--- " << text << " ---*\n\033[0m"
               << std::endl;
 }
 

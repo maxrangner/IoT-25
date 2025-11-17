@@ -72,15 +72,16 @@ const Alarms& SensorHub::getAlarms() const {
     return alarms;
 }
 
-void SensorHub::setTemperatureAlarms(float low, float high) {
-    alarms.temperatureLow = low;
-    alarms.temperatureHigh = high;
+void SensorHub::setTemperatureAlarms(AlarmRangeResult newRange) {
+    alarms.temperatureLow = newRange.low;
+    alarms.temperatureHigh = newRange.high;
     alarms.isOn = true;
 }
 
-void SensorHub::setHumidityAlarms(float low, float high) {
-    alarms.humidityLow = low;
-    alarms.humidityHigh = high;
+void SensorHub::setHumidityAlarms(AlarmRangeResult newRange) {
+    
+    alarms.humidityLow = newRange.low;
+    alarms.humidityHigh = newRange.high;
     alarms.isOn = true;
 }
 

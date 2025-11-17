@@ -37,6 +37,7 @@ public:
     void addRemoveSensors();
     void statusScreen();
     void setAlarms();
+    AlarmRangeResult setAlarmRange();
     void saveLoadData();
 
     // UTILS

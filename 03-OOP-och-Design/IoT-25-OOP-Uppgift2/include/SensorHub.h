@@ -18,8 +18,8 @@ public:
     void readAllSensors(std::vector<int> sensors = {});
     const std::vector<std::unique_ptr<Sensor>>& getSensorsList() const;
     const Alarms& getAlarms() const;
-    void setTemperatureAlarms(float low, float high);
-    void setHumidityAlarms(float low, float high);
+    void setTemperatureAlarms(AlarmRangeResult newRange);
+    void setHumidityAlarms(AlarmRangeResult newRange);
     void turnAlarmsOff();
     void turnAlarmsOn();
     void printAllSensors();
