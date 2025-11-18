@@ -8,6 +8,7 @@
 
 void InputHandler::inputPause() {
     std::string x;
+    std::cout << "\n[press any key to continue]\n";
     std::getline(std::cin, x);
 }
 
