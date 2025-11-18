@@ -8,6 +8,7 @@
 class UiManager {
     // VARIABLES
     bool isRunning_;
+    bool firstRun;
     MenuOptions menuChoice;
     InputHandler inputHandler;
 

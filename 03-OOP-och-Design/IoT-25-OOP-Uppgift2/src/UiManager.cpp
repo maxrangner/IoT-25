@@ -5,14 +5,10 @@
 #include "InputHandler.h"
 #include "utils.h"
 
-UiManager::UiManager() {
-    isRunning_ = true;
+UiManager::UiManager() : isRunning_(true), firstRun(true) {
 }
-UiManager::UiManager(SensorHub& hub, Display& disp, Logger& log) {
-    isRunning_ = true;
-    connectedHub = &hub;
-    connectedDisplay = &disp;
-    connectedLog = &log;
+UiManager::UiManager(SensorHub& hub, Display& disp, Logger& log)
+    : isRunning_(true), firstRun(true), connectedHub(&hub), connectedDisplay(&disp), connectedLog(&log) {
 }
 
 // GETTERS
@@ -20,7 +16,7 @@ bool UiManager::isRunning() const { return isRunning_; }
 
 // STARTUP & SHUTDOWN
 void UiManager::greeting() const {
-    connectedDisplay->printHeader("Welcome!");
+    connectedDisplay->printHeader("Welcome to the SensorHub!");
 }
 
 void UiManager::quitProcess() {
@@ -30,10 +26,13 @@ void UiManager::quitProcess() {
 // CORE
 void UiManager::run() {
     while(isRunning_) {
-        connectedDisplay->clear();
+        if (!firstRun) {
+             connectedDisplay->clear();
+        }
         connectedDisplay->printMenu();
         MenuOptions choice = getMenuSelection();
         menuAction(choice); 
+        firstRun = false;
     }
 }
 
@@ -66,6 +65,7 @@ void UiManager::menuAction(MenuOptions choice) {
 
 // ACTIONS
 void UiManager::addRemoveSensors() {
+    connectedDisplay->clear();
     connectedDisplay->printHeader("Add / Remove Sensors");
     InputStringResult inputCommand;
     std::vector<std::string> validInputs = buildValidInputs({"t", "h"});
@@ -125,6 +125,7 @@ void UiManager::addRemoveSensors() {
 }
 
 void UiManager::statusScreen() {
+    connectedDisplay->clear();
     connectedDisplay->printHeader("StatusScreen");
     InputStringResult inputCommand;
     std::vector<std::string> validInputs = buildValidInputs({"u"});
