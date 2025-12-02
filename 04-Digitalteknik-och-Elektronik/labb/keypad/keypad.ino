@@ -1,11 +1,11 @@
 constexpr uint8_t COLUMNS = 2;
 constexpr uint8_t ROWS = 2;
-constexpr uint8_t column1 = 10;
-constexpr uint8_t column2 = 9;
-constexpr uint8_t row1 = 21;
-constexpr uint8_t row2 = 20;
-const int columnPins[COLUMNS] = {column1, column2};
-const int rowPins[ROWS] = {row1, row2};
+constexpr uint8_t pinColumn1 = 10;
+constexpr uint8_t pinColumn2 = 9;
+constexpr uint8_t pinRow1 = 21;
+constexpr uint8_t pinRow2 = 20;
+const int columnPins[COLUMNS] = {pinColumn1, pinColumn2};
+const int rowPins[ROWS] = {pinRow1,pinRow2};
 const int keypad[ROWS][COLUMNS] = {{1, 2}, {3, 4}};
 
 // MODELL A
