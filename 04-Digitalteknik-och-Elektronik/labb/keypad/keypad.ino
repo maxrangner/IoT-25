@@ -61,9 +61,8 @@ void loop() {
 // /*
 // COLUMNS == INPUT_PULLUP
 // ROWS = OUTPUT
-// CHANGE!
-// Loop through COLUMNS and switch one by one to OUTPUT LOW.
-// If a row turns LOW as well we can pinpoint button.
+// Loop through COLUMNS and look for one with OUTPUT LOW.
+// Then turn one row after another HIGH and look for which one turns LOW column back HIGH.
 // */
 // void loop() {
 //   bool keyFound = false;
