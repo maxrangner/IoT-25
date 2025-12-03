@@ -12,6 +12,11 @@ const int columnPins[COLUMNS] = {pinColumn1, pinColumn2};
 const int rowPins[ROWS] = {pinRow1,pinRow2};
 const int keypadValues[ROWS][COLUMNS] = {{1, 2}, {3, 4}};
 bool keypadStates[ROWS][COLUMNS];
+uint16_t buzzerVal = 10;
+unsigned long now = micros();
+unsigned long nextBuzz = 0;
+
+uint8_t pinBuzzer = 0;
 
 // MODELL A
 void setup() {
@@ -30,6 +35,8 @@ void setup() {
     }
   }
 
+  pinMode(pinBuzzer, OUTPUT);
+
   Serial.println("BOOT!");
 }
 
@@ -45,12 +52,24 @@ void loop() {
     for (int r = 0; r < ROWS; r++) {
       if (digitalRead(rowPins[r]) == LOW) {
         keypadStates[r][c] = true;
-        Serial.println(keypad[r][c]);
+        Serial.println(keypadValues[r][c]);
+        if (keypadValues[r][c] == 1) buzzerVal = 100;
+        if (keypadValues[r][c] == 2) buzzerVal = 300;
+        if (keypadValues[r][c] == 3) buzzerVal = 600;
+        if (keypadValues[r][c] == 4) buzzerVal = 1000;
       } else keypadStates[r][c] = false;
     }
     pinMode(columnPins[c], INPUT_PULLUP);
   }
-  delay(10);
+  digitalWrite(pinBuzzer, HIGH);
+  delayMicroseconds(buzzerVal);
+  digitalWrite(pinBuzzer, LOW);
+}
+
+void buzz(uint16_t buzzerVal) {
+  now = micros();
+  nextBuzz = 
+  
 }
 
 // // MODELL B
