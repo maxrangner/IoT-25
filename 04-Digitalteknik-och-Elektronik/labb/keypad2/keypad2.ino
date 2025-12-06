@@ -29,15 +29,15 @@ void setup() {
 }
 
 void loop() {
-  checkMatrix();
+  checkMatrixStates();
   if (keypadStatesHasChanged()) {
     Serial.println(buttonVal);
   }
-  setPrevStates();
+  setMatrixStatesPrev();
   delay(50);
 }
 
-void checkMatrix() {
+void checkMatrixStates() {
   for (int c = 0; c < COLUMNS; c++) {
     pinMode(columnPins[c], OUTPUT);
     digitalWrite(columnPins[c], LOW);
@@ -51,9 +51,16 @@ void checkMatrix() {
   }
 }
 
+void setMatrixStatesPrev() {
+  for (int c = 0; c < COLUMNS; c++) {
+    for (int r = 0; r < ROWS; r++) {
+      keypadStatesPrev[r][c] = keypadStates[r][c];
+    }
+  }
+}
+
 bool keypadStatesHasChanged() {
   now = millis();
-
   for (int c = 0; c < COLUMNS; c++) {
     for (int r = 0; r < ROWS; r++) {
       if (keypadStatesPrev[r][c] == false && keypadStates[r][c] == true) {
@@ -71,10 +78,3 @@ bool keypadStatesHasChanged() {
   return false;
 }
 
-void setPrevStates() {
-  for (int c = 0; c < COLUMNS; c++) {
-    for (int r = 0; r < ROWS; r++) {
-      keypadStatesPrev[r][c] = keypadStates[r][c];
-    }
-  }
-}
