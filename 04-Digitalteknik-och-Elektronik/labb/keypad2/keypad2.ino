@@ -1,11 +1,24 @@
 #include "defines.h"
 #include "KeypadLock.h"
 
+const int columnPins[COLUMNS] = {PIN_COL_1, PIN_COL_2};
+const int rowPins[ROWS] = {PIN_ROW_1,PIN_ROW_2};
 KeypadLock lock;
 
 void setup() {
   Serial.begin(9600);
   while (!Serial) delay(10);
+  delay(500);
+
+  for (auto& c : columnPins) {
+    Serial.print("Column pin: "); Serial.println(c);
+    pinMode(c, INPUT_PULLUP);
+  }
+  for (auto& r : rowPins) {
+    Serial.print("Row pin: "); Serial.println(r);
+    pinMode(r, INPUT_PULLUP);
+  }
+
   Serial.println("BOOT!");
 }
 

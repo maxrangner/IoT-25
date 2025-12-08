@@ -2,12 +2,14 @@
 
 KeypadLock::KeypadLock() {
   // Initialize pins
-  for (auto& c : columnPins) {
-    pinMode(c, INPUT_PULLUP);
-  }
-  for (auto& r : rowPins) {
-    pinMode(r, INPUT_PULLUP);
-  }
+  // for (auto& c : columnPins) {
+  //   Serial.print("Column pin: "); Serial.println(c);
+  //   pinMode(c, INPUT_PULLUP);
+  // }
+  // for (auto& r : rowPins) {
+  //   Serial.print("Row pin: "); Serial.println(r);
+  //   pinMode(r, INPUT_PULLUP);
+  // }
   memset(keypadStates, 0, sizeof(keypadStates)); // Set default states of keypad
   lockStatus = lockMode::locked;
 }
@@ -27,24 +29,24 @@ bool KeypadLock::buttonHeld() const {
 
 void KeypadLock::checkStateChanges() {
   now = millis();
+  pressed = false;
+  held = false;
   for (int c = 0; c < COLUMNS; c++) {
     for (int r = 0; r < ROWS; r++) {
       if (keypadStatesPrev[r][c] == false && keypadStates[r][c] == true) {
         buttonPressedMillis = now;
       }
       if (keypadStatesPrev[r][c] == true && keypadStates[r][c] == false && now - buttonPressedMillis >= buttonHoldThreashold) {
-        Serial.print("Hold: "); Serial.print(buttonVal);
+        Serial.print("Hold: "); Serial.print(buttonVal); Serial.print("  ");
         held = true;
-        return;
+        // return;
       } else if (keypadStatesPrev[r][c] == true && keypadStates[r][c] == false) {
-        Serial.print("Pressed: "); Serial.print(buttonVal);
+        Serial.print("Pressed: "); Serial.print(buttonVal); Serial.print("  ");
         pressed = true;
-        return;
+        // return;
       }
     }
   }
-  pressed = false;
-  held = false;
 }
 
 void KeypadLock::updateMatrixStates() {

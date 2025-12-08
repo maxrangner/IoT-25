@@ -10,7 +10,7 @@ class KeypadLock {
   const int keypadValues[ROWS][COLUMNS] = {{1, 2}, {3, 4}};
   bool keypadStates[ROWS][COLUMNS];
   bool keypadStatesPrev[ROWS][COLUMNS];
-  String buttonVal = "0";
+  int buttonVal = 0;
   bool pressed = false;
   bool held = false;
 
