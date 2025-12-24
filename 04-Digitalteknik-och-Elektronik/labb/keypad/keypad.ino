@@ -72,52 +72,85 @@ void checkMatrix() {
   }
 }
 
-// void buzz(uint16_t buzzerVal) {
-//   now = micros();
-//   nextBuzz = 
+void buzz(uint16_t buzzerVal) {
+  now = micros();
+  nextBuzz = 
   
-// }
+}
 
-// // MODELL B
-// void setup() {
-//   Serial.begin(9600);
-//   delay(100);
-//   for (auto& c : columnPins) {
-//     pinMode(c, INPUT_PULLUP);
-//   }
-//   for (auto& r : rowPins) {
-//     pinMode(r, OUTPUT);
-//     digitalWrite(r, LOW);
-//   }
+// MODELL B
+void setup() {
+  Serial.begin(9600);
+  delay(100);
+  for (auto& c : columnPins) {
+    pinMode(c, INPUT_PULLUP);
+  }
+  for (auto& r : rowPins) {
+    pinMode(r, OUTPUT);
+    digitalWrite(r, LOW);
+  }
 
-//   for (int c = 0; c < COLUMNS; c++) {
-//     for (int r = 0; r < ROWS; r++) {
-//       keypadStates[r][c] = false;
-//     }
-//   }
+  for (int c = 0; c < COLUMNS; c++) {
+    for (int r = 0; r < ROWS; r++) {
+      keypadStates[r][c] = false;
+    }
+  }
 
-//   Serial.println("BOOT!");
-// }
+  Serial.println("BOOT!");
+}
 
-// /*
-// COLUMNS == INPUT_PULLUP
-// ROWS = OUTPUT
-// Loop through COLUMNS and look for one with OUTPUT LOW.
-// Then turn one row after another HIGH and look for which one turns LOW column back HIGH.
-// */
-// void loop() {
-//   bool keyFound = false;
-//   for (int c = 0; c < COLUMNS; c++) {
-//     if (digitalRead(columnPins[c]) != LOW) continue;
-//     for (int r = 0; r < ROWS; r++) {
-//       digitalWrite(rowPins[r], HIGH);
-//       if (digitalRead(columnPins[c]) == HIGH) {
-//         Serial.println(keypad[r][c]);
-//         keyFound = true;
-//       }
-//       digitalWrite(rowPins[r], LOW);
-//       if (keyFound) break;
-//     }
-//     if (keyFound) break;
-//   }
-// }
+/*
+COLUMNS == INPUT_PULLUP
+ROWS = OUTPUT
+Loop through COLUMNS and look for one with OUTPUT LOW.
+Then turn one row after another HIGH and look for which one turns LOW column back HIGH.
+*/
+void loop() {
+  bool keyFound = false;
+  for (int c = 0; c < COLUMNS; c++) {
+    if (digitalRead(columnPins[c]) != LOW) continue;
+    for (int r = 0; r < ROWS; r++) {
+      digitalWrite(rowPins[r], HIGH);
+      if (digitalRead(columnPins[c]) == HIGH) {
+        Serial.println(keypad[r][c]);
+        keyFound = true;
+      }
+      digitalWrite(rowPins[r], LOW);
+      if (keyFound) break;
+    }
+    if (keyFound) break;
+  }
+}
+
+void setup() {
+  Serial.begin(9600);
+  delay(100);
+  for (auto& c : columnPins) {
+    pinMode(c, INPUT_PULLUP);
+  }
+  for (auto& r : rowPins) {
+    pinMode(r, OUTPUT);
+    digitalWrite(r, HIGH);
+  }
+
+  for (int c = 0; c < COLUMN; c++) {
+    for (int r = 0; r < ROW; r++) {
+      keypadStates[r][c] = false;
+    }
+  }
+
+  Serial.println("BOOT!");
+}
+
+
+void loop() {
+  for (int r = 0; r < ROW; r++) {
+    digitalWrite(rowPins[r], LOW);
+    for (int c = 0; c < COLUMN; c++) {
+      if (digitalRead(columnPins[c]) == LOW) {
+        Serial.println(keypad[r][c]);
+      }
+    }
+    digitalWrite(rowPins[r], HIGH);
+  }
+}
