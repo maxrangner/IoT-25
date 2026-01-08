@@ -16,12 +16,9 @@ sum(3) returnerar 6
 
 int sum(int n) {
     int result;
-    if (n > 0) {
-        printf("sum(%d) anropas\n", n);
-    }
-    if (n == 0) {
-        return 0;
-    }
+    if (n == 0) return 0;
+    if (n > 0) printf("sum(%d) anropas\n", n);
+
     result = n + sum(n - 1);
     printf("sum(%d) returnerar %d\n", n, result);
     return result;

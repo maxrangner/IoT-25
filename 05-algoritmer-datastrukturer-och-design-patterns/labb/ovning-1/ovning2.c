@@ -36,6 +36,6 @@ int main() {
     // for (int i = 0; i < n; i++) {
     //     printf("%d: %d\n", i, badFib(i));
     // }
-    printf("%d", goodFib(n));
+    printf("%d", badFib(n));
     return 0;
 }
