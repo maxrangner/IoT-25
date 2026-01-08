@@ -1,30 +1,23 @@
 #include <stdio.h>
-#include "utils.c"
-
-const int arrSize = 5;
-int myArr[arrSize] = {1, 2, 3, 4, 5};
+#include <stdlib.h>
+#include "utils.h"
+#include "statistics.h"
 
 int main() {
-    // bool result;
-    // result = isSorted(myArr, arrSize);
-    // printf("Result is sorted: %d\n", result);
-    // printArr(myArr, arrSize);
+    struct Statistics stats;
+    reset(&stats);
+    int arrSize = 9;
+    int* myArr = createBackSorted(arrSize);
+    printf("\nUtgångsläge:\n");
+    printArr(myArr, arrSize);
 
-    // int a = 1;
-    // int b = 2;
-    // swap(&a, &b);
-    // printf("a: %d\n", a);
-    // printf("b: %d\n", b);
+    // quickSort(myArr, arrSize);
+    
+    quickSort(myArr, arrSize, &stats);
+    printf("\nResultat:\n");
+    printArr(myArr, arrSize);
+    printStats(&stats);
 
-    // int newArraySize = 7;
-    // int* newArrSorted = createSorted(newArraySize);
-    // int* newArrBackwards = createBackSorted(newArraySize);
-    // printArr(newArrSorted, newArraySize);
-    // printArr(newArrBackwards, newArraySize);
-    int newArraySize = 7;
-    int* newArrRandom = createRand(newArraySize);
-    printArr(newArrRandom, newArraySize);
-    bubbleSort(newArrRandom, newArraySize);
-    printArr(newArrRandom, newArraySize);
+    free(myArr);
     return 0;
 }
