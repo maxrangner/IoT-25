@@ -4,12 +4,18 @@
 #include "config.h"
 
 typedef struct queueNode {
-    Event event;
-    struct queueNode* nextQueueNode;
+    Event* events;
+    Event head;
+    Event tail;
 } queueNode;
 
-typedef queueNode* eventQueue;
+typedef struct queueNode* EventQueue;
 
-eventQueue createEventQueue();
+queueNode* createEventQueue(int capacity);
+// void queue_destroy(queueNode* q);
+// int queue_isEmpty(const queueNode* q); 
+// int queue_isFull(const queueNode* q);
+// int queue_enqueue(queueNode* q, Event e); 
+// int queue_dequeue(queueNode* q, Event* out);
 
 #endif
