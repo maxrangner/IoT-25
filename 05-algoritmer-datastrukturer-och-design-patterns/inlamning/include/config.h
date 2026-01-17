@@ -1,6 +1,7 @@
 #ifndef CONFIG_H
 #define CONFIG_H
-#define MAX_LOG_ENTIRES = 10;
+
+#define QUEUE_CAPACITY 10
 
 typedef enum DebugLevel {
     NONE,

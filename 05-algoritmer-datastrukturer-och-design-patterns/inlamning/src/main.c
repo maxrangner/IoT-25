@@ -3,18 +3,27 @@
 #include "Event.h"
 #include "EventLog.h"
 #include "EventQueue.h"
+#include "systemFunctions.h"
 
 DebugLevel debugLevel = DEBUG;
 
 int main() {
+    EventQueue eventQueue;
+    queueInit(&eventQueue);
     Event myEvent;
-    EventQueue myQueue = queueCreate;
-    EventLog myLog = createLog();
-    if (debugLevel >= DEBUG) printf("myLog is empty: %d\n", isLogEmpty(myLog));
-    logAppend(&myLog, myEvent);
-    logAppend(&myLog, myEvent);
-    if (debugLevel >= DEBUG) printf("myLog is empty: %d\n", isLogEmpty(myLog));
+    Event myEvent2;
+    Event myEvent3;
 
+    queueEnqueue(&eventQueue, myEvent);
+    queueEnqueue(&eventQueue, myEvent2);
+    queueEnqueue(&eventQueue, myEvent3);
+
+    Event moveEvent;
+    queueDequeue(&eventQueue, &moveEvent);
+
+    // while (1) {
+    //     menu();
+    // }
 
     return 0;
 }

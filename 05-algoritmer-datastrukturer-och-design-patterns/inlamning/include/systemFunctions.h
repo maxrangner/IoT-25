@@ -3,7 +3,9 @@
 #include "EventLog.h"
 #include "EventQueue.h"
 
+void menu();
 void printMenu();
+void handleMenuInput();
 void printHelp();
 void tick(int n);
 void sortLog(EventLog* log);
