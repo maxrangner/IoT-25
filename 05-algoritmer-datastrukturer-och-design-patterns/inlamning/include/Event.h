@@ -18,7 +18,6 @@ typedef struct Event {
     int sensorId;
     sensorType sensorType;
     sensorValue value;
-    int isTriggered;
 } Event;
 
 #endif

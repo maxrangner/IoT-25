@@ -19,24 +19,8 @@ static struct logNode* createLogNode(Event event) {
 	return newNode;
 }
 
-
-int addLogNodeFront(EventLog* log, Event event) {
-	struct logNode* newNode = createLogNode(event);
-	if (newNode == NULL) return 0;
-	if (*log == NULL) {
-		*log = newNode;
-        if (debugLevel >= DEBUG) printf("Node created in empty log.\n");
-	} else {
-		struct logNode* tempNode = *log;
-		*log = newNode;
-		(*log)->nextNode = tempNode;
-        if (debugLevel >= DEBUG) printf("Node moved.\n");
-	}
-	return 1;
-}
-
-int addLogNodeBack(EventLog* log, Event event) {
-	if (debugLevel >= DEBUG) printf("addLogNodeBack()\n");
+int logAppend(EventLog* log, Event event) {
+	if (debugLevel >= DEBUG) printf("logAppend()\n");
 	struct logNode* currentNode = *log;
 	if (isLogEmpty(*log)) {
         *log = createLogNode(event);
@@ -57,8 +41,20 @@ int addLogNodeBack(EventLog* log, Event event) {
 	return 1;
 }
 
+void logDestroy(EventLog* log) {
+	// NOT IMPLEMENTED YET
+}
+
+Event logGet(const EventLog* log, int index) {
+	// NOT IMPLEMENTED YET
+}
+
 // Log helper functions
 int isLogEmpty(EventLog log) {
 	if (log == NULL) return 1;
 	return 0;
+}
+
+int logSize(EventLog* log) {
+	// NOT IMPLEMENTED YET
 }

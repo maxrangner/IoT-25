@@ -8,11 +8,11 @@ DebugLevel debugLevel = DEBUG;
 
 int main() {
     Event myEvent;
-    EventQueue myQueue = createEventQueue;
+    EventQueue myQueue = queueCreate;
     EventLog myLog = createLog();
     if (debugLevel >= DEBUG) printf("myLog is empty: %d\n", isLogEmpty(myLog));
-    addLogNodeBack(&myLog, myEvent);
-    addLogNodeBack(&myLog, myEvent);
+    logAppend(&myLog, myEvent);
+    logAppend(&myLog, myEvent);
     if (debugLevel >= DEBUG) printf("myLog is empty: %d\n", isLogEmpty(myLog));
 
 
