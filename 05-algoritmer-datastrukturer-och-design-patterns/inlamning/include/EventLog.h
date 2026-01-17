@@ -5,7 +5,6 @@
 
 struct logNode {
     Event event;
-    int logSize;
     struct logNode* nextNode;
 };
 
@@ -16,7 +15,7 @@ static struct logNode* createLogNode(Event event);
 int logAppend(EventLog* log, Event event);
 void logDestroy(EventLog* log); // NOT IMPLEMENTED YET
 Event logGet(const EventLog* log, int index);  // NOT IMPLEMENTED YET
-int isLogEmpty(EventLog log);
+int isLogEmpty(EventLog* log);
 int logSize(EventLog* log); // NOT IMPLEMENTED YET
 
 #endif

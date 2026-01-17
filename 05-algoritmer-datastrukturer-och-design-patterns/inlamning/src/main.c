@@ -11,15 +11,27 @@ int main() {
     EventQueue eventQueue;
     queueInit(&eventQueue);
     Event myEvent;
-    Event myEvent2;
-    Event myEvent3;
-
-    queueEnqueue(&eventQueue, myEvent);
-    queueEnqueue(&eventQueue, myEvent2);
-    queueEnqueue(&eventQueue, myEvent3);
+ 
+    // Fill queue
+    for (int i = 0; i < 15; i++) {
+        if (queueEnqueue(&eventQueue, myEvent)) {
+            printf("Event enqueued.\n");
+        } else printf("Queue full.\n");
+    }
 
     Event moveEvent;
-    queueDequeue(&eventQueue, &moveEvent);
+    EventLog myLog = createLog();
+    logDestroy(&myLog);
+
+    // Empty queue
+    for (int i = 0; i < 15; i++) {
+        if (queueDequeue(&eventQueue, &moveEvent)) {
+            logAppend(&myLog, moveEvent);
+        } else printf("Queue empty.\n");
+    }
+
+    logDestroy(&myLog);
+    isLogEmpty(&myLog);
 
     // while (1) {
     //     menu();
