@@ -1,41 +1,29 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 #include "config.h"
 #include "Event.h"
 #include "EventLog.h"
 #include "EventQueue.h"
 #include "systemFunctions.h"
+// debug
+#include <windows.h> // delete with Sleep() in main()
 
 DebugLevel debugLevel = DEBUG;
+int running = 1;
 
 int main() {
+    srand(time(NULL));
     EventQueue eventQueue;
     queueInit(&eventQueue);
-    Event myEvent;
- 
-    // Fill queue
-    for (int i = 0; i < 15; i++) {
-        if (queueEnqueue(&eventQueue, myEvent)) {
-            printf("Event enqueued.\n");
-        } else printf("Queue full.\n");
+    EventLog eventLog = createLog();
+
+    while (running) {
+        // menu();
+        tick(&eventQueue, &eventLog, 2);
+        logPrint(&eventLog, stdout);
+        Sleep(5000);
     }
-
-    Event moveEvent;
-    EventLog myLog = createLog();
-    logDestroy(&myLog);
-
-    // Empty queue
-    for (int i = 0; i < 15; i++) {
-        if (queueDequeue(&eventQueue, &moveEvent)) {
-            logAppend(&myLog, moveEvent);
-        } else printf("Queue empty.\n");
-    }
-
-    logDestroy(&myLog);
-    isLogEmpty(&myLog);
-
-    // while (1) {
-    //     menu();
-    // }
 
     return 0;
 }

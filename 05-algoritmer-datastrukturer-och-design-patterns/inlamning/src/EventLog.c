@@ -1,5 +1,4 @@
 #include <stdlib.h>
-#include <stdio.h>
 #include "EventLog.h"
 
 extern DebugLevel debugLevel;
@@ -58,16 +57,31 @@ void logDestroy(EventLog* log) {
 	*log = NULL;
 }
 
-Event logGet(const EventLog* log, int index) {
-	// NOT IMPLEMENTED YET
-}
-
 int isLogEmpty(EventLog* log) {
-	if (debugLevel >= DEBUG) printf("isLogEmpty: %d\n", *log == NULL);
+	// if (debugLevel >= DEBUG) printf("isLogEmpty: %d\n", *log == NULL);
 	if (*log == NULL) return 1;
 	return 0;
 }
 
+Event logGet(const EventLog* log, int index) {
+	// NOT IMPLEMENTED YET
+}
+
 int logSize(EventLog* log) {
 	// NOT IMPLEMENTED YET
+}
+
+void logPrint(EventLog* log, FILE* stream) {
+	if (isLogEmpty(log)) {
+		return;
+	}
+	EventLog currentNode = *log;
+	fputs("[", stream);
+	while(1) {
+		fprintf(stream, "Time: %d, ID: %d, Type: %d, Value: %.2f", currentNode->event.timeLogged, currentNode->event.sensorId, currentNode->event.sensorType, currentNode->event.value);
+		if (currentNode->nextNode == NULL) break;
+		fprintf(stream, "%s", ", ");
+		currentNode = currentNode->nextNode;
+	}
+	fputs("]\n\n", stream);
 }

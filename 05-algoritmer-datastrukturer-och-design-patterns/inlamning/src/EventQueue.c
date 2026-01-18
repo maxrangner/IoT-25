@@ -31,8 +31,8 @@ int queueIsFull(EventQueue* queue) {
 int queueEnqueue(EventQueue* queue, Event event) {
     if (queueIsFull(queue)) return 0;
     queue->events[queue->head++] = event;
-    queue->size++;
     queue->head = queue->head % QUEUE_CAPACITY;
+    queue->size++;
     if (debugLevel >= DEBUG) printf("Event added to queue. QueueSize: %d\n", queue->size);
     return 1;
 }
@@ -40,8 +40,8 @@ int queueEnqueue(EventQueue* queue, Event event) {
 int queueDequeue(EventQueue* queue, Event* event) {
     if (queueIsEmpty(queue)) return 0;
     *event = queue->events[queue->tail++];
-    queue->size--;
     queue->tail = queue->tail % QUEUE_CAPACITY;
+    queue->size--;
     if (debugLevel >= DEBUG) printf("Event removed from queue. QueueSize: %d\n", queue->size);
     return 1;
 }
