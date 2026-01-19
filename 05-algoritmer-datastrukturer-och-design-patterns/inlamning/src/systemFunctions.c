@@ -1,5 +1,7 @@
 #include "systemFunctions.h"
 #include <stdlib.h>
+#include <ctype.h>
+#include <string.h>
 #include "stdio.h"
 #include "time.h"
 #include "Event.h"
@@ -7,32 +9,6 @@
 #include "EventLog.h"
 
 static int nextSensorId = 0;
-
-/********************************************************
-************************ MENU ***************************
-********************************************************/ 
-
-void printMenu() {
-    // NOT IMPLEMENTED YET
-}
-
-void handleMenuInput() {
-    // NOT IMPLEMENTED YET
-}
-
-void menu() {
-    printMenu();
-    handleMenuInput();
-}
-
-void printHelp() {
-    // NOT IMPLEMENTED YET
-}
-
-void quit(EventLog* log, EventQueue* queue) {
-    queueReset(queue);
-    logDestroy(log);
-}
 
 /********************************************************
 ************************ UTILS **************************

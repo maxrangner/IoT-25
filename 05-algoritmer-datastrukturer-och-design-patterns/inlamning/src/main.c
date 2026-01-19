@@ -6,10 +6,9 @@
 #include "EventLog.h"
 #include "EventQueue.h"
 #include "systemFunctions.h"
-// debug
-#include <windows.h> // delete with Sleep() in main()
+#include "menu.h"
 
-DebugLevel debugLevel = DEBUG;
+DebugLevel debugLevel = NONE;
 int running = 1;
 
 int main() {
@@ -19,10 +18,9 @@ int main() {
     EventLog eventLog = createLog();
 
     while (running) {
-        // menu();
-        tick(&eventQueue, &eventLog, 2);
-        logPrint(&eventLog, stdout);
-        Sleep(5000);
+        menu();
+        // tick(&eventQueue, &eventLog, 2);
+        // logPrint(&eventLog, stdout);
     }
 
     return 0;
