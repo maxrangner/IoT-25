@@ -1,11 +1,11 @@
 #include "menu.h"
-#include <stdlib.h>
-#include <ctype.h>
-#include <string.h>
-#include "stdio.h"
-#include "Event.h"
-#include "EventQueue.h"
-#include "EventLog.h"
+
+typedef struct {
+    char cmd[20];
+    void (*menuOption)(Context*, char*);
+} command;
+
+command commandList[] = {{.cmd = "help", .menuOption = printHelp}};
 
 void printMenu() {
     printf("\nEnter command: \n> ");
@@ -27,7 +27,7 @@ void parseInput(char* input, char* command, char* argument) {
     argument[argumentIndex] = '\0';
 }
 
-void handleMenuInput() {
+void handleMenuInput(Context* ctx) {
     char userInput[50] = {""};
     char inputCommand[50] = {""};
     char inputArgument[50] = {""};
@@ -59,12 +59,12 @@ void handleMenuInput() {
     }
 }
 
-void menu() {
+void menu(Context* ctx) {
     printMenu();
-    handleMenuInput();
+    handleMenuInput(ctx);
 }
 
-void printHelp() {
+void printHelp(Context* ctx, char* arg) {
     printf("Available commands:\n");
     printf("tick <n> - Run simulation n number of times\n");
     printf("print - Print log. Add <n> to limit results\n");
@@ -74,7 +74,7 @@ void printHelp() {
     printf("quit - Exit program\n\n");
 }
 
-void quit(EventLog* log, EventQueue* queue) {
-    queueReset(queue);
-    logDestroy(log);
+void quit(Context* ctx, char* arg) {
+    // queueReset(queue);
+    // logDestroy(log);
 }
