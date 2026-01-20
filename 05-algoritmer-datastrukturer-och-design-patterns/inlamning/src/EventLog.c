@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <assert.h>
 #include "EventLog.h"
 
 extern DebugLevel debugLevel;
@@ -63,10 +64,15 @@ int isLogEmpty(EventLog* log) {
 }
 
 Event logGet(const EventLog* log, int index) {
-	// NOT IMPLEMENTED YET
+	assert(index < logSize(log));
+	struct logNode* currentNode = *log;
+	for (int i = 0; i < index; i++) {
+		currentNode = currentNode->nextNode;
+	}
+	return currentNode->event;
 }
 
-int logSize(EventLog* log) {
+int logSize(const EventLog* log) {
 	int size = 0;
 	EventLog currentNode = *log;
 	while (currentNode != NULL) {
@@ -77,16 +83,17 @@ int logSize(EventLog* log) {
 }
 
 void logPrint(EventLog* log, FILE* stream) {
-	if (isLogEmpty(log)) {
-		return;
-	}
-	EventLog currentNode = *log;
-	fputs("[", stream);
-	while(1) {
-		fprintf(stream, "Time: %d, ID: %d, Type: %d, Value: %.2f", currentNode->event.timeLogged, currentNode->event.sensorId, currentNode->event.sensorType, currentNode->event.value);
-		if (currentNode->nextNode == NULL) break;
-		fprintf(stream, "%s", ", ");
-		currentNode = currentNode->nextNode;
-	}
-	fputs("]\n\n", stream);
+	//// Just for debug, not for final use
+	// if (isLogEmpty(log)) {
+	// 	return;
+	// }
+	// EventLog currentNode = *log;
+	// fputs("[", stream);
+	// while(1) {
+	// 	fprintf(stream, "Time: %d, ID: %d, Type: %d, Value: %.2f", currentNode->event.timeLogged, currentNode->event.sensorId, currentNode->event.sensorType, currentNode->event.value);
+	// 	if (currentNode->nextNode == NULL) break;
+	// 	fprintf(stream, "%s", ", ");
+	// 	currentNode = currentNode->nextNode;
+	// }
+	// fputs("]\n\n", stream);
 }

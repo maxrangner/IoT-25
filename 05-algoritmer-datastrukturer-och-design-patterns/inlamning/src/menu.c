@@ -16,6 +16,10 @@ command commandList[] = {
     {.cmd = "quit", .menuOption = quit}
 };
 
+/********************************************************
+******************* HELPER FUNCTIONS ********************
+********************************************************/ 
+
 void printMenu() {
     printf("\nEnter command: \n> ");
 }
@@ -79,7 +83,7 @@ void help(Context* ctx, char* arg) {
 
 void tick(Context* ctx, char* arg) {
     int iterations = atoi(arg); // Konvertera argument char array till int
-    if (debugLevel >= DEBUG) printf("%s %d", "tick()\n", iterations);
+    if (debugLevel >= DEBUG) printf("%s %d\n", "tick()", iterations);
 
     // Producer simplifierad. Bör vara egen funktion.
     for (int i = 0; i < iterations; i++) {
@@ -98,17 +102,27 @@ void tick(Context* ctx, char* arg) {
 }
 
 void sortLog(Context* ctx, char* arg) {
-    if (debugLevel >= DEBUG) printf("%s", "sortLog()");
+    if (debugLevel >= DEBUG) printf("%s\n", "sortLog()");
     // NOT IMPLEMENTED YET
+    /* 
+    1. Malloc new array to size of logSize
+    2. Fill by for loop and logGet
+    3. Apply sorting algoritm
+    4. Print
+    5. free(newArr) 
+    */
 }
 
 void findSensor(Context* ctx, char* arg) {
-    if (debugLevel >= DEBUG) printf("%s", "findSensor()");
-    // NOT IMPLEMENTED YET
+    if (debugLevel >= DEBUG) printf("%s\n", "findSensor()");
+    // Use arg so search for sensorId.
+    for (int i = 0; i < logSize(ctx->log); i++) {
+        printf("Idx: %d Data: %f\n", i, logGet(ctx->log, i).value);
+    }
 }
 
 void quit(Context* ctx, char* arg) {
-    if (debugLevel >= DEBUG) printf("%s", "quit()");
+    if (debugLevel >= DEBUG) printf("%s\n", "quit()");
     queueReset(ctx->queue);
     logDestroy(ctx->log);
     *ctx->running = 0;

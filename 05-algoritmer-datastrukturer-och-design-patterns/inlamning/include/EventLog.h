@@ -18,7 +18,7 @@ int logAppend(EventLog* log, Event event);
 void logDestroy(EventLog* log);
 Event logGet(const EventLog* log, int index);  // NOT IMPLEMENTED YET
 int isLogEmpty(EventLog* log);
-int logSize(EventLog* log); // NOT IMPLEMENTED YET
+int logSize(const EventLog* log); // NOT IMPLEMENTED YET
 void logPrint(EventLog* log, FILE* stream);
 
 #endif
