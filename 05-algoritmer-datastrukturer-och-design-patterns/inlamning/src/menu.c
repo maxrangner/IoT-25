@@ -48,6 +48,7 @@ void handleMenuInput(Context* ctx) {
     if (debugLevel >= DEBUG) printf("inputArgument: %s\n", inputArgument);
 
     int numCommands = sizeof(commandList) / sizeof(command);
+
     for (int i = 0; i < numCommands; i++) {
         if (strcmp(commandList[i].cmd, inputCommand) == 0) {
             commandList[i].menuOption(ctx, inputArgument);
@@ -63,7 +64,7 @@ void menu(Context* ctx) {
 }
 
 /********************************************************
-********************** FUNCTIONS ************************
+******************** MENU FUNCTIONS *********************
 ********************************************************/ 
 
 void help(Context* ctx, char* arg) {
@@ -77,34 +78,37 @@ void help(Context* ctx, char* arg) {
 }
 
 void tick(Context* ctx, char* arg) {
-    int iterations = atoi(arg);
-    printf("%s %d", "tick()\n", iterations);
+    int iterations = atoi(arg); // Konvertera argument char array till int
+    if (debugLevel >= DEBUG) printf("%s %d", "tick()\n", iterations);
 
+    // Producer simplifierad. Bör vara egen funktion.
     for (int i = 0; i < iterations; i++) {
         Event newEvent;
         newEvent = generateRandomEvent();
-        queueEnqueue(ctx->queue, newEvent);
+        if (queueEnqueue(ctx->queue, newEvent) == 0) break;
     }
     
-    for (int i = 0; i < iterations; i++) {
+    // Consumer simplifierad. Bör vara egen funktion.
+    while (!queueIsEmpty(ctx->queue)) {
         Event tempEvent;
         queueDequeue(ctx->queue, &tempEvent);
         logAppend(ctx->log, tempEvent);
     }
+    printf("Log size: %d", logSize(ctx->log));
 }
 
 void sortLog(Context* ctx, char* arg) {
-    printf("%s", "sortLog()");
+    if (debugLevel >= DEBUG) printf("%s", "sortLog()");
     // NOT IMPLEMENTED YET
 }
 
 void findSensor(Context* ctx, char* arg) {
-    printf("%s", "findSensor()");
+    if (debugLevel >= DEBUG) printf("%s", "findSensor()");
     // NOT IMPLEMENTED YET
 }
 
 void quit(Context* ctx, char* arg) {
-    printf("%s", "quit()");
+    if (debugLevel >= DEBUG) printf("%s", "quit()");
     queueReset(ctx->queue);
     logDestroy(ctx->log);
     *ctx->running = 0;

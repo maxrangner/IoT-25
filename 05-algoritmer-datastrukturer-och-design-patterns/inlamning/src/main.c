@@ -10,9 +10,9 @@
 #include "Context.h"
 
 DebugLevel debugLevel = DEBUG;
-int isRunning = 1;
 
 int main() {
+    int isRunning = 1;
     srand(time(NULL));
     EventQueue eventQueue;
     queueInit(&eventQueue);
@@ -25,8 +25,6 @@ int main() {
 
     while (isRunning) {
         menu(&ctx);
-        // tick(&eventQueue, &eventLog, 2);
-        // logPrint(&eventLog, stdout);
     }
 
     return 0;

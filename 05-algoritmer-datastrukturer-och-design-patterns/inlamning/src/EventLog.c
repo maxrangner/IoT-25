@@ -58,7 +58,6 @@ void logDestroy(EventLog* log) {
 }
 
 int isLogEmpty(EventLog* log) {
-	// if (debugLevel >= DEBUG) printf("isLogEmpty: %d\n", *log == NULL);
 	if (*log == NULL) return 1;
 	return 0;
 }
@@ -68,7 +67,13 @@ Event logGet(const EventLog* log, int index) {
 }
 
 int logSize(EventLog* log) {
-	// NOT IMPLEMENTED YET
+	int size = 0;
+	EventLog currentNode = *log;
+	while (currentNode != NULL) {
+		size++;
+		currentNode = currentNode->nextNode;
+	}
+	return size;
 }
 
 void logPrint(EventLog* log, FILE* stream) {

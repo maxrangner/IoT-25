@@ -19,12 +19,11 @@ void queueReset(EventQueue* queue) {
 }
 
 int queueIsEmpty(EventQueue* queue) {
-    // if (debugLevel >= DEBUG) printf("Queue is empty: %d\n", queue->size == 0);
     return queue->size == 0;
 }
 
 int queueIsFull(EventQueue* queue) {
-    // if (debugLevel >= DEBUG) printf("Queue is full: %d\n", queue->size >= QUEUE_CAPACITY);
+    if (debugLevel >= DEBUG && queue->size >= QUEUE_CAPACITY) printf("Queue full.\n");
     return queue->size >= QUEUE_CAPACITY;
 }
 
