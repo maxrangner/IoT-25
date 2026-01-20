@@ -5,12 +5,12 @@
 #include "Event.h"
 #include "EventLog.h"
 #include "EventQueue.h"
-#include "systemFunctions.h"
+#include "utils.h"
 #include "menu.h"
 #include "Context.h"
 
-DebugLevel debugLevel = NONE;
-int running = 1;
+DebugLevel debugLevel = DEBUG;
+int isRunning = 1;
 
 int main() {
     srand(time(NULL));
@@ -19,10 +19,11 @@ int main() {
     EventLog eventLog = createLog();
     Context ctx = {
         .log = &eventLog,
-        .queue = &eventQueue
+        .queue = &eventQueue,
+        .running = &isRunning
     };
 
-    while (running) {
+    while (isRunning) {
         menu(&ctx);
         // tick(&eventQueue, &eventLog, 2);
         // logPrint(&eventLog, stdout);

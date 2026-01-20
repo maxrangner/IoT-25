@@ -1,11 +1,20 @@
 #include "menu.h"
+#include "utils.h"
+
+extern DebugLevel debugLevel;
 
 typedef struct {
     char cmd[20];
     void (*menuOption)(Context*, char*);
 } command;
 
-command commandList[] = {{.cmd = "help", .menuOption = printHelp}};
+command commandList[] = {
+    {.cmd = "help", .menuOption = help},
+    {.cmd = "tick", .menuOption = tick},
+    {.cmd = "sort", .menuOption = sortLog},
+    {.cmd = "find", .menuOption = findSensor},
+    {.cmd = "quit", .menuOption = quit}
+};
 
 void printMenu() {
     printf("\nEnter command: \n> ");
@@ -35,28 +44,17 @@ void handleMenuInput(Context* ctx) {
     fgets(userInput, sizeof(userInput), stdin);
     parseInput(userInput, inputCommand, inputArgument);
 
-    printf("inputCommand: %s\n", inputCommand);
-    printf("inputArgument: %s\n", inputArgument);
+    if (debugLevel >= DEBUG) printf("inputCommand: %s\n", inputCommand);
+    if (debugLevel >= DEBUG) printf("inputArgument: %s\n", inputArgument);
 
-    if (strcmp(inputCommand, "tick") == 0) {
-        int n = 1;
-        if (strcmp(inputArgument, "") != 0) {
-            n = atoi(inputArgument);
+    int numCommands = sizeof(commandList) / sizeof(command);
+    for (int i = 0; i < numCommands; i++) {
+        if (strcmp(commandList[i].cmd, inputCommand) == 0) {
+            commandList[i].menuOption(ctx, inputArgument);
+            return;
         }
-        printf("%s %d", inputCommand, n);
-    } else if (strcmp(inputCommand, "print") == 0) {
-        printf("%s", "Command print\n");
-    } else if (strcmp(inputCommand, "sort") == 0) {
-        printf("%s", "Command sort\n");
-    } else if (strcmp(inputCommand, "find") == 0) {
-        printf("%s", "Command find\n");
-    } else if (strcmp(inputCommand, "help") == 0) {
-        printf("%s", "Command help\n");
-    } else if (strcmp(inputCommand, "quit") == 0) {
-        printf("%s", "Command quit\n");
-    } else {
-        printf("%s", "Invalid command\n");
     }
+    printf("%s", "Invalid command.\n");
 }
 
 void menu(Context* ctx) {
@@ -64,8 +62,12 @@ void menu(Context* ctx) {
     handleMenuInput(ctx);
 }
 
-void printHelp(Context* ctx, char* arg) {
-    printf("Available commands:\n");
+/********************************************************
+********************** FUNCTIONS ************************
+********************************************************/ 
+
+void help(Context* ctx, char* arg) {
+    printf("\n**** Available commands ****\n\n");
     printf("tick <n> - Run simulation n number of times\n");
     printf("print - Print log. Add <n> to limit results\n");
     printf("sort - View sorted log\n");
@@ -74,7 +76,36 @@ void printHelp(Context* ctx, char* arg) {
     printf("quit - Exit program\n\n");
 }
 
+void tick(Context* ctx, char* arg) {
+    int iterations = atoi(arg);
+    printf("%s %d", "tick()\n", iterations);
+
+    for (int i = 0; i < iterations; i++) {
+        Event newEvent;
+        newEvent = generateRandomEvent();
+        queueEnqueue(ctx->queue, newEvent);
+    }
+    
+    for (int i = 0; i < iterations; i++) {
+        Event tempEvent;
+        queueDequeue(ctx->queue, &tempEvent);
+        logAppend(ctx->log, tempEvent);
+    }
+}
+
+void sortLog(Context* ctx, char* arg) {
+    printf("%s", "sortLog()");
+    // NOT IMPLEMENTED YET
+}
+
+void findSensor(Context* ctx, char* arg) {
+    printf("%s", "findSensor()");
+    // NOT IMPLEMENTED YET
+}
+
 void quit(Context* ctx, char* arg) {
-    // queueReset(queue);
-    // logDestroy(log);
+    printf("%s", "quit()");
+    queueReset(ctx->queue);
+    logDestroy(ctx->log);
+    *ctx->running = 0;
 }

@@ -15,7 +15,10 @@ void printMenu();
 void parseInput(char* input, char* command, char* argument);
 void handleMenuInput(Context* ctx);
 void menu(Context* ctx);
-void printHelp(Context* ctx, char* arg);
+void help(Context* ctx, char* arg);
+void tick(Context* ctx, char* arg);
+void sortLog(Context* ctx, char* arg);
+void findSensor(Context* ctx, char* arg);
 void quit(Context* ctx, char* arg);
 
 #endif

@@ -6,6 +6,7 @@
 typedef struct {
     EventLog* log;
     EventQueue* queue;
+    int* running;
 } Context;
 
 #endif

@@ -1,4 +1,4 @@
-#include "systemFunctions.h"
+#include "utils.h"
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
@@ -51,26 +51,3 @@ Event generateRandomEvent() {
     newEvent.value = tempValue;
     return newEvent;
 }
-
-void tick(EventQueue* queue, EventLog* log, int iterations) {
-    for (int i = 0; i < iterations; i++) {
-        Event newEvent;
-        newEvent = generateRandomEvent();
-        queueEnqueue(queue, newEvent);
-    }
-    for (int i = 0; i < iterations; i++) {
-        Event tempEvent;
-        queueDequeue(queue, &tempEvent);
-        logAppend(log, tempEvent);
-    }
-}
-
-void sortLog(EventLog* log) {
-    // NOT IMPLEMENTED YET
-}
-
-int findSensor(EventLog* log, int id) {
-    // NOT IMPLEMENTED YET
-}
-
-
