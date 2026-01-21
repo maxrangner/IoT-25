@@ -10,15 +10,36 @@
 
 static int nextSensorId = 0;
 
+typedef struct {
+    int sensorId;
+    sensorType type;
+    char* unit;
+} Sensor;
+
+Sensor sensorList[] = {
+    {.sensorId = 0, .type = TEMPERATURE, .unit = "c"},
+    {.sensorId = 1, .type = TEMPERATURE, .unit = "c"},
+    {.sensorId = 2, .type = TEMPERATURE, .unit = "c"},
+    {.sensorId = 3, .type = TEMPERATURE, .unit = "c"},
+    {.sensorId = 4, .type = HUMIDITY, .unit = "%"},
+    {.sensorId = 5, .type = HUMIDITY, .unit = "%"},
+    {.sensorId = 6, .type = HUMIDITY, .unit = "%"},
+    {.sensorId = 7, .type = LUMINANCE, .unit = "lx"},
+    {.sensorId = 8, .type = LUMINANCE, .unit = "lx"},
+    {.sensorId = 9, .type = LUMINANCE, .unit = "lx"},
+};
+
 /********************************************************
 ************************ UTILS **************************
 ********************************************************/ 
 
 Event generateRandomEvent() {
     Event newEvent;
-    newEvent.timeLogged = time(NULL);
-    newEvent.sensorId = nextSensorId++;
-    newEvent.sensorType = rand() % UNKNOWN; // Last entry in sensorType enum
+    long long randomTime = time(NULL) - (rand() % 86400); // 86400 == seconds in a day
+    newEvent.timeLogged = randomTime;
+    Sensor randomSensor = sensorList[rand() % 10];
+    newEvent.sensorId = randomSensor.sensorId;
+    newEvent.sensorType = randomSensor.type;
     float tempValue;
     int minVal;
     int maxVal;

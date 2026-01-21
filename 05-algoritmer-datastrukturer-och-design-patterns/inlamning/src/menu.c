@@ -5,15 +5,15 @@ extern DebugLevel debugLevel;
 
 typedef struct {
     char cmd[20];
-    void (*menuOption)(Context*, char*);
+    void (*function)(Context*, char*);
 } command;
 
 command commandList[] = {
-    {.cmd = "help", .menuOption = help},
-    {.cmd = "tick", .menuOption = tick},
-    {.cmd = "sort", .menuOption = sortLog},
-    {.cmd = "find", .menuOption = findSensor},
-    {.cmd = "quit", .menuOption = quit}
+    {.cmd = "help", .function = help},
+    {.cmd = "tick", .function = tick},
+    {.cmd = "sort", .function = sortLog},
+    {.cmd = "find", .function = findSensor},
+    {.cmd = "quit", .function = quit}
 };
 
 /********************************************************
@@ -55,7 +55,7 @@ void handleMenuInput(Context* ctx) {
 
     for (int i = 0; i < numCommands; i++) {
         if (strcmp(commandList[i].cmd, inputCommand) == 0) {
-            commandList[i].menuOption(ctx, inputArgument);
+            commandList[i].function(ctx, inputArgument);
             return;
         }
     }
@@ -65,6 +65,7 @@ void handleMenuInput(Context* ctx) {
 void menu(Context* ctx) {
     printMenu();
     handleMenuInput(ctx);
+    // logPrint(ctx->log, stdout);
 }
 
 /********************************************************
@@ -98,7 +99,7 @@ void tick(Context* ctx, char* arg) {
         queueDequeue(ctx->queue, &tempEvent);
         logAppend(ctx->log, tempEvent);
     }
-    printf("Log size: %d", logSize(ctx->log));
+    printf("Log size: %d\n", logSize(ctx->log));
 }
 
 void sortLog(Context* ctx, char* arg) {
@@ -115,9 +116,12 @@ void sortLog(Context* ctx, char* arg) {
 
 void findSensor(Context* ctx, char* arg) {
     if (debugLevel >= DEBUG) printf("%s\n", "findSensor()");
-    // Use arg so search for sensorId.
+    int id = atoi(arg);
+    printf("%s: %d\n", "Id", id);
     for (int i = 0; i < logSize(ctx->log); i++) {
-        printf("Idx: %d Data: %f\n", i, logGet(ctx->log, i).value);
+        if (logGet(ctx->log, i).sensorId == id) {
+            printf("%d: %.2f\n", i, logGet(ctx->log, i).value);
+        }
     }
 }
 
