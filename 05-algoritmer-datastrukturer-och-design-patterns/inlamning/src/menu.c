@@ -110,10 +110,21 @@ void sortLog(Context* ctx, char* arg) {
     logPrint(ctx->log, stdout);
     int size = logSize(ctx->log);
     Event sortedArr[size];
+
     for (int i = 0; i < size; i++) {
         sortedArr[i] = logGet(ctx->log, i);
     }
-    sortBubble(sortedArr, size);
+
+    sortFunction chosenSort;
+    if (strcmp(arg, "bubble") == 0) {
+        chosenSort = bubbleSort;
+    } else if (strcmp(arg, "selection") == 0) {
+        chosenSort = selectionSort;
+    } else {
+        printf("%s\n", "Sorting algorithms available: bubble or selection");
+        return;
+    }
+    chosenSort(sortedArr, size);
     for (int i = 0; i < size; i++) {
         printf("%d: SensorId: %d    SensorType: %d    Value: %f\n", i, sortedArr[i].sensorId, sortedArr[i].sensorType, sortedArr[i].value);
     }

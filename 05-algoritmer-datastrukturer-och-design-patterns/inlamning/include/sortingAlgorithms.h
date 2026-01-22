@@ -2,8 +2,9 @@
 #define SORTINGALORITHMS_H
 #include "Event.h"
 
-void bubbleSort(Event* returnArr, int size);
-typedef void (*sortFunction)(Event* returnArr, int size);
-extern sortFunction sortBubble;
+typedef void (*sortFunction)(Event*, int);
+void bubbleSort(Event*, int);
+void selectionSort(Event*, int);
+void swap(Event* a, Event* b);
 
 #endif
