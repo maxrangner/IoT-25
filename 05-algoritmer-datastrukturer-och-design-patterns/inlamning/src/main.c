@@ -9,7 +9,7 @@
 #include "menu.h"
 #include "Context.h"
 
-DebugLevel debugLevel = DEBUG;
+DebugLevel debugLevel = NONE;
 
 int main() {
     int isRunning = 1;

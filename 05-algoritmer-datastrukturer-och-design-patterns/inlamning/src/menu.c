@@ -1,5 +1,6 @@
 #include "menu.h"
 #include "utils.h"
+#include "sortingAlgorithms.h"
 
 extern DebugLevel debugLevel;
 
@@ -99,19 +100,23 @@ void tick(Context* ctx, char* arg) {
         queueDequeue(ctx->queue, &tempEvent);
         logAppend(ctx->log, tempEvent);
     }
+    logPrint(ctx->log, stdout);
     printf("Log size: %d\n", logSize(ctx->log));
 }
 
 void sortLog(Context* ctx, char* arg) {
     if (debugLevel >= DEBUG) printf("%s\n", "sortLog()");
-    // NOT IMPLEMENTED YET
-    /* 
-    1. Malloc new array to size of logSize
-    2. Fill by for loop and logGet
-    3. Apply sorting algoritm
-    4. Print
-    5. free(newArr) 
-    */
+
+    logPrint(ctx->log, stdout);
+    int size = logSize(ctx->log);
+    Event sortedArr[size];
+    for (int i = 0; i < size; i++) {
+        sortedArr[i] = logGet(ctx->log, i);
+    }
+    sortBubble(sortedArr, size);
+    for (int i = 0; i < size; i++) {
+        printf("%d: SensorId: %d    SensorType: %d    Value: %f\n", i, sortedArr[i].sensorId, sortedArr[i].sensorType, sortedArr[i].value);
+    }
 }
 
 void findSensor(Context* ctx, char* arg) {
