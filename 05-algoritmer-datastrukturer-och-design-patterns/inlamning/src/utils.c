@@ -8,14 +8,6 @@
 #include "EventQueue.h"
 #include "EventLog.h"
 
-static int nextSensorId = 0;
-
-typedef struct {
-    int sensorId;
-    sensorType type;
-    char* unit;
-} Sensor;
-
 Sensor sensorList[] = {
     {.sensorId = 0, .type = TEMPERATURE, .unit = "c"},
     {.sensorId = 1, .type = HUMIDITY, .unit = "c"},

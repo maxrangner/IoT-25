@@ -1,4 +1,5 @@
 #include "menu.h"
+#include "Set.h"
 #include "utils.h"
 #include "sortingAlgorithms.h"
 
@@ -98,11 +99,19 @@ void tick(Context* ctx, char* arg) {
         while (!queueIsEmpty(ctx->queue)) {
             Event tempEvent;
             queueDequeue(ctx->queue, &tempEvent);
+            if (tempEvent.sensorType == 0 && tempEvent.value > 25) {
+                setAdd(ctx->set, tempEvent.sensorId);
+            } else if (tempEvent.sensorType == 0 && tempEvent.value <= 25) {
+                setRemove(ctx->set, tempEvent.sensorId);
+            }
             logAppend(ctx->log, tempEvent);
         }
     }
 
     logPrint(ctx->log, stdout);
+    for (int i = 0; i < ctx->set->size; i++) {
+        printf("Triggered sensors: %d\n", ctx->set->sensorIds[i]);
+    }
     printf("Log size: %d\n", logSize(ctx->log));
 }
 
