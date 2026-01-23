@@ -89,17 +89,19 @@ void tick(Context* ctx, char* arg) {
 
     // Producer simplifierad. Bör vara egen funktion.
     for (int i = 0; i < iterations; i++) {
-        Event newEvent;
-        newEvent = generateRandomEvent();
-        if (queueEnqueue(ctx->queue, newEvent) == 0) break;
+        for (int j = 0; j < 3; j++) {
+            Event newEvent;
+            generateRandomEvent(&newEvent, j);
+            if (queueEnqueue(ctx->queue, newEvent) == 0) break;
+        }
+
+        while (!queueIsEmpty(ctx->queue)) {
+            Event tempEvent;
+            queueDequeue(ctx->queue, &tempEvent);
+            logAppend(ctx->log, tempEvent);
+        }
     }
-    
-    // Consumer simplifierad. Bör vara egen funktion.
-    while (!queueIsEmpty(ctx->queue)) {
-        Event tempEvent;
-        queueDequeue(ctx->queue, &tempEvent);
-        logAppend(ctx->log, tempEvent);
-    }
+
     logPrint(ctx->log, stdout);
     printf("Log size: %d\n", logSize(ctx->log));
 }
@@ -125,6 +127,7 @@ void sortLog(Context* ctx, char* arg) {
         return;
     }
     chosenSort(sortedArr, size);
+
     for (int i = 0; i < size; i++) {
         printf("%d: SensorId: %d    SensorType: %d    Value: %f\n", i, sortedArr[i].sensorId, sortedArr[i].sensorType, sortedArr[i].value);
     }

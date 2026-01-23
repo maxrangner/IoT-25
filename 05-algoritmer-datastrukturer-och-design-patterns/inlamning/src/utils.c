@@ -18,32 +18,23 @@ typedef struct {
 
 Sensor sensorList[] = {
     {.sensorId = 0, .type = TEMPERATURE, .unit = "c"},
-    {.sensorId = 1, .type = TEMPERATURE, .unit = "c"},
-    {.sensorId = 2, .type = TEMPERATURE, .unit = "c"},
-    {.sensorId = 3, .type = TEMPERATURE, .unit = "c"},
-    {.sensorId = 4, .type = HUMIDITY, .unit = "%"},
-    {.sensorId = 5, .type = HUMIDITY, .unit = "%"},
-    {.sensorId = 6, .type = HUMIDITY, .unit = "%"},
-    {.sensorId = 7, .type = LUMINANCE, .unit = "lx"},
-    {.sensorId = 8, .type = LUMINANCE, .unit = "lx"},
-    {.sensorId = 9, .type = LUMINANCE, .unit = "lx"},
+    {.sensorId = 1, .type = HUMIDITY, .unit = "c"},
+    {.sensorId = 2, .type = LUMINANCE, .unit = "c"}
 };
 
 /********************************************************
 ************************ UTILS **************************
 ********************************************************/ 
 
-Event generateRandomEvent() {
-    Event newEvent;
+void generateRandomEvent(Event* newEvent, int sensorType) {
     long long randomTime = time(NULL) - (rand() % 86400); // 86400 == seconds in a day
-    newEvent.timeLogged = randomTime;
-    Sensor randomSensor = sensorList[rand() % 10];
-    newEvent.sensorId = randomSensor.sensorId;
-    newEvent.sensorType = randomSensor.type;
+    (*newEvent).timeLogged = randomTime;
+    (*newEvent).sensorId = sensorList[sensorType].sensorId;
+    (*newEvent).sensorType = sensorList[sensorType].type;
     float tempValue;
     int minVal;
     int maxVal;
-    switch (newEvent.sensorType) {
+    switch ((*newEvent).sensorType) {
         case 0: // TEMPERATURE
             minVal = 10;
             maxVal = 35;
@@ -69,6 +60,5 @@ Event generateRandomEvent() {
             tempValue = 0;
             break;
     }
-    newEvent.value = tempValue;
-    return newEvent;
+    (*newEvent).value = tempValue;
 }

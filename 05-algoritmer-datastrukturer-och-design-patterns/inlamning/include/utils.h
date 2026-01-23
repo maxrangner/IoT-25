@@ -3,6 +3,6 @@
 #include "EventLog.h"
 #include "EventQueue.h"
 
-Event generateRandomEvent();
+void generateRandomEvent(Event* newEvent, int sensorType);
 
 #endif

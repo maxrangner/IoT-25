@@ -13,7 +13,7 @@ struct logNode {
 typedef struct logNode* EventLog;
 
 EventLog createLog();
-struct logNode* createLogNode(Event event);
+static struct logNode* createLogNode(Event event);
 int logAppend(EventLog* log, Event event);
 void logDestroy(EventLog* log);
 int isLogEmpty(EventLog* log);
