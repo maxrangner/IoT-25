@@ -90,7 +90,7 @@ void logPrint(EventLog* log, FILE* stream) {
 	EventLog currentNode = *log;
 	fputs("[", stream);
 	while(1) {
-		fprintf(stream, "Time: %.24s, ID: %d, Type: %d, Value: %.2f", asctime(gmtime(&currentNode->event.timeLogged)), currentNode->event.sensorId, currentNode->event.sensorType, currentNode->event.value);
+		fprintf(stream, "Time: %d, ID: %d, Type: %d, Value: %.2f", currentNode->event.timeLogged, currentNode->event.sensorId, currentNode->event.sensorType, currentNode->event.value);
 		if (currentNode->event.sensorType == TEMPERATURE) printf(" %s", "c");
 		else if (currentNode->event.sensorType == HUMIDITY) printf(" %s", "%");
 		else if (currentNode->event.sensorType == LUMINANCE) printf(" %s", "lx");

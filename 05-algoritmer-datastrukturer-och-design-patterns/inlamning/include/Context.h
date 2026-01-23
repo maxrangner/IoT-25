@@ -9,6 +9,7 @@ typedef struct {
     EventQueue* queue;
     Set* set;
     int* running;
+    timestamp timeTicks;
 } Context;
 
 #endif

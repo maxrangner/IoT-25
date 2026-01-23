@@ -2,7 +2,7 @@
 #define EVENT_H
 #include <time.h>
 
-typedef time_t timestamp;
+typedef int timestamp;
 typedef int sensorId;
 typedef float sensorValue;
 

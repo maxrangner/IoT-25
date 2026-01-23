@@ -10,17 +10,16 @@
 
 Sensor sensorList[] = {
     {.sensorId = 0, .type = TEMPERATURE, .unit = "c"},
-    {.sensorId = 1, .type = HUMIDITY, .unit = "c"},
-    {.sensorId = 2, .type = LUMINANCE, .unit = "c"}
+    {.sensorId = 1, .type = HUMIDITY, .unit = "%"},
+    {.sensorId = 2, .type = LUMINANCE, .unit = "lx"}
 };
 
 /********************************************************
 ************************ UTILS **************************
 ********************************************************/ 
 
-void generateRandomEvent(Event* newEvent, int sensorType) {
-    long long randomTime = time(NULL) - (rand() % 86400); // 86400 == seconds in a day
-    (*newEvent).timeLogged = randomTime;
+void generateRandomEvent(Event* newEvent, timestamp* timeTicks, int sensorType) {
+    (*newEvent).timeLogged = *timeTicks; // time(NULL);
     (*newEvent).sensorId = sensorList[sensorType].sensorId;
     (*newEvent).sensorType = sensorList[sensorType].type;
     float tempValue;
@@ -53,4 +52,13 @@ void generateRandomEvent(Event* newEvent, int sensorType) {
             break;
     }
     (*newEvent).value = tempValue;
+}
+
+const char* enumToChar(sensorType type) {
+    switch (type) {
+        case 0: return "Temperature";
+        case 1: return "Humidity";
+        case 2: return "Luminance";
+        default: return "Unknown sensor";
+    }
 }

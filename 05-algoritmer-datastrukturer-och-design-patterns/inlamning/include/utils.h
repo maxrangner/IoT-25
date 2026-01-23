@@ -9,6 +9,7 @@ typedef struct {
     char* unit;
 } Sensor;
 
-void generateRandomEvent(Event* newEvent, int sensorType);
+void generateRandomEvent(Event* newEvent, timestamp* timeTicks, int sensorType);
+const char* enumToChar(sensorType type);
 
 #endif

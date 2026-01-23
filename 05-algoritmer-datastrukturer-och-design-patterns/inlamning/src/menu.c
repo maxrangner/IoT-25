@@ -1,10 +1,19 @@
 #include "menu.h"
+#include "stdio.h"
+#include <stdlib.h>
+#include <ctype.h>
+#include <string.h>
+#include "menu.h"
+#include "Event.h"
+#include "EventQueue.h"
+#include "EventLog.h"
 #include "Set.h"
 #include "utils.h"
 #include "sortingAlgorithms.h"
 
 extern DebugLevel debugLevel;
 
+// Map input string to MENU commands
 typedef struct {
     char cmd[20];
     void (*function)(Context*, char*);
@@ -13,6 +22,7 @@ typedef struct {
 command commandList[] = {
     {.cmd = "help", .function = help},
     {.cmd = "tick", .function = tick},
+    {.cmd = "print", .function = printLog},
     {.cmd = "sort", .function = sortLog},
     {.cmd = "find", .function = findSensor},
     {.cmd = "quit", .function = quit}
@@ -31,19 +41,23 @@ void parseInput(char* input, char* command, char* argument) {
     int commandIndex = 0;
     int argumentIndex = 0;
 
-    while (input[index] != ' ' && input[index] != '\0' && input[index] != '\n') { // Kollar input fram tills ' ' eller '\0'
+    // Add chars to command from input up until char is == ' ', '\0' or '\n'
+    while (input[index] != ' ' && input[index] != '\0' && input[index] != '\n') {
         command[commandIndex++] = tolower(input[index++]);
     }
-    command[commandIndex] = '\0';
+    command[commandIndex] = '\0'; // Add null terminator to make complete string
     index++;
+
+    // Add chars to argument from input up until char is == ' ', '\0' or '\n'
     while (input[index] != ' ' && input[index] != '\0' && input[index] != '\n') {
         argument[argumentIndex++] = tolower(input[index++]);
     }
     argument[argumentIndex] = '\0';
+    // Ignore rest of input
 }
 
 void handleMenuInput(Context* ctx) {
-    char userInput[50] = {""};
+    char userInput[50] = {""}; // Arbitrary limit input to 50 chars
     char inputCommand[50] = {""};
     char inputArgument[50] = {""};
 
@@ -55,6 +69,7 @@ void handleMenuInput(Context* ctx) {
 
     int numCommands = sizeof(commandList) / sizeof(command);
 
+    // Compare parsed command input with valid commands from commandList
     for (int i = 0; i < numCommands; i++) {
         if (strcmp(commandList[i].cmd, inputCommand) == 0) {
             commandList[i].function(ctx, inputArgument);
@@ -67,7 +82,6 @@ void handleMenuInput(Context* ctx) {
 void menu(Context* ctx) {
     printMenu();
     handleMenuInput(ctx);
-    // logPrint(ctx->log, stdout);
 }
 
 /********************************************************
@@ -85,40 +99,51 @@ void help(Context* ctx, char* arg) {
 }
 
 void tick(Context* ctx, char* arg) {
-    int iterations = atoi(arg); // Konvertera argument char array till int
+    int iterations = atoi(arg); // Convert argument char array to int
     if (debugLevel >= DEBUG) printf("%s %d\n", "tick()", iterations);
 
-    // Producer simplifierad. Bör vara egen funktion.
-    for (int i = 0; i < iterations; i++) {
-        for (int j = 0; j < 3; j++) {
+    for (int i = 0; i < iterations; i++) { // Iterate iterations number of times
+        // FOr every iteration create Event for each of the sensors
+        for (int j = 0; j < 3; j++) { 
             Event newEvent;
-            generateRandomEvent(&newEvent, j);
+            generateRandomEvent(&newEvent, &ctx->timeTicks, j);
             if (queueEnqueue(ctx->queue, newEvent) == 0) break;
         }
-
+        // Empty queue into log
         while (!queueIsEmpty(ctx->queue)) {
             Event tempEvent;
             queueDequeue(ctx->queue, &tempEvent);
+            
             if (tempEvent.sensorType == 0 && tempEvent.value > 25) {
-                setAdd(ctx->set, tempEvent.sensorId);
+                setAdd(ctx->set, tempEvent.sensorId); // If triggered this tick - put into set
             } else if (tempEvent.sensorType == 0 && tempEvent.value <= 25) {
-                setRemove(ctx->set, tempEvent.sensorId);
+                setRemove(ctx->set, tempEvent.sensorId); // If not triggered this tick, remove from set
             }
             logAppend(ctx->log, tempEvent);
         }
+        ctx->timeTicks++;
     }
 
-    logPrint(ctx->log, stdout);
+    if (debugLevel >= DEBUG) logPrint(ctx->log, stdout);
     for (int i = 0; i < ctx->set->size; i++) {
         printf("Triggered sensors: %d\n", ctx->set->sensorIds[i]);
     }
-    printf("Log size: %d\n", logSize(ctx->log));
+    if (debugLevel >= DEBUG) printf("Log size: %d\n", logSize(ctx->log));
+}
+
+void printLog(Context* ctx, char* arg) {
+    if (debugLevel >= DEBUG) printf("%s\n", "printLog()");
+
+    for (int i = 0; i < logSize(ctx->log); i++) {
+        Event currentEvent = logGet(ctx->log, i);
+        printf("Id: %d Time: %d\n", currentEvent.sensorId, currentEvent.timeLogged);
+    } 
 }
 
 void sortLog(Context* ctx, char* arg) {
     if (debugLevel >= DEBUG) printf("%s\n", "sortLog()");
+    if (debugLevel >= DEBUG) logPrint(ctx->log, stdout);
 
-    logPrint(ctx->log, stdout);
     int size = logSize(ctx->log);
     Event sortedArr[size];
 
@@ -144,6 +169,7 @@ void sortLog(Context* ctx, char* arg) {
 
 void findSensor(Context* ctx, char* arg) {
     if (debugLevel >= DEBUG) printf("%s\n", "findSensor()");
+
     int id = atoi(arg);
     printf("%s: %d\n", "Id", id);
     for (int i = 0; i < logSize(ctx->log); i++) {
@@ -155,6 +181,7 @@ void findSensor(Context* ctx, char* arg) {
 
 void quit(Context* ctx, char* arg) {
     if (debugLevel >= DEBUG) printf("%s\n", "quit()");
+
     queueReset(ctx->queue);
     logDestroy(ctx->log);
     *ctx->running = 0;

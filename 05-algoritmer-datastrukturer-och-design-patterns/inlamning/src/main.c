@@ -10,11 +10,11 @@
 #include "menu.h"
 #include "Context.h"
 
-DebugLevel debugLevel = DEBUG;
+DebugLevel debugLevel = DEBUG; // Set to NONE, INFO, ERROR or DEBUG
 
 int main() {
     int isRunning = 1;
-    srand(time(NULL));
+    srand(time(NULL)); // Set random seed for generating random Events
 
     EventLog eventLog = createLog();
     EventQueue eventQueue;
@@ -26,7 +26,8 @@ int main() {
         .log = &eventLog,
         .queue = &eventQueue,
         .set = &set,
-        .running = &isRunning
+        .running = &isRunning,
+        .timeTicks = 0 // Simulates time that increments every tick
     };
 
     while (isRunning) {
