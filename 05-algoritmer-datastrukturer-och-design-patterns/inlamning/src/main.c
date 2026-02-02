@@ -10,13 +10,13 @@ int main() {
     EventLog eventLog = createLog();
     EventQueue eventQueue;
     queueInit(&eventQueue);
-    Set set;
-    setInitialize(&set);
+    Set triggeredAlarms;
+    setInitialize(&triggeredAlarms);
     
     Context ctx = {
         .log = &eventLog,
         .queue = &eventQueue,
-        .set = &set,
+        .set = &triggeredAlarms,
         .running = &isRunning,
     };
 

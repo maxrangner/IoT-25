@@ -104,10 +104,6 @@ void tick(Context* ctx, char* arg) {
     while (!queueIsEmpty(ctx->queue)) { // Move events from queue to log until queue is empty
         consumer(ctx);
     }
-
-    // for (int i = 0; i < ctx->set->size; i++) {
-    //     printf("Alarm triggered in %s sensor.\n", sensorEnumToChar(ctx->set->sensorIds[i]));
-    // }
 }
 
 void printElement(Event* event) {

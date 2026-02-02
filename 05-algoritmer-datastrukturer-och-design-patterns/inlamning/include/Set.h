@@ -12,7 +12,6 @@ typedef struct Set Set;
 
 void setInitialize(Set* set);
 int setContains(const Set* set, int id);
-static int findIndex(const Set* set, int id);
 void setAdd(Set* set, int sensorId);
 void setRemove(Set* set, int sensorId);
 
