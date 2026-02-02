@@ -1,46 +1,65 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <assert.h>
 #include "EventQueue.h"
 
-extern DebugLevel debugLevel;
+/********************************************************
+******************* QUEUE INTERFACE *********************
+********************************************************/ 
 
 void queueInit(EventQueue* queue) {
-    if (debugLevel >= DEBUG) printf("Queue initialized with 0s.\n");
+    assert(queue != NULL);
     queue->head = 0;
     queue->tail = 0;
     queue->size = 0;
 }    
 
 void queueReset(EventQueue* queue) {
-    if (debugLevel >= DEBUG) printf("Queue reset with 0s.\n");
+    assert(queue != NULL);
     queue->head = 0;
     queue->tail = 0;
     queue->size = 0;
 }
+
+int queueEnqueue(EventQueue* queue, Event event) {
+    assert(queue != NULL);
+    if (queueIsFull(queue)) return 0;
+    queue->events[queue->head++] = event; // Add event to queue. Head take one step forward.
+    queue->head = queue->head % QUEUE_CAPACITY; // Wrap around if reached array end.
+    queue->size++;
+    return 1;
+}
+
+int queueDequeue(EventQueue* queue, Event* event) {
+    assert(queue != NULL);
+    assert(event != NULL);
+    if (queueIsEmpty(queue)) return 0;
+    *event = queue->events[queue->tail++]; // Extract event from queue. Trail take one step forward.
+    queue->tail = queue->tail % QUEUE_CAPACITY;
+    queue->size--;
+    return 1;
+}
+
+/********************************************************
+**************** QUEUE HELPER INTERFACE *****************
+********************************************************/ 
 
 int queueIsEmpty(EventQueue* queue) {
     return queue->size == 0;
 }
 
 int queueIsFull(EventQueue* queue) {
-    if (debugLevel >= DEBUG && queue->size >= QUEUE_CAPACITY) printf("Queue full.\n");
     return queue->size >= QUEUE_CAPACITY;
 }
 
-int queueEnqueue(EventQueue* queue, Event event) {
-    if (queueIsFull(queue)) return 0;
-    queue->events[queue->head++] = event;
-    queue->head = queue->head % QUEUE_CAPACITY;
-    queue->size++;
-    if (debugLevel >= DEBUG) printf("Event added to queue. QueueSize: %d\n", queue->size);
-    return 1;
+int queueSize(EventQueue* queue) {
+    return queue->size;
 }
 
-int queueDequeue(EventQueue* queue, Event* event) {
+int queuePeek(EventQueue* queue, Event* event) {
+    assert(queue != NULL);
+    assert(event != NULL);
     if (queueIsEmpty(queue)) return 0;
-    *event = queue->events[queue->tail++];
-    queue->tail = queue->tail % QUEUE_CAPACITY;
-    queue->size--;
-    if (debugLevel >= DEBUG) printf("Event removed from queue. QueueSize: %d\n", queue->size);
+    *event = queue->events[queue->tail];
     return 1;
 }

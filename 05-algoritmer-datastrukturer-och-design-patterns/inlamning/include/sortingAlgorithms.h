@@ -3,6 +3,7 @@
 #include "Event.h"
 
 typedef void (*sortFunction)(Event*, int);
+sortFunction selectSort(char* arg);
 void bubbleSort(Event*, int);
 void selectionSort(Event*, int);
 void swap(Event* a, Event* b);

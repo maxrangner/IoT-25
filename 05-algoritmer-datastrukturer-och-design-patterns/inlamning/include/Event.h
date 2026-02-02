@@ -2,7 +2,7 @@
 #define EVENT_H
 #include <time.h>
 
-typedef int timestamp;
+typedef time_t timestamp;
 typedef int sensorId;
 typedef float sensorValue;
 
@@ -10,7 +10,8 @@ typedef enum sensorType {
     TEMPERATURE,
     HUMIDITY,
     LUMINANCE,
-    UNKNOWN
+    
+    NUM_SENSOR_TYPES
 } sensorType;
 
 typedef struct Event {

@@ -2,6 +2,7 @@
 #define EVENTLOG_H
 
 #include <stdio.h>
+#include <stdbool.h>
 #include "Event.h"
 #include "config.h"
 
@@ -12,13 +13,12 @@ struct logNode {
 
 typedef struct logNode* EventLog;
 
+// Log interface
 EventLog createLog();
-static struct logNode* createLogNode(Event event);
-int logAppend(EventLog* log, Event event);
+void logAppend(EventLog* log, Event event);
 void logDestroy(EventLog* log);
-int isLogEmpty(EventLog* log);
 Event logGet(const EventLog* log, int index);
+bool isLogEmpty(EventLog* log);
 int logSize(const EventLog* log);
-void logPrint(EventLog* log, FILE* stream);
 
 #endif

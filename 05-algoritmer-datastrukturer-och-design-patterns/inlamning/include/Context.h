@@ -2,14 +2,15 @@
 #define CONTEXT_H
 #include "EventLog.h"
 #include "EventQueue.h"
-#include "Set.h"
 
-typedef struct {
+typedef struct Set Set;
+
+struct Context {
     EventLog* log;
     EventQueue* queue;
     Set* set;
     int* running;
-    timestamp timeTicks;
-} Context;
+};
+typedef struct Context Context;
 
 #endif

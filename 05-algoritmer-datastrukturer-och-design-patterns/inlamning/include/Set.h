@@ -3,11 +3,12 @@
 #include "utils.h"
 #include "config.h"
 
-typedef struct Set {
+struct Set {
     int sensorIds[SET_CAPACITY];
     int capacity;
     int size;
-} Set;
+};
+typedef struct Set Set;
 
 void setInitialize(Set* set);
 int setContains(const Set* set, int id);

@@ -1,4 +1,6 @@
 #include "sortingAlgorithms.h"
+#include "stdio.h"
+#include <string.h>
 
 void bubbleSort(Event* returnArr, int size) {
     for (int i = 0; i < size - 1; i++) {
@@ -25,6 +27,17 @@ void selectionSort(Event* returnArr, int size) {
 /********************************************************
 ************************ UTILS **************************
 ********************************************************/ 
+
+sortFunction selectSort(char* arg) {
+    if (strcmp(arg, "bubble") == 0) {
+        return bubbleSort;
+    } else if (strcmp(arg, "selection") == 0) {
+        return selectionSort;
+    } else {
+        printf("Invalid sorting algorithm. Using Bubble Sort by default.\n");
+        return bubbleSort;
+    }
+}
 
 void swap(Event* a, Event* b) {
     Event temp = *a;

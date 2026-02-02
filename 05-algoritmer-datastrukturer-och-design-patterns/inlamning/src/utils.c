@@ -7,6 +7,9 @@
 #include "Event.h"
 #include "EventQueue.h"
 #include "EventLog.h"
+#include "Set.h"
+#include "Context.h"
+#include "observer.h"
 
 Sensor sensorList[] = {
     {.sensorId = 0, .type = TEMPERATURE, .unit = "c"},
@@ -18,8 +21,8 @@ Sensor sensorList[] = {
 ************************ UTILS **************************
 ********************************************************/ 
 
-void generateRandomEvent(Event* newEvent, timestamp* timeTicks, int sensorType) {
-    (*newEvent).timeLogged = *timeTicks; // time(NULL);
+void generateRandomEvent(Event* newEvent, int sensorType) {
+    (*newEvent).timeLogged = time(NULL); // time(NULL);
     (*newEvent).sensorId = sensorList[sensorType].sensorId;
     (*newEvent).sensorType = sensorList[sensorType].type;
     float tempValue;
@@ -54,11 +57,35 @@ void generateRandomEvent(Event* newEvent, timestamp* timeTicks, int sensorType) 
     (*newEvent).value = tempValue;
 }
 
-const char* enumToChar(sensorType type) {
+const char* sensorEnumToChar(sensorType type) {
     switch (type) {
         case 0: return "Temperature";
         case 1: return "Humidity";
         case 2: return "Luminance";
-        default: return "Unknown sensor";
+        default: return "Unknown";
     }
+}
+
+const char* getSensorSuffix(sensorType type) {
+    switch (type) {
+        case 0: return "c";
+        case 1: return "%";
+        case 2: return "lx";
+        default: return "";
+    }
+}
+
+void producer(Context* ctx, int timeOffset) {
+    for (int s = 0; s < NUM_SENSOR_TYPES; s++) { 
+        Event newEvent;
+        generateRandomEvent(&newEvent, s); // s == sensorType 0: temp, 1: humid, 2: lux
+        newEvent.timeLogged += timeOffset;
+        if (queueEnqueue(ctx->queue, newEvent) == 0) break; // If queue is full, abort.
+    }
+}
+
+void consumer(Context* ctx) {
+    Event eventToLog;
+    queueDequeue(ctx->queue, &eventToLog);
+    notify(ctx, eventToLog);
 }
