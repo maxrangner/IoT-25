@@ -1,18 +1,3 @@
-// #include <avr/io.h>
-// #include <util/delay.h>
-
-// void internal_led() {
-
-// }
-
-// int main(void) {
-
-//     while(1) {
-        
-//     }
-//     return 0;
-// }
-
 #include <stdio.h>
 #include <stdint.h>
 
