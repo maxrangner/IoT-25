@@ -43,8 +43,8 @@ static inline uint32_t millis(void) {
 }
 
 int main(void) {
-    DDRB = (1 << PB0) | (1 << PB1) | (1 << PB2);
     timerInit();
+    DDRB = (1 << PB0) | (1 << PB1) | (1 << PB2);
     uint8_t idx = 0;
 
     while(1) {

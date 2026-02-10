@@ -1,11 +1,11 @@
 Archive member included to satisfy reference by file (symbol)
 
-C:/msys64/ucrt64/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5\libatmega328p.a(init_sp.o)
-                              C:/msys64/ucrt64/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5/crtatmega328p.o (__init_sp)
-C:/msys64/ucrt64/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5\libatmega328p.a(call_main.o)
-                              C:/msys64/ucrt64/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5/crtatmega328p.o (__call_main)
-C:/msys64/ucrt64/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
-                              C:/msys64/ucrt64/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5\libatmega328p.a(call_main.o) (exit)
+C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
+                              C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5/crtatmega328p.o (exit)
+C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_copy_data.o)
+                              main.o (__do_copy_data)
+C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_clear_bss.o)
+                              main.o (__do_clear_bss)
 
 There are no discarded input sections
 
@@ -24,13 +24,13 @@ user_signatures  0x00850000         0x00000400         rw!x
 Linker script and memory map
 
 Address of section .data set to 0x800100
-LOAD C:/msys64/ucrt64/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5/crtatmega328p.o
+LOAD C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5/crtatmega328p.o
 LOAD main.o
 START GROUP
-LOAD C:/msys64/ucrt64/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a
-LOAD C:/msys64/ucrt64/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5\libm.a
-LOAD C:/msys64/ucrt64/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5\libc.a
-LOAD C:/msys64/ucrt64/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5\libatmega328p.a
+LOAD C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a
+LOAD C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5\libm.a
+LOAD C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5\libc.a
+LOAD C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5\libatmega328p.a
 END GROUP
                 [0x00000000]                      __TEXT_REGION_ORIGIN__ = DEFINED (__TEXT_REGION_ORIGIN__)?__TEXT_REGION_ORIGIN__:0x0
                 [0x00008000]                      __TEXT_REGION_LENGTH__ = DEFINED (__TEXT_REGION_LENGTH__)?__TEXT_REGION_LENGTH__:0x20000
@@ -132,9 +132,9 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000      0x13e
+.text           0x00000000      0x1e2
  *(.vectors)
- .vectors       0x00000000       0x68 C:/msys64/ucrt64/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5/crtatmega328p.o
+ .vectors       0x00000000       0x68 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5/crtatmega328p.o
                 0x00000000                __vector_default
                 0x00000000                __vectors
  *(.vectors)
@@ -161,19 +161,21 @@ END GROUP
  SORT_BY_NAME(*)(.ctors)
  SORT_BY_NAME(*)(.dtors)
  *(.init0)
- .init0         0x00000068        0x0 C:/msys64/ucrt64/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5/crtatmega328p.o
+ .init0         0x00000068        0x0 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5/crtatmega328p.o
                 0x00000068                __init
  *(.init0)
  *(.init1)
  *(.init1)
  *(.init2)
- .init2         0x00000068        0x4 C:/msys64/ucrt64/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5/crtatmega328p.o
- .init2         0x0000006c        0x8 C:/msys64/ucrt64/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5\libatmega328p.a(init_sp.o)
-                0x0000006c                __init_sp
+ .init2         0x00000068        0xc C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5/crtatmega328p.o
  *(.init2)
  *(.init3)
  *(.init3)
  *(.init4)
+ .init4         0x00000074       0x16 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_copy_data.o)
+                0x00000074                __do_copy_data
+ .init4         0x0000008a       0x10 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_clear_bss.o)
+                0x0000008a                __do_clear_bss
  *(.init4)
  *(.init5)
  *(.init5)
@@ -184,68 +186,96 @@ END GROUP
  *(.init8)
  *(.init8)
  *(.init9)
- .init9         0x00000074        0x8 C:/msys64/ucrt64/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5\libatmega328p.a(call_main.o)
-                0x00000074                __call_main
+ .init9         0x0000009a        0x8 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5/crtatmega328p.o
  *(.init9)
  *(.text)
- .text          0x0000007c        0x4 C:/msys64/ucrt64/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5/crtatmega328p.o
-                0x0000007c                __vector_22
-                0x0000007c                __vector_1
-                0x0000007c                __vector_24
-                0x0000007c                __vector_12
-                0x0000007c                __bad_interrupt
-                0x0000007c                __vector_6
-                0x0000007c                __vector_3
-                0x0000007c                __vector_23
-                0x0000007c                __vector_25
-                0x0000007c                __vector_11
-                0x0000007c                __vector_13
-                0x0000007c                __vector_17
-                0x0000007c                __vector_19
-                0x0000007c                __vector_7
-                0x0000007c                __vector_5
-                0x0000007c                __vector_4
-                0x0000007c                __vector_9
-                0x0000007c                __vector_2
-                0x0000007c                __vector_21
-                0x0000007c                __vector_15
-                0x0000007c                __vector_8
-                0x0000007c                __vector_14
-                0x0000007c                __vector_10
-                0x0000007c                __vector_16
-                0x0000007c                __vector_18
-                0x0000007c                __vector_20
- .text          0x00000080       0x90 main.o
-                0x00000080                lightCarsStop
-                0x0000009c                lightCarsGo
-                0x000000be                lightWalkGo
-                0x000000d6                lightWalkStop
-                0x000000ee                buttonPressed
- .text          0x00000110        0x0 C:/msys64/ucrt64/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5\libatmega328p.a(init_sp.o)
- .text          0x00000110        0x0 C:/msys64/ucrt64/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5\libatmega328p.a(call_main.o)
- .text          0x00000110        0x0 C:/msys64/ucrt64/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
-                0x00000110                        . = ALIGN (0x2)
+ .text          0x000000a2        0x4 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5/crtatmega328p.o
+                0x000000a2                __vector_22
+                0x000000a2                __vector_1
+                0x000000a2                __vector_24
+                0x000000a2                __vector_12
+                0x000000a2                __bad_interrupt
+                0x000000a2                __vector_6
+                0x000000a2                __vector_3
+                0x000000a2                __vector_23
+                0x000000a2                __vector_25
+                0x000000a2                __vector_11
+                0x000000a2                __vector_13
+                0x000000a2                __vector_17
+                0x000000a2                __vector_19
+                0x000000a2                __vector_7
+                0x000000a2                __vector_5
+                0x000000a2                __vector_4
+                0x000000a2                __vector_9
+                0x000000a2                __vector_2
+                0x000000a2                __vector_21
+                0x000000a2                __vector_15
+                0x000000a2                __vector_8
+                0x000000a2                __vector_14
+                0x000000a2                __vector_10
+                0x000000a2                __vector_16
+                0x000000a2                __vector_18
+                0x000000a2                __vector_20
+ .text          0x000000a6      0x118 main.o
+                0x000000a6                setPortB
+                0x000000c6                init
+                0x000000d2                buttonPressed
+                0x000000f6                lightCarsStop
+                0x00000128                lightCarsGo
+                0x00000158                lightWalkGo
+                0x0000017a                lightWalkStop
+                0x0000019c                lightSequence
+ .text          0x000001be        0x0 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
+ .text          0x000001be        0x0 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_copy_data.o)
+ .text          0x000001be        0x0 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_clear_bss.o)
+                0x000001be                        . = ALIGN (0x2)
  *(.text.*)
- .text.startup  0x00000110       0x2a main.o
-                0x00000110                main
+ .text.startup  0x000001be       0x20 main.o
+                0x000001be                main
  .text.libgcc.mul
-                0x0000013a        0x0 C:/msys64/ucrt64/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
+                0x000001de        0x0 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
  .text.libgcc.div
-                0x0000013a        0x0 C:/msys64/ucrt64/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
- .text.libgcc   0x0000013a        0x0 C:/msys64/ucrt64/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
+                0x000001de        0x0 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
+ .text.libgcc   0x000001de        0x0 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
  .text.libgcc.prologue
-                0x0000013a        0x0 C:/msys64/ucrt64/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
+                0x000001de        0x0 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
  .text.libgcc.builtins
-                0x0000013a        0x0 C:/msys64/ucrt64/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
+                0x000001de        0x0 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
  .text.libgcc.fmul
-                0x0000013a        0x0 C:/msys64/ucrt64/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
+                0x000001de        0x0 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
  .text.libgcc.fixed
-                0x0000013a        0x0 C:/msys64/ucrt64/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
-                0x0000013a                        . = ALIGN (0x2)
+                0x000001de        0x0 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
+ .text.libgcc.mul
+                0x000001de        0x0 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_copy_data.o)
+ .text.libgcc.div
+                0x000001de        0x0 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_copy_data.o)
+ .text.libgcc   0x000001de        0x0 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_copy_data.o)
+ .text.libgcc.prologue
+                0x000001de        0x0 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_copy_data.o)
+ .text.libgcc.builtins
+                0x000001de        0x0 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_copy_data.o)
+ .text.libgcc.fmul
+                0x000001de        0x0 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_copy_data.o)
+ .text.libgcc.fixed
+                0x000001de        0x0 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_copy_data.o)
+ .text.libgcc.mul
+                0x000001de        0x0 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_clear_bss.o)
+ .text.libgcc.div
+                0x000001de        0x0 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_clear_bss.o)
+ .text.libgcc   0x000001de        0x0 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_clear_bss.o)
+ .text.libgcc.prologue
+                0x000001de        0x0 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_clear_bss.o)
+ .text.libgcc.builtins
+                0x000001de        0x0 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_clear_bss.o)
+ .text.libgcc.fmul
+                0x000001de        0x0 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_clear_bss.o)
+ .text.libgcc.fixed
+                0x000001de        0x0 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_clear_bss.o)
+                0x000001de                        . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x0000013a        0x0 C:/msys64/ucrt64/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
-                0x0000013a                _exit
-                0x0000013a                exit
+ .fini9         0x000001de        0x0 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
+                0x000001de                _exit
+                0x000001de                exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -264,53 +294,60 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x0000013a        0x4 C:/msys64/ucrt64/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
+ .fini0         0x000001de        0x4 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
  *(.fini0)
  *(.hightext)
  *(.hightext*)
  *(.progmemx)
  *(.progmemx.*)
-                0x0000013e                        . = ALIGN (0x2)
+                0x000001e2                        . = ALIGN (0x2)
  *(.jumptables)
  *(.jumptables*)
-                0x0000013e                        _etext = .
+                0x000001e2                        _etext = .
 
-.data           0x00800100        0x0 load address 0x0000013e
-                [!provide]                        PROVIDE (__data_start = .)
+.data           0x00800100        0x2 load address 0x000001e2
+                0x00800100                        PROVIDE (__data_start = .)
  *(.data)
- .data          0x00800100        0x0 C:/msys64/ucrt64/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5/crtatmega328p.o
- .data          0x00800100        0x0 main.o
- .data          0x00800100        0x0 C:/msys64/ucrt64/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5\libatmega328p.a(init_sp.o)
- .data          0x00800100        0x0 C:/msys64/ucrt64/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5\libatmega328p.a(call_main.o)
- .data          0x00800100        0x0 C:/msys64/ucrt64/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
+ .data          0x00800100        0x0 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5/crtatmega328p.o
+ .data          0x00800100        0x1 main.o
+                0x00800100                settingsMask
+ .data          0x00800101        0x0 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
+ .data          0x00800101        0x0 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_copy_data.o)
+ .data          0x00800101        0x0 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_clear_bss.o)
  *(.data*)
  *(.gnu.linkonce.d*)
  *(.rodata)
  *(.rodata*)
  *(.gnu.linkonce.r*)
-                0x00800100                        . = ALIGN (0x2)
-                0x00800100                        _edata = .
-                [!provide]                        PROVIDE (__data_end = .)
+                0x00800102                        . = ALIGN (0x2)
+ *fill*         0x00800101        0x1 
+                0x00800102                        _edata = .
+                0x00800102                        PROVIDE (__data_end = .)
 
-.bss            0x00800100        0x0
-                [!provide]                        PROVIDE (__bss_start = .)
+.bss            0x00800102        0x5
+                0x00800102                        PROVIDE (__bss_start = .)
  *(.bss)
- .bss           0x00800100        0x0 C:/msys64/ucrt64/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5/crtatmega328p.o
- .bss           0x00800100        0x0 main.o
- .bss           0x00800100        0x0 C:/msys64/ucrt64/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5\libatmega328p.a(init_sp.o)
- .bss           0x00800100        0x0 C:/msys64/ucrt64/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5\libatmega328p.a(call_main.o)
- .bss           0x00800100        0x0 C:/msys64/ucrt64/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
+ .bss           0x00800102        0x0 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5/crtatmega328p.o
+ .bss           0x00800102        0x5 main.o
+                0x00800102                currentBtnState
+                0x00800103                prevBtnState
+                0x00800104                toSet
+                0x00800105                prevState
+                0x00800106                portbState
+ .bss           0x00800107        0x0 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
+ .bss           0x00800107        0x0 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_copy_data.o)
+ .bss           0x00800107        0x0 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_clear_bss.o)
  *(.bss*)
  *(COMMON)
-                [!provide]                        PROVIDE (__bss_end = .)
-                0x0000013e                        __data_load_start = LOADADDR (.data)
-                0x0000013e                        __data_load_end = (__data_load_start + SIZEOF (.data))
+                0x00800107                        PROVIDE (__bss_end = .)
+                0x000001e2                        __data_load_start = LOADADDR (.data)
+                0x000001e4                        __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x00800100        0x0
+.noinit         0x00800107        0x0
                 [!provide]                        PROVIDE (__noinit_start = .)
  *(.noinit .noinit.* .gnu.linkonce.n.*)
                 [!provide]                        PROVIDE (__noinit_end = .)
-                0x00800100                        _end = .
+                0x00800107                        _end = .
                 [!provide]                        PROVIDE (__heap_start = .)
                 0x00000000                        __flmap_init_label = DEFINED (__flmap_noinit_start)?__flmap_noinit_start:0x0
                 0x00000000                        __flmap = DEFINED (__flmap)?__flmap:0x0
@@ -357,7 +394,7 @@ END GROUP
 .note.gnu.avr.deviceinfo
                 0x00000000       0x40
  .note.gnu.avr.deviceinfo
-                0x00000000       0x40 C:/msys64/ucrt64/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5/crtatmega328p.o
+                0x00000000       0x40 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5/crtatmega328p.o
 
 .gnu.build.attributes
  *(.gnu.build.attributes .gnu.build.attributes.*)
@@ -377,30 +414,50 @@ END GROUP
 .debug_sfnames
  *(.debug_sfnames)
 
-.debug_aranges
+.debug_aranges  0x00000000       0x60
  *(.debug_aranges)
+ .debug_aranges
+                0x00000000       0x20 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
+ .debug_aranges
+                0x00000020       0x20 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_copy_data.o)
+ .debug_aranges
+                0x00000040       0x20 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_clear_bss.o)
 
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000      0x5f4
+.debug_info     0x00000000      0x660
  *(.debug_info .gnu.linkonce.wi.*)
- .debug_info    0x00000000      0x5f4 C:/msys64/ucrt64/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5/crtatmega328p.o
+ .debug_info    0x00000000      0x5f4 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5/crtatmega328p.o
+ .debug_info    0x000005f4       0x24 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
+ .debug_info    0x00000618       0x24 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_copy_data.o)
+ .debug_info    0x0000063c       0x24 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_clear_bss.o)
 
-.debug_abbrev   0x00000000      0x5a2
+.debug_abbrev   0x00000000      0x5de
  *(.debug_abbrev)
- .debug_abbrev  0x00000000      0x5a2 C:/msys64/ucrt64/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5/crtatmega328p.o
+ .debug_abbrev  0x00000000      0x5a2 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5/crtatmega328p.o
+ .debug_abbrev  0x000005a2       0x14 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
+ .debug_abbrev  0x000005b6       0x14 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_copy_data.o)
+ .debug_abbrev  0x000005ca       0x14 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_clear_bss.o)
 
-.debug_line     0x00000000       0x1d
+.debug_line     0x00000000      0x16a
  *(.debug_line .debug_line.* .debug_line_end)
- .debug_line    0x00000000       0x1d C:/msys64/ucrt64/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5/crtatmega328p.o
+ .debug_line    0x00000000       0x1d C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5/crtatmega328p.o
+ .debug_line    0x0000001d       0x51 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
+ .debug_line    0x0000006e       0x87 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_copy_data.o)
+ .debug_line    0x000000f5       0x75 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_clear_bss.o)
 
 .debug_frame
  *(.debug_frame)
 
-.debug_str      0x00000000      0x208
+.debug_str      0x00000000      0x270
  *(.debug_str)
- .debug_str     0x00000000      0x208 C:/msys64/ucrt64/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5/crtatmega328p.o
+ .debug_str     0x00000000      0x208 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5/crtatmega328p.o
+ .debug_str     0x00000208       0x68 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
+ .debug_str     0x00000270        0x0 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_copy_data.o)
+                                 0x68 (size before relaxing)
+ .debug_str     0x00000270        0x0 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_clear_bss.o)
+                                 0x68 (size before relaxing)
 
 .debug_loc
  *(.debug_loc)
@@ -430,7 +487,16 @@ END GROUP
  *(.debug_addr)
 
 .debug_line_str
+                0x00000000       0x5c
  *(.debug_line_str)
+ .debug_line_str
+                0x00000000       0x5c C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
+ .debug_line_str
+                0x0000005c        0x0 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_copy_data.o)
+                                 0x5c (size before relaxing)
+ .debug_line_str
+                0x0000005c        0x0 C:/Tools/avr-gcc-15.2.0-x64-windows/avr-gcc-15.2.0-x64-windows/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_clear_bss.o)
+                                 0x5c (size before relaxing)
 
 .debug_loclists
  *(.debug_loclists)

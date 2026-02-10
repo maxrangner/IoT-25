@@ -11,34 +11,73 @@
 #define BUTTON_PIN PB5
 #define NUM_SEQ 4
 
+uint8_t portbState = 0x00;
+uint8_t settingsMask = (
+    (1 << WALK_GREEN) | 
+    (1 << WALK_RED) | 
+    (1 << CAR_GREEN) | 
+    (1 << CAR_YELLOW) | 
+    (1 << CAR_RED)
+);
+uint8_t prevBtnState = 0;
+uint8_t currentBtnState = 0;
+
+void setPortB() {
+    uint8_t prevState = (PORTB &~ settingsMask);
+    uint8_t toSet = (portbState & settingsMask);
+    PORTB = (toSet | prevState);
+}
+
+void init() {
+    DDRB = settingsMask;
+    DDRB &= ~(1 << BUTTON_PIN); // Input
+    PORTB |= (1 << BUTTON_PIN); // Pullup
+}
+
+bool buttonPressed() {
+    bool returnVal = false;
+    currentBtnState = !(PINB & (1 << BUTTON_PIN));
+    if (currentBtnState && prevBtnState == 0) {
+        returnVal = true;
+    }
+    prevBtnState = currentBtnState;
+    return returnVal;
+}
+
 void lightCarsStop(void) {
-    PORTB &= ~(1 << CAR_GREEN);
-    PORTB |= (1 << CAR_YELLOW);
+    portbState &= ~(1 << CAR_GREEN);
+    portbState |= (1 << CAR_YELLOW);
+    setPortB();
     _delay_ms(2000);
-    PORTB &= ~(1 << CAR_YELLOW);
-    PORTB |= (1 << CAR_RED);
+    portbState &= ~(1 << CAR_YELLOW);
+    portbState |= (1 << CAR_RED);
+    setPortB();
 }
 
 void lightCarsGo(void) {
-    PORTB |= ((1 << CAR_YELLOW) | (1 << CAR_RED));
+    portbState |= ((1 << CAR_YELLOW) | (1 << CAR_RED));
+    setPortB();
     _delay_ms(2000);
-    PORTB &= ~((1 << CAR_YELLOW) | (1 << CAR_RED));
-    PORTB |= (1 << CAR_GREEN);
+    portbState &= ~((1 << CAR_YELLOW) | (1 << CAR_RED));
+    portbState |= (1 << CAR_GREEN);
+    setPortB();
 }
 
 void lightWalkGo() {
     _delay_ms(2000);
-    PORTB &= ~(1 << WALK_RED);
-    PORTB |= (1 << WALK_GREEN);
+    portbState &= ~(1 << WALK_RED);
+    portbState |= (1 << WALK_GREEN);
+    setPortB();
 }
 
 void lightWalkStop() {
     _delay_ms(2000);
-    PORTB &= ~(1 << WALK_GREEN);
-    PORTB |= (1 << WALK_RED);
+    portbState &= ~(1 << WALK_GREEN);
+    portbState |= (1 << WALK_RED);
+    setPortB();
 }
 
-void buttonPressed() {
+void lightSequence() {
     lightCarsStop();
     lightWalkGo();
     _delay_ms(5000);
@@ -48,17 +87,13 @@ void buttonPressed() {
 
 
 int main(void) {
-    DDRB = (1 << WALK_GREEN) | (1 << WALK_RED) | (1 << CAR_GREEN) | (1 << CAR_YELLOW) | (1 << CAR_RED); // Output
-    DDRB &= ~(1 << BUTTON_PIN); // Input
-    PORTB |= (1 << BUTTON_PIN); // Pullup
-    PORTB |= ((1 << CAR_GREEN) | (1 << WALK_RED)); // Tänd LED
-
-    while((!(PINB & (1 << BUTTON_PIN)))) {
-        _delay_ms(10);
-    }
+    init();
+    portbState |= ((1 << CAR_GREEN) | (1 << WALK_RED)); // Tänd LED
+    setPortB();
+    
     while(1) {
-        if (!(PINB & (1 << BUTTON_PIN))) {
-            buttonPressed();
+        if (buttonPressed()) {
+            lightSequence();
         }
     }
 
