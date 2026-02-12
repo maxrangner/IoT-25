@@ -1,6 +1,15 @@
-# The following five lines of boilerplate have to be in your project's
-# CMakeLists in this exact order for cmake to work correctly
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.20)
 
-include($ENV{IDF_PATH}/tools/cmake/project.cmake)
-project(06-inbyggda-system-inlamning)
+project(prototype C)
+
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+add_executable(main
+    src/main.c
+    src/ClientManager.c
+)
+
+target_include_directories(main PRIVATE include)
