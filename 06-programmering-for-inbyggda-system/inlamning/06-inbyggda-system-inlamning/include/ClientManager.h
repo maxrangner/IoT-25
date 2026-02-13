@@ -23,13 +23,13 @@ typedef struct {
 
 typedef struct {
     Client clients[NUM_CLIENTS];
-    Client prev_client;
+    Client* prev_client;
     int num_clients;
     int total_price;
 } ClientManager;
 
 void client_manager_init(ClientManager* mgr);
-Billboard get_next_billboard(ClientManager* mgr);
+Client* get_next_billboard(ClientManager* mgr);
 // static void config_extractor(config* client_config, Client* clients);
 
 #endif
