@@ -16,5 +16,6 @@ int main(void) {
             }
         }
     }
+    printf("Bye!");
     return 0;
 }

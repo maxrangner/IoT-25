@@ -21,6 +21,7 @@ typedef struct {
 
 typedef struct {
     Client clients[3];
+    Client prev_client;
     int num_clients;
     int total_price;
 } ClientManager;

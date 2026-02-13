@@ -1,6 +1,7 @@
 #include "ClientManager.h"
 
-void client_manager_init(ClientManager* mgr) {
+void client_manager_init(ClientManager* mgr)
+{
     Client newClient1 = {
         .price = 100,
         .billboards = {
@@ -31,4 +32,17 @@ void client_manager_init(ClientManager* mgr) {
     for (int i = 0; i < 3; i++) {
         mgr->clients[i] = clients[i];
     }
+}
+
+static void calc_total_price(ClientManager* mgr)
+{
+    mgr->total_price = 0;
+    for (int i = 0; i < mgr->num_clients; i++) {
+        mgr->total_price += mgr->clients[i].price;
+    }
+}
+
+Billboard get_next_billboard(ClientManager* mgr)
+{
+
 }
