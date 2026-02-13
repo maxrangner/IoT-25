@@ -40,7 +40,7 @@ void client_manager_init(ClientManager* mgr) {
             {.billboard_content = 32, .billboard_effect = fixed}
         }
     };
-        Client newClient5 = {
+    Client newClient5 = {
         .name = "Self promotion",
         .price = 1000,
         .billboards = {
@@ -50,20 +50,19 @@ void client_manager_init(ClientManager* mgr) {
         }
     };
 
-    Client clients[NUM_CLIENTS] = {newClient1, newClient2, newClient3, newClient4, newClient5};
+    Client clients[NUM_CLIENTS] = {newClient1, newClient2, newClient3, newClient4, newClient5}; // Make pointers
     mgr->num_clients = 0; 
     for (int i = 0; i < NUM_CLIENTS; i++) {
         mgr->clients[i] = clients[i];
         mgr->num_clients++;
     }
-    mgr->prev_client = &newClient5;
+    mgr->prev_client = &mgr->clients[mgr->num_clients - 1];
 }
 
 
 static void calc_total_price(ClientManager* mgr, int* total_price)
 {
     for (int i = 0; i < mgr->num_clients; i++) {
-        // printf("%d - %d\n", i, mgr->clients[i].price);
         *total_price += mgr->clients[i].price;
     }
 }
@@ -76,13 +75,15 @@ Client* get_next_billboard(ClientManager* mgr)
 
     int random_num = rand() % total_sum_prices;
     int cumulative_price = 0;
-    
+    Client* prev_client = mgr->prev_client;
+
     for (int i = 0; i < mgr->num_clients; i++) {
-        if (strcmp(mgr->clients[i].name, mgr->prev_client->name) != 0) {
-            cumulative_price += mgr->clients[i].price;
+        Client* current_client = &mgr->clients[i];
+        if (current_client != prev_client) {
+            cumulative_price += current_client->price;
             if (cumulative_price > random_num) {
-                mgr->prev_client = &mgr->clients[i];
-                return  &mgr->clients[i];
+                mgr->prev_client = current_client;
+                return  current_client;
             }
         }
     } 
