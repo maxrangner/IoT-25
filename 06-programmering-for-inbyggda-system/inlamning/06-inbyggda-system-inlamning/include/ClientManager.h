@@ -1,5 +1,6 @@
 #ifndef CLIENT_MANAGER_H
 #define CLIENT_MANAGER_H
+#include "config.h"
 
 typedef int content;
 
@@ -15,12 +16,13 @@ typedef struct {
 } Billboard;
 
 typedef struct {
+    char name[50];
     int price;
     Billboard billboards[3];
 } Client;
 
 typedef struct {
-    Client clients[3];
+    Client clients[NUM_CLIENTS];
     Client prev_client;
     int num_clients;
     int total_price;
