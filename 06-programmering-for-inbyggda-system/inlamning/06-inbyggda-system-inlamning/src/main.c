@@ -2,7 +2,8 @@
 #include <stdlib.h>
 #include <time.h>
 #include "ClientManager.h"
-#include <windows.h> // for prototyping
+#include "display.h"
+#include <windows.h> // Using Sleep() for prototyping. 
 
 
 int main(void) {
@@ -11,11 +12,11 @@ int main(void) {
     srand(time(NULL));
     ClientManager mgr;
     client_manager_init(&mgr);
-    Billboard* next_billboard;
+    Client* next_client;
 
     while(1) {
-        next_billboard = get_next_billboard(&mgr);
-        printf("Returned billboard: %s\n\n", next_billboard->billboard_text);
+        next_client = get_next_client(&mgr);
+        get_next_billboard(next_client);
         Sleep(2000);
     }
     printf("Bye!");

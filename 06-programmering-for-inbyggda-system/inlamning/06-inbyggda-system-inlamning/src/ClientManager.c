@@ -85,7 +85,7 @@ static int generate_rand_num(ClientManager* mgr)
     return random_num;
 }
 
-static Client* get_next_client(ClientManager* mgr)
+Client* get_next_client(ClientManager* mgr)
 {
     Client* prev_client = mgr->prev_client;
     Client* next_client = NULL;
@@ -110,20 +110,20 @@ static Client* get_next_client(ClientManager* mgr)
     return next_client;
 }
 
-Billboard* get_next_billboard(ClientManager* mgr)
-{
-    Client* next_client = get_next_client(mgr);
-    Billboard* return_billboard = &next_client->billboards[0];
+// Billboard* get_next_billboard(ClientManager* mgr)
+// {
+//     Client* next_client = get_next_client(mgr);
+//     Billboard* return_billboard = &next_client->billboards[0];
 
-    // switch (next_client->display_option) {
-    //     case 0: // one_random
-    //         *return_billboard = next_client->billboards[rand() % next_client->num_billboards];
-    //         break;
-    //     case 1: // one_even_odd_min
-    //         break;
-    //     case 2: //all
-    //         break;
-    // }
-    // fallback return
-    return return_billboard;
-}
+//     switch (next_client->display_option) {
+//         case 0: // one_random
+//             return_billboard = &next_client->billboards[rand() % next_client->num_billboards];
+//             break;
+//         case 1: // one_even_odd_min
+//             break;
+//         case 2: //all
+//             break;
+//     }
+
+//     return return_billboard;
+// }
