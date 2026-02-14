@@ -1,5 +1,3 @@
-#pragma message("Compiling as UTF-8 test")
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -13,11 +11,11 @@ int main(void) {
     srand(time(NULL));
     ClientManager mgr;
     client_manager_init(&mgr);
-    Client* next_client;
+    Billboard* next_billboard;
 
     while(1) {
-        next_client = get_next_billboard(&mgr);
-        printf("%s\n", next_client->name);
+        next_billboard = get_next_billboard(&mgr);
+        printf("Returned billboard: %s\n\n", next_billboard->billboard_text);
         Sleep(2000);
     }
     printf("Bye!");

@@ -2,7 +2,7 @@
 #define CLIENT_MANAGER_H
 #include "config.h"
 
-typedef int content;
+typedef char content[NUM_MAX_BILLBOARD_CHAR];
 
 enum billboard_effect {
     fixed,
@@ -10,14 +10,22 @@ enum billboard_effect {
     blink
 };
 
+enum billboard_selection_option {
+    one_random,
+    one_even_odd_min,
+    all
+};
+
 typedef struct {
-    content billboard_content;
+    content billboard_text;
     int billboard_effect;
 } Billboard;
 
 typedef struct {
     char name[50];
     int price;
+    int display_option;
+    int num_billboards;
     Billboard billboards[3];
 } Client;
 
@@ -29,7 +37,7 @@ typedef struct {
 } ClientManager;
 
 void client_manager_init(ClientManager* mgr);
-Client* get_next_billboard(ClientManager* mgr);
+Billboard* get_next_billboard(ClientManager* mgr);
 // static void config_extractor(config* client_config, Client* clients);
 
 #endif
