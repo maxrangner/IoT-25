@@ -10,6 +10,7 @@ int main(void) {
     SetConsoleOutputCP(CP_UTF8);
     printf("Hello Billboards!\n");
     srand(time(NULL));
+    
     ClientManager mgr;
     client_manager_init(&mgr);
     Client* next_client;

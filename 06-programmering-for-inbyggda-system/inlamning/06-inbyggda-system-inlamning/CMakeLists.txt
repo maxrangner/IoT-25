@@ -13,6 +13,7 @@ add_executable(main
     src/main.c
     src/ClientManager.c
     src/display.c
+    src/utils.c
 )
 
 target_include_directories(main PRIVATE include)

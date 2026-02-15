@@ -38,7 +38,6 @@ typedef struct {
 
 void client_manager_init(ClientManager* mgr);
 Client* get_next_client(ClientManager* mgr);
-// Billboard* get_next_billboard(ClientManager* mgr);
 // static void config_extractor(config* client_config, Client* clients);
 
 #endif
