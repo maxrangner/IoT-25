@@ -12,8 +12,9 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 add_executable(main
     src/main.c
     src/ClientManager.c
-    src/display.c
+    src/Display.c
     src/utils.c
+    src/lcd.c
 )
 
 target_include_directories(main PRIVATE include)

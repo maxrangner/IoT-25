@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
 #include "utils.h"
 
 void client_manager_init(ClientManager* mgr) 
@@ -69,10 +68,10 @@ Billboard* get_next_billboard(ClientManager* mgr)
             return &next_client->billboards[rand() % next_client->num_billboards];
             break;
         case 1: {// one_even_odd_min
-            time_t now = time(NULL);
-            struct tm* converted_time = localtime(&now);
-            printf("min_now: %d\n", converted_time->tm_min);
-            int minutes = converted_time->tm_min;
+            // time_t now = time(NULL);
+            // struct tm* converted_time = localtime(&now);
+            // printf("min_now: %d\n", converted_time->tm_min);
+            int minutes = 0;
             return ((minutes % 2) == 0) ? &next_client->billboards[0] : &next_client->billboards[1];
             break;
         }

@@ -1,5 +1,7 @@
-#include "display.h"
+#include "Display.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
+#include "lcd.h"
+#include <avr/io.h>
+#include <util/delay.h>
 
