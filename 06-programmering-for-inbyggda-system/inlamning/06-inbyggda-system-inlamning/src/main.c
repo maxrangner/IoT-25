@@ -13,11 +13,11 @@ int main(void) {
     
     ClientManager mgr;
     client_manager_init(&mgr);
-    Client* next_client;
+    Billboard* next_billboard;
 
     while(1) {
-        next_client = get_next_client(&mgr);
-        get_next_billboard(next_client);
+        next_billboard = get_next_billboard(&mgr);
+        printf("billboard: %s\n\n", next_billboard->billboard_text);
         Sleep(2000);
     }
     printf("Bye!");

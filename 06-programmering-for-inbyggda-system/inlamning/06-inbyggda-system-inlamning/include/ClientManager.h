@@ -12,8 +12,7 @@ enum billboard_effect {
 
 enum billboard_selection_option {
     one_random,
-    one_even_odd_min,
-    all
+    one_even_odd_min
 };
 
 typedef struct {
@@ -37,7 +36,6 @@ typedef struct {
 } ClientManager;
 
 void client_manager_init(ClientManager* mgr);
-Client* get_next_client(ClientManager* mgr);
-// static void config_extractor(config* client_config, Client* clients);
+Billboard* get_next_billboard(ClientManager* mgr);
 
 #endif

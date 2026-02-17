@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include "utils.h"
 
 void client_manager_init(ClientManager* mgr) 
@@ -10,7 +11,6 @@ void client_manager_init(ClientManager* mgr)
     printf("Client config loaded.\n\n\n");
     mgr->prev_client = &mgr->clients[mgr->num_clients - 1];
 }
-
 
 static int calc_total_price(const ClientManager* mgr)
 {
@@ -32,12 +32,14 @@ static int generate_rand_num(ClientManager* mgr)
     return random_num;
 }
 
-Client* get_next_client(ClientManager* mgr)
+static Client* get_next_client(ClientManager* mgr)
 {
     Client* prev_client = mgr->prev_client;
     Client* next_client = NULL;
     int random_num = generate_rand_num(mgr);
+    
     printf("random_num: %d, prev_client: %s\n", random_num, prev_client->name);
+
     int cumulative_price = 0;
     for (int i = 0; i < mgr->num_clients; i++) {
         Client* current_client = &mgr->clients[i];
@@ -54,6 +56,28 @@ Client* get_next_client(ClientManager* mgr)
             }
         }
     }
+
     printf("next_client: %s\n", next_client->name);
     return next_client;
+}
+
+Billboard* get_next_billboard(ClientManager* mgr)
+{
+    Client* next_client = get_next_client(mgr);
+    switch (next_client->display_option) {
+        case 0: // one_random
+            return &next_client->billboards[rand() % next_client->num_billboards];
+            break;
+        case 1: {// one_even_odd_min
+            time_t now = time(NULL);
+            struct tm* converted_time = localtime(&now);
+            printf("min_now: %d\n", converted_time->tm_min);
+            int minutes = converted_time->tm_min;
+            return ((minutes % 2) == 0) ? &next_client->billboards[0] : &next_client->billboards[1];
+            break;
+        }
+        default: //fallback to one_random
+            return &next_client->billboards[rand() % next_client->num_billboards];
+            break;
+    }
 }
