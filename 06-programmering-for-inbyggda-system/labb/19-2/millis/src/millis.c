@@ -8,13 +8,13 @@ static volatile uint32_t ms;
 
 void millis_init(void)
 {
+    ms = 0;
     SET_BIT(TCCR0A, WGM01);
     SET_BIT(TCCR0B, CS00);
     SET_BIT(TCCR0B, CS01);
     OCR0A = 249;
     SET_BIT(TIMSK0, OCIE0A);
     sei();
-    ms = 0;
 }
 
 ISR(TIMER0_COMPA_vect)
@@ -24,5 +24,10 @@ ISR(TIMER0_COMPA_vect)
 
 uint32_t millis(void)
 {
-    return ms;
+    uint32_t ms_return;
+    ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+    {
+        ms_return = ms;
+    }
+    return ms_return;
 }
