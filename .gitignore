@@ -13,6 +13,7 @@ build/
 *.o
 *.a
 *.out
+*.hex
 *.exe # For any host-side utilities compiled on Windows
 
 # ESP-IDF specific build outputs
