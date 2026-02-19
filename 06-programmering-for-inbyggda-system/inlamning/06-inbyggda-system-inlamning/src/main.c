@@ -1,12 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
-#include "ClientManager.h"
-#include "display.h"
 #include <util/delay.h>
 #include <avr/io.h>
+#include "ClientManager.h"
+#include "display.h"
+#include "millis.h"
 
 ClientManager mgr;
+uint32_t now = 0;
+uint32_t prev = 0;
+uint32_t duration = 1000;
 
 void uart_init(void) {
     UBRR0H = 0;
@@ -33,13 +36,17 @@ int main(void) {
     printf("Hello Billboards!\n");
     srand(42);
     
+    millis_init();
     client_manager_init(&mgr);
     Billboard* next_billboard;
 
     while(1) {
-        next_billboard = get_next_billboard(&mgr);
-        printf("billboard: %s\n\n", next_billboard->billboard_text);
-        _delay_ms(2000);
+        now = millis();
+        if ((now - prev) >= duration) {
+            next_billboard = get_next_billboard(&mgr);
+            printf("billboard: %s\n\n", next_billboard->billboard_text);
+            prev = now;
+        }
     }
     printf("Bye!");
     return 0;

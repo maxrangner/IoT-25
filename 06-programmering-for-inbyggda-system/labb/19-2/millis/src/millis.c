@@ -1,8 +1,9 @@
 #include "millis.h"
+#include <stdio.h>
 #include <avr/power.h>
 #include <util/atomic.h>
 #include <avr/interrupt.h>
-#include "bit_utils.h"
+#include "utils.h"
 
 static volatile uint32_t ms;
 

@@ -1,42 +1,89 @@
-CC := avr-gcc
-LD := avr-ld
-OBJCOPY := avr-objcopy
-OBJISP := avrdude
-AVRSIZE := avr-size
-PORT := /dev/ttyACM0
+# Build: make
+# Build debug: make MODE=debug
+# Upload: make flash
+# Clean: make clean
 
-MCU := atmega328p
+# ==============================
+# USER SETTINGS
+# ==============================
 
-CFLAGS := -Wall -Wextra  -Wundef -pedantic \
-		-Os -std=gnu99 -DF_CPU=16000000UL -mmcu=${MCU} \
-		-Iinclude
-LDFLAGS := -mmcu=$(MCU)
+MCU      = atmega328p
+F_CPU    = 16000000UL
+TARGET   = main
 
-BUILD := build
+PROGRAMMER = usbasp
+PORT       = usb
 
-BIN := program.hex
-ELF := $(BUILD)/program.elf
+MODE ?= release
 
-SOURCES := src/main.c src/lcd.c src/ClientManager.c src/Display.c src/utils.c src/clients_db.c
-OBJS := $(patsubst src/%.c,$(BUILD)/%.o,$(SOURCES))
+# ==============================
+# TOOLCHAIN
+# ==============================
 
-all: $(BIN)
+CC       = avr-gcc
+OBJCOPY  = avr-objcopy
+SIZE     = avr-size
+AVRDUDE  = avrdude
 
-$(BUILD):
-	mkdir $(BUILD)
+# ==============================
+# FLAGS
+# ==============================
 
-$(BUILD)/%.o: src/%.c | $(BUILD)
-	$(COMPILE.c) -MD -o $@ $<
+COMMON_FLAGS = -mmcu=$(MCU) -DF_CPU=$(F_CPU) -Wall -Wextra -std=c11 -MMD -MP -Iinclude
 
-$(ELF): $(OBJS) | $(BUILD)
-	$(CC) -Wl,-Map=$(BUILD)/program.map $(LDFLAGS) -o $@ $^
-	$(AVRSIZE) $@
+ifeq ($(MODE),debug)
+    OPT = -Og -g
+else
+    OPT = -Os
+endif
 
-$(BIN): $(ELF)
-	$(OBJCOPY) -O ihex -R .fuse -R .lock -R .user_signatures -R .comment $< $@
+CFLAGS  = $(COMMON_FLAGS) $(OPT)
+LDFLAGS = -mmcu=$(MCU) -Wl,-Map=$(BUILD_DIR)/$(TARGET).map
 
-isp: ${BIN}
-	$(OBJISP) -F -V -c arduino -p ${MCU} -P ${PORT} -U flash:w:$<
+# ==============================
+# FILE STRUCTURE
+# ==============================
 
+SRC_DIR   = src
+BUILD_DIR = build
+
+SRC = $(wildcard $(SRC_DIR)/*.c)
+OBJ = $(patsubst $(SRC_DIR)/%.c,$(BUILD_DIR)/%.o,$(SRC))
+DEP = $(OBJ:.o=.d)
+
+# ==============================
+# BUILD RULES
+# ==============================
+
+all: $(BUILD_DIR)/$(TARGET).hex size
+
+# Create build dir
+$(BUILD_DIR):
+	mkdir -p $(BUILD_DIR)
+
+# Compile
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c | $(BUILD_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# Link
+$(BUILD_DIR)/$(TARGET).elf: $(OBJ)
+	$(CC) $(LDFLAGS) $^ -o $@
+
+# Hex
+$(BUILD_DIR)/$(TARGET).hex: $(BUILD_DIR)/$(TARGET).elf
+	$(OBJCOPY) -O ihex -R .eeprom $< $@
+
+# Size
+size: $(BUILD_DIR)/$(TARGET).elf
+	$(SIZE) $<
+
+# Flash
+flash: $(BUILD_DIR)/$(TARGET).hex
+	$(AVRDUDE) -c $(PROGRAMMER) -p m328p -P $(PORT) -U flash:w:$<
+
+# Clean
 clean:
-	@rm -f $(BIN) $(OBJS) $(ELF) $(BUILD)/*.map $(BUILD)/*.P $(BUILD)/*.d
+	rm -rf $(BUILD_DIR)
+
+# Include dependencies
+-include $(DEP)
