@@ -12,24 +12,31 @@ CFLAGS := -Wall -Wextra  -Wundef -pedantic \
 		-Iinclude
 LDFLAGS := -mmcu=$(MCU)
 
+BUILD := build
+
 BIN := program.hex
-SOURCES := src/main.c src/lcd.c src/ClientManager.c src/Display.c src/utils.c
-OBJS := $(SOURCES:.c=.o)
+ELF := $(BUILD)/program.elf
+
+SOURCES := src/main.c src/lcd.c src/ClientManager.c src/Display.c src/utils.c src/clients_db.c
+OBJS := $(patsubst src/%.c,$(BUILD)/%.o,$(SOURCES))
 
 all: $(BIN)
 
-%.o:%.c
+$(BUILD):
+	mkdir $(BUILD)
+
+$(BUILD)/%.o: src/%.c | $(BUILD)
 	$(COMPILE.c) -MD -o $@ $<
 
-%.elf: $(OBJS)
-	$(CC) -Wl,-Map=$(@:.elf=.map) $(LDFLAGS) -o $@ $^
+$(ELF): $(OBJS) | $(BUILD)
+	$(CC) -Wl,-Map=$(BUILD)/program.map $(LDFLAGS) -o $@ $^
 	$(AVRSIZE) $@
 
-%.hex: %.elf
+$(BIN): $(ELF)
 	$(OBJCOPY) -O ihex -R .fuse -R .lock -R .user_signatures -R .comment $< $@
 
 isp: ${BIN}
 	$(OBJISP) -F -V -c arduino -p ${MCU} -P ${PORT} -U flash:w:$<
 
 clean:
-	@rm -f $(BIN) $(OBJS) *.map *.P *.d
+	@rm -f $(BIN) $(OBJS) $(ELF) $(BUILD)/*.map $(BUILD)/*.P $(BUILD)/*.d
