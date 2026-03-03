@@ -22,32 +22,33 @@ Sätt PIN1 i PORTD hög när du får en falling edge på PIN2 på PORTD.
 #define BIT_CHECK(a, b) (a & (1U << b))
 
 // PCINT0 = PORTB
-ISR(PCINT0_vect) {
-  const uint8_t pinMask = 1 << INT1_PIN;
-  static uint8_t prevState = 0;
-  uint8_t currState = PINB;
-  uint8_t changedPins = currState ^ prevState;
+// ISR(PCINT0_vect) {
+//   const uint8_t pinMask = 1 << INT1_PIN;
+//   static uint8_t prevState = 0;
+//   uint8_t currState = PINB;
+//   uint8_t changedPins = currState ^ prevState;
   
-  if (changedPins & pinMask) {
-    if (!(prevState & pinMask) && (currState & pinMask)) {
-      BIT_SET(PORTD, LED_PIN);
-    }
-    else {
-      BIT_CLEAR(PORTD, LED_PIN);
-    }
-  }
-  prevState = currState;
-}
+//   if (changedPins & pinMask) {
+//     if (currState & pinMask) {
+//       BIT_SET(PORTD, LED_PIN);
+//     }
+//     else {
+//       BIT_CLEAR(PORTD, LED_PIN);
+//     }
+//   }
+//   prevState = currState;
+// }
 
-// PCINT2 = PORTD
-ISR(PCINT2_vect) {
+// INT0 = PORTD
+ISR(INT0_vect) {
   const uint8_t pinMask = 1 << PD2;
+
   static uint8_t prevState = 0;
   uint8_t currState = PIND;
   uint8_t changedPins = currState ^ prevState;
   
   if (changedPins & pinMask) {
-    if (!(prevState & pinMask) && (currState & pinMask)) {
+    if (currState & pinMask) {
       BIT_SET(PORTD, LED_PIN);
     }
     else {
@@ -58,14 +59,16 @@ ISR(PCINT2_vect) {
 }
 
 int main() {
-	BIT_SET(PCMSK0, PCINT0);
-  BIT_SET(PCMSK2, PCINT18);
-	BIT_SET(PCICR, PCIE0);
-  BIT_SET(PCICR, PCIE2);
+  // BIT_SET(PCICR, PCIE0);
+	// BIT_SET(PCMSK0, PCINT0);
+
+  BIT_SET(EICRA, ISC00);
+  BIT_SET(EIMSK, INT0);
+
 	sei();
 
-  BIT_CLEAR(DDRB, INT1_PIN);
-	BIT_SET(PORTB, INT1_PIN);
+  // BIT_CLEAR(DDRB, INT1_PIN);
+	// BIT_SET(PORTB, INT1_PIN);
 
   BIT_CLEAR(DDRD, INT2_PIN);
 	BIT_SET(PORTD, INT2_PIN);
