@@ -6,6 +6,7 @@
 
 void client_manager_init(ClientManager* mgr) 
 {
+    mgr->num_clients = 0;
     read_config(mgr);    
     mgr->prev_client = &mgr->clients[mgr->num_clients - 1];
 }

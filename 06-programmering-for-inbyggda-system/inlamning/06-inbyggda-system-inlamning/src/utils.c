@@ -1,10 +1,17 @@
 #include "utils.h"
-#include <stdio.h>
+
+
 #include <stdlib.h> 
+#include <avr/io.h>
 #include <string.h>
 #include <avr/pgmspace.h>
 #include "config.h"
 #include "clients_db.h"
+
+uint8_t get_random_seed() {
+    SET_BIT(DDRC, PC0);
+    return CHECK_BIT(DDRC, PB0);
+}
 
 void read_config(ClientManager* mgr)
 {

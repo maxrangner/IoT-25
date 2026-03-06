@@ -5,11 +5,8 @@
 #include "ClientManager.h"
 #include "display.h"
 #include "millis.h"
-
-ClientManager mgr;
-uint32_t now = 0;
-uint32_t prev = 0;
-uint32_t duration = 1000;
+#include "lcd.h"
+#include "utils.h"
 
 void uart_init(void) {
     UBRR0H = 0;
@@ -34,17 +31,31 @@ void uart_stdout_init(void) {
 int main(void) {
     uart_stdout_init();
     printf("Hello Billboards!\n");
-    srand(42);
+    uint8_t random_seed = get_random_seed();
+    printf("%d", random_seed);
+    srand(random_seed);
+
+    ClientManager mgr;
+    uint32_t now = 0;
+    uint32_t prev = 0;
+    uint32_t duration = 5000;
     
+    lcd_init();
     millis_init();
     client_manager_init(&mgr);
     Billboard* next_billboard;
+
+    lcd_clear();
+    lcd_printf("Welcome!");
+    _delay_ms(1000);
 
     while(1) {
         now = millis();
         if ((now - prev) >= duration) {
             next_billboard = get_next_billboard(&mgr);
             printf("billboard: %s\n\n", next_billboard->billboard_text);
+            lcd_clear();
+            lcd_printf(next_billboard->billboard_text);
             prev = now;
         }
     }
