@@ -8,8 +8,7 @@
 #define FLIP_BIT(reg, bit) ((reg) ^= (1UL << bit))
 #define CHECK_BIT(reg, bit) ((reg) & (1UL << bit))
 
-uint8_t get_random_seed();
-void init_ports();
+uint16_t get_random_seed();
 void read_config(ClientManager* mgr);
 void parse_client(char* line, Client* client);
 int string_to_billboard_effect(char* input);

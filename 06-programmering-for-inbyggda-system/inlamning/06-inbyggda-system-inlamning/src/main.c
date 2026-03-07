@@ -31,10 +31,7 @@ void uart_stdout_init(void) {
 int main(void) {
     uart_stdout_init();
     printf("Hello Billboards!\n");
-    uint8_t random_seed = get_random_seed();
-    printf("%d", random_seed);
-    srand(random_seed);
-
+    
     ClientManager mgr;
     uint32_t now = 0;
     uint32_t prev = 0;
@@ -42,6 +39,11 @@ int main(void) {
     
     lcd_init();
     millis_init();
+
+    uint8_t random_seed = get_random_seed();
+    printf("seed: %d\n", random_seed);
+    srand(random_seed);
+
     client_manager_init(&mgr);
     Billboard* next_billboard;
 

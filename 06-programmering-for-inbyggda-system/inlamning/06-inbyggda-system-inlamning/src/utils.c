@@ -1,6 +1,5 @@
 #include "utils.h"
 
-
 #include <stdlib.h> 
 #include <avr/io.h>
 #include <string.h>
@@ -8,9 +7,37 @@
 #include "config.h"
 #include "clients_db.h"
 
-uint8_t get_random_seed() {
-    SET_BIT(DDRC, PC0);
-    return CHECK_BIT(DDRC, PB0);
+uint16_t get_random_seed() {
+    uint16_t seed;
+    uint8_t seed_low_bits;
+    uint8_t seed_high_bits;
+
+    DDRC &= ~ (1 << PC0); // Set pin to input
+    PORTC &= ~(1 << PC0); // Make sure pullup is not enabled
+    
+    // REFS1:0 = 01 -> AVCC ref
+    // MUX3:0 = 0000 -> ADC0
+    ADMUX = (1 << REFS0);
+    // ADMUX &= ~ (1 << REFS1 | 1 << MUX0 | 1 << MUX1 | 1 << MUX2 | 1 << MUX3); // MUX3:0 to 0 enables ADC0. 
+
+    // ADEN = 1 -> Enable ADC.
+    // ADPS2:0 = 111 -> Sets prescaler to 128
+    ADCSRA = (1 << ADEN) | 
+             (1 << ADPS2) |
+             (1 << ADPS1) | 
+             (1 << ADPS0); 
+
+    // ADSC to 1 starts the ADC conversion
+    // First conversion may be wrong. Keep second reading
+    for (uint8_t i = 0; i < 2; i++) {
+        ADCSRA |= (1 << ADSC);
+        while (ADCSRA & (1 << ADSC));
+    }
+    seed_low_bits = ADCL;
+    seed_high_bits = ADCH;
+    seed = (seed_high_bits << 8) | seed_low_bits;
+
+    return seed ^ TCNT0; // Mix seed with Timer0 for extra randomness
 }
 
 void read_config(ClientManager* mgr)
