@@ -1,5 +1,5 @@
 #include "ClientManager.h"
-#include <stdio.h>
+
 #include <stdlib.h>
 #include <string.h>
 #include "utils.h"
@@ -60,23 +60,14 @@ static Client* get_next_client(ClientManager* mgr)
     return next_client;
 }
 
-Billboard* get_next_billboard(ClientManager* mgr)
+Billboard* get_next_billboard(ClientManager* mgr, uint32_t now)
 {
     Client* next_client = get_next_client(mgr);
-    switch (next_client->display_option) {
-        case 0: // one_random
-            return &next_client->billboards[rand() % next_client->num_billboards];
-            break;
-        case 1: {// one_even_odd_min
-            // time_t now = time(NULL);
-            // struct tm* converted_time = localtime(&now);
-            // printf("min_now: %d\n", converted_time->tm_min);
-            int minutes = 0;
-            return ((minutes % 2) == 0) ? &next_client->billboards[0] : &next_client->billboards[1];
-            break;
-        }
-        default: //fallback to one_random
-            return &next_client->billboards[rand() % next_client->num_billboards];
-            break;
+
+    if (next_client->display_option == 1) {
+        uint8_t is_even = ((now / 60000) % 2) == 0; // 60 000 ms in one minute
+        return is_even ? &next_client->billboards[0] : &next_client->billboards[1];
     }
+    
+    return &next_client->billboards[rand() % next_client->num_billboards];
 }

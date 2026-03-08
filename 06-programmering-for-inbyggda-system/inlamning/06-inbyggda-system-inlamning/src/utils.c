@@ -4,6 +4,7 @@
 #include <avr/io.h>
 #include <string.h>
 #include <avr/pgmspace.h>
+#include <ctype.h>
 #include "config.h"
 #include "clients_db.h"
 
@@ -100,4 +101,31 @@ int string_to_billboard_selection_option(char* input)
     if (strcmp(input, "one_random") == 0 ) { return one_random; }
     if (strcmp(input, "one_even_odd_min") == 0 ) { return one_even_odd_min; }  
     return one_random;
+}
+
+void line_break_string(const char* text, char* top, char* bottom)
+{
+    top[0] = '\0';
+    bottom[0] = '\0';
+
+    if (strlen(text) <= 16) {
+        strcpy(top, text);
+        return;
+    }
+    uint8_t white_space_idx = 0;
+    for (uint8_t i = 0; i <= 16; i++) {
+        if (isspace(text[i])) {
+            white_space_idx = i;
+        }
+    }
+
+    strncpy(top, text, white_space_idx);
+    top[white_space_idx] = '\0';
+    const char* text_rest = &text[white_space_idx + 1];
+    uint8_t text_rest_len = strlen(text_rest);
+    strncpy(bottom, text_rest, text_rest_len);
+    bottom[text_rest_len] = '\0';
+
+    // printf("text_len: %d white_space_idx: %d text_rest_len: %d\n", strlen(text), white_space_idx, text_rest_len);
+    // printf("top: %s bottom: %s\n", top, bottom);
 }
