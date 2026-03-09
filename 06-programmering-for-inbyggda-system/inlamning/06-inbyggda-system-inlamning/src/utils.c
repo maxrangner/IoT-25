@@ -3,12 +3,13 @@
 #include <stdlib.h> 
 #include <avr/io.h>
 #include <string.h>
+#include <stdbool.h>
 #include <avr/pgmspace.h>
 #include <ctype.h>
 #include "config.h"
 #include "clients_db.h"
 
-uint16_t get_random_seed() {
+uint16_t get_random_seed(void) {
     uint16_t seed;
     uint8_t seed_low_bits;
     uint8_t seed_high_bits;
@@ -47,7 +48,7 @@ void read_config(ClientManager* mgr)
 
     char line_buffer[CONFIG_PARSE_BUFFER_SIZE];
     uint16_t buffer_idx = 0;
-    uint8_t done = 0;
+    bool done = false;
     
     while (!done) {
         uint16_t line_idx = 0;
@@ -55,7 +56,7 @@ void read_config(ClientManager* mgr)
             char c = pgm_read_byte(&clients_db[buffer_idx++]);
             if (c == '\n') break;
             if (c == '\0') {
-                done = 1;
+                done = true;
                 break;
             }
             if (line_idx < CONFIG_PARSE_BUFFER_SIZE - 1) {
@@ -112,6 +113,7 @@ void line_break_string(const char* text, char* top, char* bottom)
         strcpy(top, text);
         return;
     }
+
     uint8_t white_space_idx = 0;
     for (uint8_t i = 0; i <= 16; i++) {
         if (isspace(text[i])) {
@@ -119,13 +121,24 @@ void line_break_string(const char* text, char* top, char* bottom)
         }
     }
 
+    if (white_space_idx == 0) {
+        white_space_idx = 15;
+    }
+
     strncpy(top, text, white_space_idx);
     top[white_space_idx] = '\0';
+
     const char* text_rest = &text[white_space_idx + 1];
     uint8_t text_rest_len = strlen(text_rest);
-    strncpy(bottom, text_rest, text_rest_len);
-    bottom[text_rest_len] = '\0';
+    strncpy(bottom, text_rest, 16);
+    bottom[16] = '\0';
 
     // printf("text_len: %d white_space_idx: %d text_rest_len: %d\n", strlen(text), white_space_idx, text_rest_len);
     // printf("top: %s bottom: %s\n", top, bottom);
 }
+
+void build_scroll_string(char* text)
+{
+    
+}
+

@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include "ClientManager.h"
 
-void display_init();
+void display_init(void);
 void display_billboard(Billboard* next_billboard, uint32_t now);
 
 #endif

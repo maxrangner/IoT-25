@@ -12,9 +12,9 @@
 int main(void) {
     ClientManager mgr;
     uint8_t random_seed;
+    uint32_t update_interval = 10000;
     uint32_t now = 0;
-    uint32_t prev_update = 0;
-    uint32_t update_interval = 5000;
+    uint32_t prev_update = 0 - update_interval;
     Billboard* next_billboard;
     static FILE uart_stdout = FDEV_SETUP_STREAM(uart_putchar, NULL, _FDEV_SETUP_WRITE);
     
@@ -33,9 +33,7 @@ int main(void) {
     while(1) {
         now = millis();
         if ((now - prev_update) >= update_interval) {
-            
             next_billboard = get_next_billboard(&mgr, now);
-            // next_billboard = &temp_bill;
             prev_update = now;
         }
         display_billboard(next_billboard, now);
