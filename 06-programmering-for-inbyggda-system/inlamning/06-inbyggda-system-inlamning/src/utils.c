@@ -132,13 +132,5 @@ void line_break_string(const char* text, char* top, char* bottom)
     uint8_t text_rest_len = strlen(text_rest);
     strncpy(bottom, text_rest, 16);
     bottom[16] = '\0';
-
-    // printf("text_len: %d white_space_idx: %d text_rest_len: %d\n", strlen(text), white_space_idx, text_rest_len);
-    // printf("top: %s bottom: %s\n", top, bottom);
-}
-
-void build_scroll_string(char* text)
-{
-    
 }
 

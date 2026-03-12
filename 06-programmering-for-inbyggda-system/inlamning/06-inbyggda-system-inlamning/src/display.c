@@ -1,12 +1,20 @@
-#include "Display.h"
+#include "display.h"
 
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
-#include <avr/io.h>
-#include <util/delay.h>
 #include "lcd.h"
 #include "utils.h"
+#include "config.h"
+
+static void display_rows(Billboard* next_billboard, char* top, char* bottom);
+static void display_scroll_frame(char* top_display, char* top_padded, char* bottom_display, char* bottom_padded, uint8_t* scroll_pos);
+static void add_white_space_padding(Billboard* next_billboard,
+    char* top,
+    char* bottom,
+    char* top_padded,
+    char* bottom_padded
+);
+static void create_scroll_frame(char* buffer_display, char* buffer_padded, uint8_t scroll_pos);
 
 void display_init(void)
 {
@@ -18,19 +26,14 @@ void display_billboard(Billboard* next_billboard, uint32_t now)
 {
     static Billboard* prev_billboard = NULL;
     static uint32_t prev_update = 0 - UPDATE_INIT_VAL;
-    uint32_t fixed_update_interval = 10000;
-    uint32_t scroll_update_interval = 200;
-    uint32_t blink_update_interval = 1000;
-
     static uint8_t blink_state = 1;
     static uint8_t blink_state_prev = 0;
-
     static uint8_t scroll_pos = 0;
 
     char top[LCD_BUF_LEN] = "";
     char bottom[LCD_BUF_LEN] = "";
-    char top_padded[LCD_BUF_LEN * 3 + 1] = "                ";
-    char bottom_padded[LCD_BUF_LEN * 3 + 1] = "                ";
+    char top_padded[LCD_BUF_LEN * 3 + 1] = "";
+    char bottom_padded[LCD_BUF_LEN * 3 + 1] = "";
     char top_display[LCD_BUF_LEN] = "";
     char bottom_display[LCD_BUF_LEN] = "";
 
@@ -40,22 +43,22 @@ void display_billboard(Billboard* next_billboard, uint32_t now)
     }
 
     switch (next_billboard->billboard_effect) {
-        case 0: // fixed
-            if (now - prev_update >= fixed_update_interval) {
+        case fixed:
+            if (now - prev_update >= FIXED_UPDATE_INTERVAL) {
                 display_rows(next_billboard, top, bottom);
                 prev_update = now;
             }
             break;
-        case 1: // scroll
-            if (now - prev_update >= scroll_update_interval) {
+        case scroll:
+            if (now - prev_update >= SCROLL_UPDATE_INTERVAL) {
                 add_white_space_padding(next_billboard, top, bottom, top_padded, bottom_padded);
                 display_scroll_frame(top_display, top_padded, bottom_display, bottom_padded, &scroll_pos);
 
                 prev_update = now;
             }
             break;
-        case 2: // blink
-            blink_state = (now / blink_update_interval) % 2 == 0;
+        case blink:
+            blink_state = (now / BLINK_UPDATE_INTERVAL) % 2 == 0;
 
             if (blink_state != blink_state_prev) {
                 if (blink_state) {
@@ -71,7 +74,7 @@ void display_billboard(Billboard* next_billboard, uint32_t now)
     prev_billboard = next_billboard;
 }
 
-void display_rows(Billboard* next_billboard, char* top, char* bottom)
+static void display_rows(Billboard* next_billboard, char* top, char* bottom)
 {
     lcd_clear();
     line_break_string(next_billboard->billboard_text, top, bottom);
@@ -81,7 +84,7 @@ void display_rows(Billboard* next_billboard, char* top, char* bottom)
     lcd_printf("%s", bottom);
 }
 
-void display_scroll_frame(char* top_display, char* top_padded, char* bottom_display, char* bottom_padded, uint8_t* scroll_pos)
+static void display_scroll_frame(char* top_display, char* top_padded, char* bottom_display, char* bottom_padded, uint8_t* scroll_pos)
 {
     if (*scroll_pos > LCD_TEXT_WIDTH * 2) {
         *scroll_pos = 0;
@@ -99,7 +102,7 @@ void display_scroll_frame(char* top_display, char* top_padded, char* bottom_disp
     (*scroll_pos)++;
 }
 
-void add_white_space_padding(Billboard* next_billboard,
+static void add_white_space_padding(Billboard* next_billboard,
     char* top,
     char* bottom,
     char* top_padded,
@@ -115,7 +118,7 @@ void add_white_space_padding(Billboard* next_billboard,
     strcat(bottom_padded, white_space_padding);
 }
 
-void create_scroll_frame(char* buffer_display, char* buffer_padded, uint8_t scroll_pos)
+static void create_scroll_frame(char* buffer_display, char* buffer_padded, uint8_t scroll_pos)
 {
     uint8_t i = 0;
     for (; i < LCD_TEXT_WIDTH; i++) {
@@ -125,5 +128,5 @@ void create_scroll_frame(char* buffer_display, char* buffer_padded, uint8_t scro
     for (; i < LCD_TEXT_WIDTH; i++) {
         buffer_display[i] = ' ';
     }
-    buffer_display[16] = '\0';
+    buffer_display[LCD_TEXT_WIDTH] = '\0';
 }
