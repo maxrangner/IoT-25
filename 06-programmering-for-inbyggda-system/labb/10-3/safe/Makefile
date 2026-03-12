@@ -1,6 +1,6 @@
 # Build: make
 # Build debug: make MODE=debug
-# Upload: avrdude -c usbasp -p m328p -U flash:w:main.hex
+# Upload: avrdude -c arduino -p m328p -P COM3 -b 115200 -U flash:w:build/main.hex
 # or: make flash
 # Clean: make clean
 
@@ -12,8 +12,9 @@ MCU      = atmega328p
 F_CPU    = 16000000UL
 TARGET   = main
 
-PROGRAMMER = usbasp
-PORT       = usb
+PROGRAMMER = arduino
+PORT       ?= COM5
+UPLOAD_BAUD = 115200
 
 # Build mode: make MODE=debug
 MODE ?= release
@@ -83,7 +84,7 @@ size: $(BUILD_DIR)/$(TARGET).elf
 
 # Flash
 flash: $(BUILD_DIR)/$(TARGET).hex
-	$(AVRDUDE) -c $(PROGRAMMER) -p m328p -P $(PORT) -U flash:w:$<
+	$(AVRDUDE) -c $(PROGRAMMER) -p m328p -P $(PORT) -b $(UPLOAD_BAUD) -U flash:w:$<
 
 # Clean
 clean:
