@@ -1,6 +1,7 @@
 #ifndef CLIENT_MANAGER_H
 #define CLIENT_MANAGER_H
 #include "config.h"
+#include <stdio.h>
 
 typedef char content[NUM_MAX_BILLBOARD_CHAR];
 
@@ -36,6 +37,6 @@ typedef struct {
 } ClientManager;
 
 void client_manager_init(ClientManager* mgr);
-Billboard* get_next_billboard(ClientManager* mgr);
+Billboard* get_next_billboard(ClientManager* mgr, uint32_t now);
 
 #endif
