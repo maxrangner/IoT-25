@@ -33,7 +33,6 @@ void display_billboard(Billboard* next_billboard, uint32_t now)
     char bottom_padded[LCD_BUF_LEN * 3 + 1] = "                ";
     char top_display[LCD_BUF_LEN] = "";
     char bottom_display[LCD_BUF_LEN] = "";
-    const char white_space_padding[LCD_BUF_LEN] = "                ";
 
     if (prev_billboard != next_billboard) {
         scroll_pos = 0;
@@ -48,38 +47,10 @@ void display_billboard(Billboard* next_billboard, uint32_t now)
             }
             break;
         case 1: // scroll
-            if (scroll_pos > LCD_TEXT_WIDTH * 2) {
-                scroll_pos = 0;
-            }
             if (now - prev_update >= scroll_update_interval) {
                 add_white_space_padding(next_billboard, top, bottom, top_padded, bottom_padded);
+                display_scroll_frame(top_display, top_padded, bottom_display, bottom_padded, &scroll_pos);
 
-                uint8_t top_i = 0;
-                uint8_t bottom_i = 0;
-                for (; top_i < LCD_TEXT_WIDTH; top_i++) {
-                    if (top_i + scroll_pos >= (LCD_TEXT_WIDTH * 3 + 1) || top_padded[top_i + scroll_pos] == '\0') break;
-                    top_display[top_i] = top_padded[top_i + scroll_pos];
-                }
-                for (; top_i < LCD_TEXT_WIDTH; top_i++) {
-                    top_display[top_i] = ' ';
-                }
-                for (; bottom_i < LCD_TEXT_WIDTH; bottom_i++) {
-                    if (bottom_i + scroll_pos >= (LCD_TEXT_WIDTH * 3 + 1) || bottom_padded[bottom_i + scroll_pos] == '\0') break;
-                    bottom_display[bottom_i] = bottom_padded[bottom_i + scroll_pos];
-                }
-                for (; bottom_i < LCD_TEXT_WIDTH; bottom_i++) {
-                    bottom_display[bottom_i] = ' ';
-                }
-                top_display[16] = '\0';
-                bottom_display[16] = '\0';
-
-                lcd_clear();
-                lcd_set_cursor(0, 0);
-                lcd_printf("%s", top_display);
-                lcd_set_cursor(0, 1);
-                lcd_printf("%s", bottom_display);
-
-                scroll_pos++;
                 prev_update = now;
             }
             break;
@@ -110,11 +81,29 @@ void display_rows(Billboard* next_billboard, char* top, char* bottom)
     lcd_printf("%s", bottom);
 }
 
+void display_scroll_frame(char* top_display, char* top_padded, char* bottom_display, char* bottom_padded, uint8_t* scroll_pos)
+{
+    if (*scroll_pos > LCD_TEXT_WIDTH * 2) {
+        *scroll_pos = 0;
+    }
+
+    create_scroll_frame(top_display, top_padded, *scroll_pos);
+    create_scroll_frame(bottom_display, bottom_padded, *scroll_pos);
+
+    lcd_clear();
+    lcd_set_cursor(0, 0);
+    lcd_printf("%s", top_display);
+    lcd_set_cursor(0, 1);
+    lcd_printf("%s", bottom_display);
+
+    (*scroll_pos)++;
+}
+
 void add_white_space_padding(Billboard* next_billboard,
     char* top,
     char* bottom,
     char* top_padded,
-    char* bottom_scroll
+    char* bottom_padded
 )
 {
     const char white_space_padding[LCD_BUF_LEN] = "                ";
@@ -122,6 +111,19 @@ void add_white_space_padding(Billboard* next_billboard,
     line_break_string(next_billboard->billboard_text, top, bottom);
     strcat(top_padded, top);
     strcat(top_padded, white_space_padding);
-    strcat(bottom_scroll, bottom);
-    strcat(bottom_scroll, white_space_padding);
+    strcat(bottom_padded, bottom);
+    strcat(bottom_padded, white_space_padding);
+}
+
+void create_scroll_frame(char* buffer_display, char* buffer_padded, uint8_t scroll_pos)
+{
+    uint8_t i = 0;
+    for (; i < LCD_TEXT_WIDTH; i++) {
+        if (i + scroll_pos >= ((LCD_TEXT_WIDTH * 3) + 1) || buffer_padded[i + scroll_pos] == '\0') break;
+        buffer_display[i] = buffer_padded[i + scroll_pos];
+    }
+    for (; i < LCD_TEXT_WIDTH; i++) {
+        buffer_display[i] = ' ';
+    }
+    buffer_display[16] = '\0';
 }
