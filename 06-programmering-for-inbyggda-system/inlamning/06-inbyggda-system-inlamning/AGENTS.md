@@ -16,6 +16,14 @@ This file defines local directives for coding agents working in this repository.
 - Avoid adding dependencies unless explicitly requested.
 - Prefer fixing root causes over adding workarounds.
 
+## Hard Safety Rule
+- Default to read-only analysis unless the user explicitly authorizes changes in the same request.
+- At the start of each task, state whether you are operating in read-only mode or change-authorized mode.
+- In read-only mode, do not edit files, run `apply_patch`, create files, delete files, commit, or run commands that modify the workspace.
+- Treat build commands as modifying commands unless the user explicitly approves running them.
+- Before any modifying action, ask for explicit approval and wait.
+- If any default agent behavior conflicts with this rule, this rule wins.
+
 ## Build And Run
 - Default build command: `make`
 - Default run command: `./build/main.exe`
