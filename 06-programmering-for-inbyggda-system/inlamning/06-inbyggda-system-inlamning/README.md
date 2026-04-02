@@ -1,127 +1,149 @@
 # Billboard Manager
 
-## Uppgift och kriterier:
-- Skapa ett system för att visa reklammeddelanden på en LCD.
-- Kunderna kan välja olika typer av sätt deras meddelanden kan visas.
-- Antalet totala visningar ska spegla hur mycket kunden betalat för sin reklamplats i relation till de andra kunderna.
-- Varje reklamskylt ska visas i 20 sekunder.
-- Samma kund får inte visas två gånger i rad.
+Ett inbyggt system för att visa viktade reklamannonser på en HD44780 LCD-display, riktat mot ATmega-baserade mikrokontrollers.
 
-## Design:
+Repo: [https://github.com/maxrangner/IoT-25/tree/main/06-programmering-for-inbyggda-system/inlamning/06-inbyggda-system-inlamning](https://github.com/maxrangner/IoT-25/tree/main/06-programmering-for-inbyggda-system/inlamning/06-inbyggda-system-inlamning)
+
+Wokwi-simulering: [https://wokwi.com/projects/460192993891021825](https://wokwi.com/projects/460192993891021825)
+
+---
+
+## Bygg och flasha
+
+**Krav:** `avr-gcc`, `avr-objcopy`, `avrdude`, `make`
+
+| Kommando | Beskrivning |
+|----------|-------------|
+| `make` | Bygg release |
+| `make clean` | Rensa byggfiler |
+
+---
+
+## Uppgift och kriterier
+
+| Krav |
+|------|
+| Visa reklammeddelanden på en LCD |
+| Kunder kan välja bland flera olika texteffekter |
+| Visningstid proportionell mot betalning |
+| Varje reklamskylt visas i 20 sekunder |
+| Samma kund visas aldrig två gånger i rad |
+
+---
+
+## Design
+
 ### Moduluppdelning
 
-Systemet är uppdelat i flera moduler:
-- display
-- client_manager
-- millis/timer
-- main
-- utils
-- lcd
-- clients_db
+Systemet är uppdelat i tydligt avgränsade moduler:
 
-Detta följer principen separation of concerns, vilket gör att:
-- varje modul har ett tydligt ansvar
-- koden blir lättare att testa
-- koden blir lättare att ändra
-- systemet blir mer överskådligt
+| Modul | Ansvar |
+|-------|--------|
+| `main` | Initiering och huvudloop |
+| `client_manager` | Klienturval och billboard-val |
+| `display` | Rendering av effekter på LCD |
+| `lcd` | HD44780-drivrutin |
+| `utils` | Hjälpfunktioner och parsing av klientdatabas |
+| `millis` | Mjukvarutimer via Timer0 |
+| `clients_db` | Klientdata lagrad i flash (PROGMEM) |
 
-Denna typ av uppdelning är standard i större embedded-projekt.
+Detta följer principen av tydlig ansvarsindeling. Varje modul har ett tydligt ansvar, koden blir lättare att testa och ändra, och systemet blir mer överskådligt. Denna typ av uppdelning är standard i större embedded-projekt.
 
-### LCD Drivare
-Använder en drivare specifikt för en DH44780-display. Genom att använda en separat drivrutin hålls displaykoden isolerad från resten av systemets logikdelar.
+---
 
-### Main
-Systemet lever i `main`, som har en initieringsfas där vi sätter variabler samt initierar komponenter:
-- display
-- timer
-- client_manager
-- slumpgenerator
+### Huvudloop
 
-Efter initiering kliver systemet in i en oändlig icke-blockerande loop. En icke-blockerande design används för att unvika `delay` så att flera funktioner kan köras utan att blockera. Detta gör så att systemet kan:
+Systemet initierar komponenter:
+
+1. Mjukvarutimer (`millis`)
+2. Slumpgenerator
+3. Klienthanterare (`client_manager`)
+4. Display
+
+Efter initiering körs en oändlig icke-blockerande loop. Designvalet att undvika `delay` gör att systemet kan:
+
 - hålla exakt visningstid per reklam
-- samtidigt hantera animationer
-- unvika att låsa CPU:n
+- köra animationer parallellt
+- aldrig låsa CPU:n
 
-### Konfiguration via config.h
-Tidsintervall och andra konstanter ligger i config.h.
+---
 
-Detta gör att:
-- konfiguration separeras från logik
-- värden kan ändras utan att ändra programkod
-- koden blir mer underhållbar
+### Konfiguration
 
-### Klientdatabas
-AVR har mycket begränsat SRAM, dit strängar normalt kopieras vid uppstart. För att minska minnesanvändningen lagras klientdatabasen istället i flashminnet via PROGMEM, vilket minskar risk för stack/heap-problem. Data läses byte för byte med pgm_read_byte och kopieras endast vid initiering av programmet.
+Tidsintervall och andra statiska värden samlas i `config.h`, separerat från logiken. Värden kan justeras utan att programkoden behöver ändras.
+
+---
+
+### Klientdatabas och PROGMEM
+
+AVR har mycket begränsat SRAM. För att undvika att fylla upp SRAM med strängar lagras klientdatabasen i flashminnet via `PROGMEM`. Data läses byte för byte med `pgm_read_byte` och kopieras till SRAM endast vid initiering.
+
+---
 
 ### Ingen dynamisk minnesallokering
-Systemet använder ingen heap och inga malloc-anrop. Detta är medvetet eftersom dynamisk allokering på små mikrokontrollers kan ge:
-- fragmentering
-- svårdebuggade fel
-- oförutsägbart minnesbeteende
 
-Alla datastrukturer har därför fast storlek och allokeras utan heap, vilket ger ett mer stabilt system.
+Systemet använder ingen heap och inga `malloc`-anrop. Dynamisk allokering på små mikrokontrollers kan ge fragmentering, svårdebuggade fel och oförutsägbart minnesbeteende. Alla datastrukturer har fast storlek och allokeras statiskt.
 
-### Viktat slumpmässigt urval av klient
-Klienter väljs med en viktad slumpalgoritm där sannolikheten beror på hur mycket kunden betalat.
+---
 
-Algoritmen:
-- Summerar alla klienters betalning
-- Genererar ett slumpvärde mellan 0 och totalsumman
-- Itererar klienterna och ackumulerar deras pris
-- Den klient där summan passerar slumptalet väljs
-- Om den valda kunden var samma som senast visad görs ett nytt viktat försök tills en annan kund väljs
+### Viktat slumpmässigt urval
 
-Denna metod valdes eftersom den:
-- är enkel att implementera
-- kräver ingen dynamisk minnesallokering
-- har låg komplexitet O(n)
-- är deterministisk och stabil
+Klienter väljs med en viktad slumpalgoritm där sannolikheten är proportionell mot betalat pris.
 
-Detta gör den lämplig för små embedded-system.
+Algoritm:
+1. Summera alla klienters pris
+2. Generera ett slumptal mellan `0` och totalsumman
+3. Iterera klienterna och ackumulera deras pris
+4. Välj den klient där den ackumulerade summan passerar slumptalet
+5. Om den valda kunden var samma som senast visad — gör ett nytt försök
+
+Metoden kräver ingen dynamisk minnesallokering och är stabil för embedded-miljöer.
+
+---
 
 ### Slumpgenerator
-AVR saknar hårdvarubaserad slumpgenerator, därför används analogt brus från en flytande pin. Detta XORas med Timer0 vid retur för ökad slumpmässighet.
+
+AVR saknar hårdvarubaserad slumpgenerator. Istället samplas analogt brus från en flytande pin via ADC och XORas med Timer0-räknaren vid retur för ökad slumpmässighet.
+
+---
 
 ### Konfigurationsantaganden
-Klientdatabasen parsas utan avancerad felhantering och förutsätter därför att konfigurationen är strikt giltig.
 
-Det innebär att:
-- alla fält måste vara ifyllda
-- antal klienter måste rymmas inom `MAX_NUM_CLIENTS`
-- antal reklamskyltar per kund måste rymmas inom `MAX_BILLBOARDS`
-- klientnamn och reklamtexter måste rymmas inom sina buffertar
-- `NUM_BILLBOARDS` måste matcha antalet `BILLBOARD_TEXT`/`EFFECT`-par
-- `one_even_odd_min` kräver minst två reklamskyltar
+Klientdatabasen parsas utan felhantering och förutsätter att konfigurationsfilen är korrekt. Instruktionerna i `clients_db.h` måste följas strikt.
+
+---
 
 ## Datastrukturer
-- fasta arrays → förutsägbart minne
-- enums → tydligare kod
 
-### Client
-Klienter sparas i en struct som innehåller:
-- namn
-- pris
-- visningsläge
-- antal reklamskyltar
-- array med reklammeddelanden
+### `Client`
 
-Struct används istället för dynamiska objekt eftersom:
-- minnesstorlek blir känd vid kompilering
-- ingen heap behövs
+```
+name | price | display option | number of billboards | billboards[]
+```
 
-### Billboard
-Varje reklamskylt innehåller:
-- text
-- enum för effekt
+Sparas som en struct med fast storlek så att minnesstorlek känd vid kompilering, ingen heap behövs.
 
-Enums används för att göra koden tydligare och säkrare än att använda siffror.
+### `Billboard`
+
+```
+text | effect (enum)
+```
+
+### Visningsläge
+
+Styr hur en kunds reklamskyltar väljs:
+
+| Läge | Beteende |
+|------|----------|
+| `one_random` | En slumpmässigt vald skylt visas varje gång |
+| `one_even_odd_min` | Växlar mellan skylt 1 och 2 beroende på jämna/udda minuter sedan uppstart |
 
 ### Texteffekter
-Tre effekter finns:
-- statisk
-- rullande
-- blinkande
 
-Effekten sparas i Billboard-strukturen och tolkas av display_billboard().
+| Effekt | Beteende |
+|--------|----------|
+| `fixed` | Statisk text |
+| `scroll` | Text rullar in från höger |
+| `blink` | Text blinkar med jämna intervall |
 
-Effekterna fungerar tack vare den icke-blockerande designen, vilket gör att animation kan köras samtidigt som systemet håller korrekt visningstid.
+Effekterna fungerar tack vare den icke-blockerande designen. Animation och visningstid hanteras samtidigt utan konflikter.

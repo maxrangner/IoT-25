@@ -10,7 +10,7 @@ Rules:
 - Maximum client name length: 49 characters
 - Maximum billboard text length: 49 characters
 - NUM_BILLBOARDS must match the number of BILLBOARD_TEXT/EFFECT pairs
-- one_even_odd_min requires at least 2 billboards
+- one_even_odd_min requires exactly 2 billboards
 - BILLBOARD_TEXT should not start with whitespace
 
 Valid DISPLAY_OPTION values:
