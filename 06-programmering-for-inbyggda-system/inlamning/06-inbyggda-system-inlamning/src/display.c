@@ -113,10 +113,10 @@ static void add_white_space_padding(Billboard* next_billboard,
     const char white_space_padding[LCD_BUF_LEN] = "                ";
 
     line_break_string(next_billboard->billboard_text, top, bottom);
-    strcat(top_padded, top);
     strcat(top_padded, white_space_padding);
-    strcat(bottom_padded, bottom);
+    strcat(top_padded, top);
     strcat(bottom_padded, white_space_padding);
+    strcat(bottom_padded, bottom);
 }
 
 static void create_scroll_frame(char* buffer_display, char* buffer_padded, uint8_t scroll_pos)

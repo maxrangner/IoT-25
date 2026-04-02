@@ -1,7 +1,6 @@
 #include "client_manager.h"
 
 #include <stdlib.h>
-#include <string.h>
 #include "utils.h"
 
 void client_manager_init(ClientManager* mgr) 
@@ -23,12 +22,7 @@ static int calc_total_price(const ClientManager* mgr)
 
 static int generate_rand_num(ClientManager* mgr)
 {
-    int total_sum_prices = 0;
-    total_sum_prices = calc_total_price(mgr);
-    total_sum_prices -= mgr->prev_client->price;
-    int random_num = rand() % total_sum_prices;
-
-    return random_num;
+    return rand() % calc_total_price(mgr);
 }
 
 static Client* get_next_client(ClientManager* mgr)
@@ -41,16 +35,13 @@ static Client* get_next_client(ClientManager* mgr)
     for (int i = 0; i < mgr->num_clients; i++) {
         Client* current_client = &mgr->clients[i];
         
-        if (current_client != prev_client) {
-            cumulative_price += current_client->price;
-            if (cumulative_price > random_num) {
-                printf("cumulative_price: %d > %d -- MATCH!\n", cumulative_price, random_num);
+        cumulative_price += current_client->price;
+        if (cumulative_price > random_num) {
+            if (current_client != prev_client) {
                 mgr->prev_client = current_client;
                 next_client = current_client;
-                break;
-            } else {
-                printf("cumulative_price: %d < %d\n", cumulative_price, random_num);
             }
+            break;
         }
     }
 
@@ -59,8 +50,10 @@ static Client* get_next_client(ClientManager* mgr)
 
 Billboard* get_next_billboard(ClientManager* mgr, uint32_t now)
 {
-    Client* next_client = get_next_client(mgr);
-    if (next_client == NULL) return NULL;
+    Client* next_client = NULL;
+    while (next_client == NULL) {
+        next_client = get_next_client(mgr);
+    }
 
     if (next_client->display_option == one_even_odd_min) {
         uint8_t is_even = ((now / 60000) % 2) == 0; // 60 000 ms in one minute
