@@ -11,9 +11,12 @@ void millis_init(void)
 {
     ms = 0;
     SET_BIT(TCCR0A, WGM01);
+
+    // With CTC mode, CS00 + CS01 set a /64 prescaler, and OCR0A = 249 gives us a 1 ms timer tick.
     SET_BIT(TCCR0B, CS00);
     SET_BIT(TCCR0B, CS01);
     OCR0A = 249;
+
     SET_BIT(TIMSK0, OCIE0A);
     sei();
 }

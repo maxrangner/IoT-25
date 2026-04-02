@@ -14,6 +14,5 @@ void parse_client(char* line, Client* client);
 int string_to_billboard_effect(char* input);
 int string_to_billboard_selection_option(char* input);
 void line_break_string(const char* text, char* top, char* bottom);
-void build_scroll_string();
 
 #endif

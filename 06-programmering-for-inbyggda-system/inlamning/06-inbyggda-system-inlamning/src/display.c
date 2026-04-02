@@ -26,7 +26,7 @@ void display_billboard(Billboard* next_billboard, uint32_t now)
 {
     if (next_billboard == NULL) return;
     static Billboard* prev_billboard = NULL;
-    static uint32_t prev_update = 0 - UPDATE_INIT_VAL;
+    static uint32_t prev_update = 0 - UPDATE_INIT_VAL; // Overflow guarantees first update
     static uint8_t blink_state = 1;
     static uint8_t blink_state_prev = 0;
     static uint8_t scroll_pos = 0;
@@ -41,6 +41,7 @@ void display_billboard(Billboard* next_billboard, uint32_t now)
     if (prev_billboard != next_billboard) {
         scroll_pos = 0;
         prev_update = 0 - UPDATE_INIT_VAL;
+        blink_state = 2; // Impossible state here guarantees an update
     }
 
     switch (next_billboard->billboard_effect) {
@@ -59,6 +60,10 @@ void display_billboard(Billboard* next_billboard, uint32_t now)
             }
             break;
         case blink:
+            /*
+            To get the blink status we modulo the time from boot, and check if it's even or odd.
+            Makes for a clean boolean output.    
+            */
             blink_state = (now / BLINK_UPDATE_INTERVAL) % 2 == 0;
 
             if (blink_state != blink_state_prev) {
@@ -87,7 +92,7 @@ static void display_rows(Billboard* next_billboard, char* top, char* bottom)
 
 static void display_scroll_frame(char* top_display, char* top_padded, char* bottom_display, char* bottom_padded, uint8_t* scroll_pos)
 {
-    if (*scroll_pos > LCD_TEXT_WIDTH * 2) {
+    if (*scroll_pos > LCD_TEXT_WIDTH * 2) { // 16 leading spaces + 16 chars = one full scroll cycle
         *scroll_pos = 0;
     }
 
@@ -110,6 +115,9 @@ static void add_white_space_padding(Billboard* next_billboard,
     char* bottom_padded
 )
 {
+    /*
+    White space is added to make the text start all the way from the right
+    */
     const char white_space_padding[LCD_BUF_LEN] = "                ";
 
     line_break_string(next_billboard->billboard_text, top, bottom);

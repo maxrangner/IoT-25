@@ -35,7 +35,10 @@ uint16_t get_random_seed(void) {
 
 void read_config(ClientManager* mgr)
 {
-    int client_count = 0;
+    /*
+    Read the client database from PROGMEM one byte
+    at a time and parse it line by line into RAM
+    */ 
 
     char line_buffer[CONFIG_PARSE_BUFFER_SIZE];
     uint16_t buffer_idx = 0;
@@ -94,6 +97,11 @@ int string_to_billboard_selection_option(char* input)
 
 void line_break_string(const char* text, char* top, char* bottom)
 {
+    /*
+    Split text across the two LCD rows, preferring the last
+    whitespace within the first 16 characters.
+    */ 
+
     top[0] = '\0';
     bottom[0] = '\0';
 

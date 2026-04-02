@@ -13,9 +13,11 @@
 Systemet är uppdelat i flera moduler:
 - display
 - client_manager
-
-- timer
+- millis/timer
 - main
+- utils
+- lcd
+- clients_db
 
 Detta följer principen separation of concerns, vilket gör att:
 - varje modul har ett tydligt ansvar
@@ -57,16 +59,17 @@ Systemet använder ingen heap och inga malloc-anrop. Detta är medvetet eftersom
 - svårdebuggade fel
 - oförutsägbart minnesbeteende
 
-Alla datastrukturer har därför fast storlek och allokeras statiskt, vilket ger ett mer stabilt system.
+Alla datastrukturer har därför fast storlek och allokeras utan heap, vilket ger ett mer stabilt system.
 
 ### Viktat slumpmässigt urval av klient
 Klienter väljs med en viktad slumpalgoritm där sannolikheten beror på hur mycket kunden betalat.
 
 Algoritmen:
-- Summerar alla klienters betalning (förutom senast visad)
+- Summerar alla klienters betalning
 - Genererar ett slumpvärde mellan 0 och totalsumman
 - Itererar klienterna och ackumulerar deras pris
 - Den klient där summan passerar slumptalet väljs
+- Om den valda kunden var samma som senast visad görs ett nytt viktat försök tills en annan kund väljs
 
 Denna metod valdes eftersom den:
 - är enkel att implementera
@@ -78,6 +81,17 @@ Detta gör den lämplig för små embedded-system.
 
 ### Slumpgenerator
 AVR saknar hårdvarubaserad slumpgenerator, därför används analogt brus från en flytande pin. Detta XORas med Timer0 vid retur för ökad slumpmässighet.
+
+### Konfigurationsantaganden
+Klientdatabasen parsas utan avancerad felhantering och förutsätter därför att konfigurationen är strikt giltig.
+
+Det innebär att:
+- alla fält måste vara ifyllda
+- antal klienter måste rymmas inom `MAX_NUM_CLIENTS`
+- antal reklamskyltar per kund måste rymmas inom `MAX_BILLBOARDS`
+- klientnamn och reklamtexter måste rymmas inom sina buffertar
+- `NUM_BILLBOARDS` måste matcha antalet `BILLBOARD_TEXT`/`EFFECT`-par
+- `one_even_odd_min` kräver minst två reklamskyltar
 
 ## Datastrukturer
 - fasta arrays → förutsägbart minne

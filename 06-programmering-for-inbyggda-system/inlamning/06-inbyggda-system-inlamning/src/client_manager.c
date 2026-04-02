@@ -27,6 +27,10 @@ static int generate_rand_num(ClientManager* mgr)
 
 static Client* get_next_client(ClientManager* mgr)
 {
+    /*
+    If previous client is chosen, the function returns NULL.
+    Needs to be handled in calling function.
+    */
     Client* prev_client = mgr->prev_client;
     Client* next_client = NULL;
     int random_num = generate_rand_num(mgr);
@@ -51,7 +55,7 @@ static Client* get_next_client(ClientManager* mgr)
 Billboard* get_next_billboard(ClientManager* mgr, uint32_t now)
 {
     Client* next_client = NULL;
-    while (next_client == NULL) {
+    while (next_client == NULL) { // Calls the function again until new client is chosen
         next_client = get_next_client(mgr);
     }
 
