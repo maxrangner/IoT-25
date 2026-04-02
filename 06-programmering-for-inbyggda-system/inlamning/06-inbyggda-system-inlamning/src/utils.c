@@ -14,23 +14,14 @@ uint16_t get_random_seed(void) {
     uint8_t seed_low_bits;
     uint8_t seed_high_bits;
 
-    DDRC &= ~ (1 << PC0); // Set pin to input
-    PORTC &= ~(1 << PC0); // Make sure pullup is not enabled
-    
-    // REFS1:0 = 01 -> AVCC ref
-    // MUX3:0 = 0000 -> ADC0
+    DDRC &= ~ (1 << PC0);
+    PORTC &= ~(1 << PC0);
     ADMUX = (1 << REFS0);
-    // ADMUX &= ~ (1 << REFS1 | 1 << MUX0 | 1 << MUX1 | 1 << MUX2 | 1 << MUX3); // MUX3:0 to 0 enables ADC0. 
-
-    // ADEN = 1 -> Enable ADC.
-    // ADPS2:0 = 111 -> Sets prescaler to 128
     ADCSRA = (1 << ADEN) | 
              (1 << ADPS2) |
              (1 << ADPS1) | 
              (1 << ADPS0); 
 
-    // ADSC to 1 starts the ADC conversion
-    // First conversion may be wrong. Keep second reading
     for (uint8_t i = 0; i < 2; i++) {
         ADCSRA |= (1 << ADSC);
         while (ADCSRA & (1 << ADSC));
@@ -39,7 +30,7 @@ uint16_t get_random_seed(void) {
     seed_high_bits = ADCH;
     seed = (seed_high_bits << 8) | seed_low_bits;
 
-    return seed ^ TCNT0; // Mix seed with Timer0 for extra randomness
+    return seed ^ TCNT0;
 }
 
 void read_config(ClientManager* mgr)
@@ -67,8 +58,7 @@ void read_config(ClientManager* mgr)
             line_buffer[line_idx] = '\0';
             Client new_client;
             parse_client(line_buffer, &new_client);
-            mgr->clients[client_count++] = new_client;
-            mgr->num_clients++;
+            mgr->clients[mgr->num_clients++] = new_client;
         }
     }
 }
@@ -85,8 +75,6 @@ void parse_client(char* line, Client* client)
         strcpy(client->billboards[i].billboard_text, billboard_text);
         client->billboards[i].billboard_effect = string_to_billboard_effect(strtok(NULL, ","));
     }
-    printf("Client: %s -- LOADED!\n", client->name);
-    
 }
 
 int string_to_billboard_effect(char* input)
@@ -129,7 +117,6 @@ void line_break_string(const char* text, char* top, char* bottom)
     top[white_space_idx] = '\0';
 
     const char* text_rest = &text[white_space_idx + 1];
-    uint8_t text_rest_len = strlen(text_rest);
     strncpy(bottom, text_rest, 16);
     bottom[16] = '\0';
 }

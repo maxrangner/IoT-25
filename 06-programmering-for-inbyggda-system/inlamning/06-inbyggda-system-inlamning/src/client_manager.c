@@ -7,7 +7,7 @@
 void client_manager_init(ClientManager* mgr) 
 {
     mgr->num_clients = 0;
-    read_config(mgr);    
+    read_config(mgr);
     mgr->prev_client = &mgr->clients[mgr->num_clients - 1];
 }
 
@@ -36,8 +36,6 @@ static Client* get_next_client(ClientManager* mgr)
     Client* prev_client = mgr->prev_client;
     Client* next_client = NULL;
     int random_num = generate_rand_num(mgr);
-    
-    printf("random_num: %d, prev_client: %s\n", random_num, prev_client->name);
 
     int cumulative_price = 0;
     for (int i = 0; i < mgr->num_clients; i++) {
@@ -56,15 +54,15 @@ static Client* get_next_client(ClientManager* mgr)
         }
     }
 
-    printf("next_client: %s\n", next_client->name);
     return next_client;
 }
 
 Billboard* get_next_billboard(ClientManager* mgr, uint32_t now)
 {
     Client* next_client = get_next_client(mgr);
+    if (next_client == NULL) return NULL;
 
-    if (next_client->display_option == 1) {
+    if (next_client->display_option == one_even_odd_min) {
         uint8_t is_even = ((now / 60000) % 2) == 0; // 60 000 ms in one minute
         return is_even ? &next_client->billboards[0] : &next_client->billboards[1];
     }

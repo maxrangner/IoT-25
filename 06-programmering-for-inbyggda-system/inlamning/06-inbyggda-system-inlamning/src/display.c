@@ -24,6 +24,7 @@ void display_init(void)
 
 void display_billboard(Billboard* next_billboard, uint32_t now)
 {
+    if (next_billboard == NULL) return;
     static Billboard* prev_billboard = NULL;
     static uint32_t prev_update = 0 - UPDATE_INIT_VAL;
     static uint8_t blink_state = 1;

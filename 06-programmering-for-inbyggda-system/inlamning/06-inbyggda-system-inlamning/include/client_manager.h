@@ -22,18 +22,17 @@ typedef struct {
 } Billboard;
 
 typedef struct {
-    char name[50];
+    char name[MAX_CLIENT_NAME_LENGTH];
     int price;
     int display_option;
     int num_billboards;
-    Billboard billboards[3];
+    Billboard billboards[MAX_BILLBOARDS];
 } Client;
 
 typedef struct {
-    Client clients[NUM_CLIENTS];
+    Client clients[MAX_NUM_CLIENTS];
     Client* prev_client;
     int num_clients;
-    int total_price;
 } ClientManager;
 
 void client_manager_init(ClientManager* mgr);

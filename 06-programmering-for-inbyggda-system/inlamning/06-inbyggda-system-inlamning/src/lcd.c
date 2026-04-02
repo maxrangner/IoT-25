@@ -148,62 +148,13 @@ void lcd_set_cursor(uint8_t col, uint8_t row) {
     lcd_command(LCD_SETDDRAMADDR | (col + offsets[row]));
 }
 
-void swedish_parser(char *text) {
-    char *src = text;
-    char *dst = text;
-
-    while (*src) {
-        // Check for UTF-8 encoded Swedish characters (0xC3 xx)
-        if ((unsigned char)src[0] == 0xC3) {
-            switch ((unsigned char)src[1]) {
-                case 0xA5:  // å
-                    *dst++ = (char)0xE5;
-                    src += 2;
-                    continue;
-
-                case 0xA4:  // ä
-                    *dst++ = (char)0xE4;
-                    src += 2;
-                    continue;
-
-                case 0xB6:  // ö
-                    *dst++ = (char)0xF6;
-                    src += 2;
-                    continue;
-
-                // uppercase
-                case 0x85:  // Å
-                    *dst++ = (char)0xC5;
-                    src += 2;
-                    continue;
-
-                case 0x84:  // Ä
-                    *dst++ = (char)0xC4;
-                    src += 2;
-                    continue;
-
-                case 0x96:  // Ö
-                    *dst++ = (char)0xD6;
-                    src += 2;
-                    continue;
-            }
-        }
-
-        // Normal character copy
-        *dst++ = *src++;
-    }
-    *dst = '\0';
-}
-
 void lcd_puts(char *string) {
-    swedish_parser(string);
     for (char *it = string; *it; it++) {
         lcd_write(*it);
     }
 }
 
 void lcd_printf(char *format, ...) {
-    swedish_parser(format);
     va_list args;
 
     va_start(args, format);

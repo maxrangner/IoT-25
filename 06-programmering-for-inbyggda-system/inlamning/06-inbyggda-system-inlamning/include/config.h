@@ -1,7 +1,9 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#define NUM_CLIENTS 5
+#define MAX_NUM_CLIENTS 5 // Must be > 1
+#define MAX_BILLBOARDS 3
+#define MAX_CLIENT_NAME_LENGTH 50
 #define NUM_MAX_BILLBOARD_CHAR 50
 #define CONFIG_PARSE_BUFFER_SIZE 256
 #define LCD_TEXT_WIDTH 16

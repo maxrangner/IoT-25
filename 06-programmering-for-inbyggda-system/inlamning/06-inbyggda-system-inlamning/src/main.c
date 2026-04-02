@@ -3,17 +3,14 @@
 #include "display.h"
 #include "millis.h"
 #include "utils.h"
-#include "uart.h"
 
 int main(void) {
     ClientManager mgr;
-    uint8_t random_seed;
+    uint16_t random_seed;
     uint32_t now = 0;
     uint32_t prev_update = now - MAIN_UPDATE_INTERVAL;
-    Billboard* next_billboard;
-    static FILE uart_stdout = FDEV_SETUP_STREAM(uart_putchar, NULL, _FDEV_SETUP_WRITE);
+    Billboard* next_billboard = NULL;
     
-    uart_stdout_init(&uart_stdout);
     millis_init();
     random_seed = get_random_seed();
     srand(random_seed);
